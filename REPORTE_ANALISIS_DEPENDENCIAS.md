@@ -1,6 +1,6 @@
 # Reporte Actualizado de Dependencias
 
-### libminipro_bin.so
+### minipro
 | Dep | Class | InFolder |
 |---|---|---|
 | liblog.so | Sistema | No |
