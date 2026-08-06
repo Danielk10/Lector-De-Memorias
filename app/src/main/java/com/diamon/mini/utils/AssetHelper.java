@@ -206,6 +206,8 @@ public class AssetHelper {
         ok &= linkTool(new File(usrBin, "minipro"), new File(nativeLibDir, "libminipro_bin.so"));
         // libusb: nativeLibDir/libusb_1_0.so -> usr/lib/libusb-1.0.so
         ok &= linkTool(new File(usrLib, "libusb-1.0.so"), new File(nativeLibDir, "libusb_1_0.so"));
+        // libz: nativeLibDir/libz_1.so -> usr/lib/libz.so.1
+        ok &= linkTool(new File(usrLib, "libz.so.1"), new File(nativeLibDir, "libz_1.so"));
 
         return ok;
     }
