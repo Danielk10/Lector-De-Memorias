@@ -558,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
         File miniproBin = new File(nativeLibDir, "libminipro_bin.so");
         log("minipro: " + (miniproBin.exists() ? "OK (" + miniproBin.length() / 1024 + " KB)" : "NO ENCONTRADO"));
 
-        File libusb = new File(nativeLibDir, "libusb-1.0.so");
+        File libusb = new File(nativeLibDir, "libusb_1_0.so");
         log("libusb: " + (libusb.exists() ? "OK (" + libusb.length() / 1024 + " KB)" : "NO ENCONTRADO"));
 
         // Check native bridge

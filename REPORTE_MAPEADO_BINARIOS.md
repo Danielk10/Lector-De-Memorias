@@ -20,7 +20,7 @@ Todas las dependencias listadas en el reporte han sido verificadas dentro de `jn
 
 | Binario | Dependencias Exigidas (DT_NEEDED) | Estado en `arm64-v8a` / App |
 |---|---|---|
-| **`minipro`** | `liblog.so`, `libusb-1.0.so`, `libz.so` (o `libz.so.1`), `libdl.so`, `libc.so` | ✔ Todas las dependencias presentes. `libusb-1.0.so` se provee en `jniLibs/arm64-v8a/` y el resto son librerías del sistema Android. |
+| **`minipro`** | `liblog.so`, `libusb-1.0.so` (ahora `libusb_1_0.so`), `libz.so` (o `libz.so.1`), `libdl.so`, `libc.so` | ✔ Todas las dependencias presentes. `libusb_1_0.so` se provee en `jniLibs/arm64-v8a/` y el resto son librerías del sistema Android. |
 
 ---
 
@@ -28,6 +28,6 @@ Todas las dependencias listadas en el reporte han sido verificadas dentro de `jn
 
 Al revisar y comparar la carpeta `fake_root` contra los archivos incluidos en `assets`, se confirmó que:
 
-1. **Binarios y Librerías (.so):** No están en `assets`. Están correctamente ubicados en `app/src/main/jniLibs/arm64-v8a/` (`libminipro_bin.so` y `libusb-1.0.so`). Durante la ejecución de la app, se enlazan (symlinks) o copian a la jerarquía de directorios esperada (`usr/bin/minipro`, `usr/lib/libusb-1.0.so`).
+1. **Binarios y Librerías (.so):** No están en `assets`. Están correctamente ubicados en `app/src/main/jniLibs/arm64-v8a/` (`libminipro_bin.so` y `libusb_1_0.so`). Durante la ejecución de la app, se enlazan (symlinks) o copian a la jerarquía de directorios esperada (`usr/bin/minipro`, `usr/lib/libusb-1.0.so`).
 2. **Scripts Shell y Otros Recursos:** Herramientas como `dump-alg-minipro.bash` no son binarios ELF (son scripts shell). Éstos están localizados correctamente en `assets/` y se extraen directamente a `usr/bin/` al iniciarse la app.
 3. **Resto de archivos en assets:** Se incluyen correctamente `infoic.xml` y `logicic.xml` bajo `usr/share/minipro/` sin faltar ningún archivo de sus respectivas rutas indispensables.

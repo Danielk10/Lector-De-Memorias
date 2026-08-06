@@ -74,7 +74,7 @@
 │  └─────┬────┘    └────────┬─────────┘    │
 │        │                  │              │
 │  ┌─────▼──────────────────▼─────────┐    │
-│  │    libusb-1.0.so (parcheada)     │    │
+│  │    libusb_1_0.so (parcheada)     │    │
 │  │    ANDROID_USB_FD interception   │    │
 │  └──────────────────────────────────┘    │
 └──────────────────────────────────────────┘
@@ -136,7 +136,7 @@ Lector-De-Memorias/
 │   │   └── include/libusb-1.0/        # Headers libusb
 │   ├── jniLibs/arm64-v8a/
 │   │   ├── libminipro_bin.so          # Binario minipro (PIE arm64)
-│   │   └── libusb-1.0.so             # libusb parcheada
+│   │   └── libusb_1_0.so             # libusb parcheada
 │   ├── assets/.../usr/share/minipro/
 │   │   ├── infoic.xml                 # Base de datos de chips (19 MB)
 │   │   └── logicic.xml               # Definiciones de lógica IC

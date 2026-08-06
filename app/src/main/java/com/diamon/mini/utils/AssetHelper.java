@@ -204,8 +204,8 @@ public class AssetHelper {
         boolean ok = true;
         // minipro binary: nativeLibDir/libminipro_bin.so -> usr/bin/minipro
         ok &= linkTool(new File(usrBin, "minipro"), new File(nativeLibDir, "libminipro_bin.so"));
-        // libusb: nativeLibDir/libusb-1.0.so -> usr/lib/libusb-1.0.so
-        ok &= linkTool(new File(usrLib, "libusb-1.0.so"), new File(nativeLibDir, "libusb-1.0.so"));
+        // libusb: nativeLibDir/libusb_1_0.so -> usr/lib/libusb-1.0.so
+        ok &= linkTool(new File(usrLib, "libusb-1.0.so"), new File(nativeLibDir, "libusb_1_0.so"));
 
         return ok;
     }
