@@ -20,7 +20,7 @@ Todas las dependencias listadas en el reporte han sido verificadas dentro de `jn
 
 | Binario | Dependencias Exigidas (DT_NEEDED) | Estado en `arm64-v8a` / App |
 |---|---|---|
-| **`minipro`** | `liblog.so`, `libusb-1.0.so` (ahora `libusb_1_0.so`), `libz.so` (o `libz.so.1`), `libdl.so`, `libc.so` | ✔ Todas las dependencias presentes. `libusb_1_0.so` se provee en `jniLibs/arm64-v8a/` y el resto son librerías del sistema Android. |
+| **`minipro`** | `liblog.so`, `libusb-1.0.so` (ahora `libusb_1_0.so`), `libz.so.1` (ahora `libz_1.so`), `libdl.so`, `libc.so` | ✔ Todas las dependencias presentes. `libusb_1_0.so` y `libz_1.so` se proveen en `jniLibs/arm64-v8a/` y el resto son librerías del sistema Android. |
 
 ---
 
