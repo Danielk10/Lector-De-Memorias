@@ -18,3 +18,7 @@ Este documento detalla los hallazgos críticos y las acciones correctivas aplica
 ### 4. Carga Dinámica de Dependencias JNI y Renombramiento - SOLUCIONADO
 **Acción:** Se implementó una resolución inteligente de dependencias nativas en la capa Java, junto con el renombramiento de los binarios PIE (Position-Independent Executable). Google Play y Android requieren que todo lo contenido en `jniLibs` lleve el prefijo `lib` y extensión `.so`.
 **Resultado:** El ejecutable `minipro` fue renombrado exitosamente a `libminipro_bin.so`. La aplicación recuperará la versión renombrada usando `getApplicationInfo().nativeLibraryDir` y creará symlinks o referencias adecuadas en runtime para ejecutar la suite con el cargador dinámico de Android.
+
+### 5. Resolución de Dependencia `libz.so.1` - SOLUCIONADO
+**Acción:** El ejecutable `minipro` compilado originalmente dependía de la versión versionada de Zlib (`libz.so.1`), la cual no es nativa en Android bajo ese nombre. Se procedió a integrar directamente la librería `libz.so.1` compilada para `arm64-v8a` dentro del directorio `jniLibs` y/o parchear el binario para enlazar a `libz.so`.
+**Resultado:** El ejecutable ya no falla con el error `library "libz.so.1" not found` y puede ejecutarse utilizando sus librerías de soporte provistas localmente o desde el sistema, logrando su ejecución transparente en Android.

@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean hasReadData = false;
-    private volatile String lastReadFile = "dump.bin";
+    private volatile String lastReadFile = "rom.bin";
 
     private static final String[] SUPPORTED_DEVICES = {
             "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76"
@@ -358,17 +358,17 @@ public class MainActivity extends AppCompatActivity {
 
         btnVerify.setOnClickListener(v -> {
             String device = getSelectedDevice();
-            executeMinipro("-p", device, "-m", "dump.bin");
+            executeMinipro("-p", device, "-m", "rom.bin");
         });
 
         btnRead.setOnClickListener(v -> {
             String device = getSelectedDevice();
-            executeMinipro("-p", device, "-r", "dump.bin");
+            executeMinipro("-p", device, "-r", "rom.bin");
         });
 
         btnWrite.setOnClickListener(v -> {
             String device = getSelectedDevice();
-            executeMinipro("-p", device, "-w", "dump.bin");
+            executeMinipro("-p", device, "-w", "rom.bin");
         });
 
         btnImport.setOnClickListener(v -> {
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                 log("Error: El archivo '" + lastReadFile + "' no existe.");
                 return;
             }
-            String exportName = lastReadFile.equals("dump.bin") ? "dump_backup.bin" : lastReadFile;
+            String exportName = lastReadFile.equals("rom.bin") ? "dump_backup.bin" : lastReadFile;
             Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("application/octet-stream");
@@ -488,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void executeCustomCommand(String raw) {
-        // Parsear comando: puede ser "minipro -p TL866II+ -r dump.bin" o simplemente "-p TL866II+ -r dump.bin"
+        // Parsear comando: puede ser "minipro -p TL866II+ -r rom.bin" o simplemente "-p TL866II+ -r rom.bin"
         String command = raw.trim();
         if (command.startsWith("minipro ")) {
             command = command.substring(8).trim();
@@ -526,8 +526,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void clearTransientRomState(boolean notify) {
         hasReadData = false;
-        lastReadFile = "dump.bin";
-        File dumpFile = new File(getFilesDir(), "dump.bin");
+        lastReadFile = "rom.bin";
+        File dumpFile = new File(getFilesDir(), "rom.bin");
         if (dumpFile.exists()) dumpFile.delete();
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .remove("bios_source")
@@ -590,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             boolean isIntelHex = fileName.toLowerCase().endsWith(".hex");
-            File outFile = new File(getFilesDir(), "dump.bin");
+            File outFile = new File(getFilesDir(), "rom.bin");
             clearTransientRomState(false);
             long totalWritten = 0;
 
@@ -629,13 +629,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             log("ROM importada: '" + fileName + "' (" + sizeStr + ")");
-            log("Archivo guardado como 'dump.bin' — listo para Flashear o Verificar.");
+            log("Archivo guardado como 'rom.bin' — listo para Flashear o Verificar.");
             hasReadData = true;
-            lastReadFile = "dump.bin";
+            lastReadFile = "rom.bin";
 
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putString("bios_source", "Importado: " + fileName + " (" + sizeStr + ")");
-            editor.putString(KEY_LAST_READ_FILE, "dump.bin");
+            editor.putString(KEY_LAST_READ_FILE, "rom.bin");
             editor.apply();
         } catch (Exception e) {
             log("Error importando archivo: " + e.getMessage());

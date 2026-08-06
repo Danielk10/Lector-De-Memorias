@@ -34,7 +34,7 @@ public class MiniproExecutor {
 
     /**
      * Ejecuta minipro con los argumentos dados.
-     * @param args argumentos para minipro (ej: "-p", "TL866II+", "-r", "dump.bin")
+     * @param args argumentos para minipro (ej: "-p", "TL866II+", "-r", "rom.bin")
      * @param usbFd file descriptor del dispositivo USB, o -1 si no hay USB
      */
     public void executeCommand(String[] args, int usbFd) {
