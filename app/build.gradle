@@ -4,7 +4,7 @@ plugins {
 
 android {
 // Redirigir la carpeta build a /tmp
-    project.layout.buildDirectory.set(file("/tmp/calculo"))
+    project.layout.buildDirectory.set(file("/tmp/mini"))
     namespace 'com.diamon.mini'
     compileSdk {
         version = release(37) {
