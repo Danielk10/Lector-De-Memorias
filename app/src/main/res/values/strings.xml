@@ -14,7 +14,7 @@
     <string name="str_terminal_salida">Terminal — Salida</string>
     <string name="str_limpiar">Limpiar</string>
     <string name="str_detener">Detener</string>
-    <string name="str_hint_comando">Ej: minipro --version</string>
+    <string name="str_hint_comando">Ej: minipro --version o minipro -p TL866II+ -r rom.bin</string>
     <string name="str_ejecutar_instru">Ejecutar Comando</string>
     <string name="str_log_">$ log\n</string>
     <string name="str_preparando_depe">Preparando dependencias…</string>
