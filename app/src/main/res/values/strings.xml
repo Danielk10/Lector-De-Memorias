@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FlashProgrammer</string>
+    <string name="app_name">EepromFlasher</string>
     <string name="str_estado_usb_desc">Estado: USB desconectado</string>
     <string name="str_status_usb_connected">Estado: Conectado a %1$s</string>
     <string name="str_detectar_y_cone">Detectar y Conectar USB</string>
@@ -23,8 +23,8 @@
     <string name="str_cargando_archiv">Cargando archivo…</string>
     <string name="str_seleccionar_dir">Seleccionar Directorio</string>
     <string name="str_acerca_de">Acerca de</string>
-    <string name="str_acerca_de_titulo">Acerca de FlashProgrammer</string>
-    <string name="str_acerca_de_msg">FlashProgrammer v1.0.0\nBasado en minipro\n\nHerramienta para programar memorias EEPROM/Flash usando programadores TL866II+ y compatibles.\n\nDesarrollado por Diamon.</string>
+    <string name="str_acerca_de_titulo">Acerca de EepromFlasher</string>
+    <string name="str_acerca_de_msg">EepromFlasher v1.0.0\nBasado en minipro\n\nHerramienta para programar memorias EEPROM/Flash usando programadores TL866II+ y compatibles.\n\nDesarrollado por Diamon.</string>
     <string name="str_cancelar">Cancelar</string>
     <string name="str_cerrar">Cerrar</string>
     <string name="str_confirm_erase_title">Confirmar borrado</string>
