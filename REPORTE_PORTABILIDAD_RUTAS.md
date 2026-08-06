@@ -1,4 +1,4 @@
-# Reporte de Auditoría y Corrección: Rutas y Portabilidad de FlashProgrammer
+# Reporte de Auditoría y Corrección: Rutas y Portabilidad de EepromFlasher
 ESTADO: CORREGIDO (Última actualización: Agosto 2026)
 
 Este documento detalla los hallazgos críticos y las acciones correctivas aplicadas para garantizar la portabilidad de las herramientas nativas (`minipro`, `libusb`, etc.) en Android para el paquete `com.diamon.mini`.
