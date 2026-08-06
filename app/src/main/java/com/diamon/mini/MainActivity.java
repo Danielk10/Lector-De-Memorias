@@ -1,17 +1,17 @@
-package com.diamon.myapplication;
+package com.diamon.mini;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.diamon.myapplication.databinding.ActivityMainBinding;
+import com.diamon.mini.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'myapplication' library on application startup.
+    // Used to load the 'mini' library on application startup.
     static {
-        System.loadLibrary("myapplication");
+        System.loadLibrary("mini");
     }
 
     private ActivityMainBinding binding;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * A native method that is implemented by the 'myapplication' native library,
+     * A native method that is implemented by the 'mini' native library,
      * which is packaged with this application.
      */
     public native String stringFromJNI();

@@ -1,4 +1,4 @@
-package com.diamon.myapplication;
+package com.diamon.mini;
 
 import org.junit.Test;
 

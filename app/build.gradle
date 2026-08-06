@@ -5,7 +5,7 @@ plugins {
 android {
 // Redirigir la carpeta build a /tmp
     project.layout.buildDirectory.set(file("/tmp/calculo"))
-    namespace 'com.diamon.myapplication'
+    namespace 'com.diamon.mini'
     compileSdk {
         version = release(37) {
             minorApiLevel = 0
@@ -16,7 +16,7 @@ android {
     ndkVersion '30.0.14904198 rc1'
 
     defaultConfig {
-        applicationId "com.diamon.myapplication"
+        applicationId "com.diamon.mini"
         minSdk 23
         targetSdk 37
         versionCode 1

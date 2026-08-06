@@ -1,4 +1,4 @@
-package com.diamon.myapplication;
+package com.diamon.mini;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.diamon.myapplication", appContext.getPackageName());
+        assertEquals("com.diamon.mini", appContext.getPackageName());
     }
 }
