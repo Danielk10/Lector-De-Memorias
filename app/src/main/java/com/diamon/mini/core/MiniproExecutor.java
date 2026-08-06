@@ -120,7 +120,9 @@ public class MiniproExecutor {
                         new InputStreamReader(currentProcess.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        if (line.contains("Using overridden database file")) {
+                        if (line.contains("Using overridden database file")
+                                || line.contains("Share dir:")
+                                || line.contains("com.diamon.mini")) {
                             continue;
                         }
                         callback.log(line);
