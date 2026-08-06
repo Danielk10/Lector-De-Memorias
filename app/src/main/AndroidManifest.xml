@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-      <uses-feature
+    <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
 
@@ -24,25 +23,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FlashProgrammer">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-<intent-filter>
+            <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
-
-
-
-
         </activity>
+
+        <activity
+            android:name=".PolicyActivity"
+            android:exported="false"
+            android:label="@string/str_polticas_de_pri" />
+
+        <activity
+            android:name=".HexViewerActivity"
+            android:exported="false"
+            android:label="@string/str_visor_hexadecim" />
+
     </application>
 
 </manifest>

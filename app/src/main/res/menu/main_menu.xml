@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_hex_viewer"
+        android:title="@string/str_visor_hexadecim"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_select_dir"
+        android:title="@string/str_seleccionar_dir"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/str_acerca_de"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_policy"
+        android:title="@string/str_polticas_de_pri"
+        app:showAsAction="never" />
+
+</menu>
