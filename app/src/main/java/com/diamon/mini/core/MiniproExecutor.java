@@ -120,6 +120,9 @@ public class MiniproExecutor {
                         new InputStreamReader(currentProcess.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
+                        if (line.contains("Using overridden database file")) {
+                            continue;
+                        }
                         callback.log(line);
                     }
                 }
