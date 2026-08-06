@@ -6,6 +6,21 @@ Este documento explica cómo replicar en un entorno Linux local (x86_64 o cualqu
 
 En Android, no tenemos permisos root para que `libusb` acceda a `/dev/bus/usb/`. La app sortea este obstáculo usando el API de Android para pedir permisos, obteniendo un File Descriptor y pasándolo por una variable de entorno (`ANDROID_USB_FD`). 
 
+### 🧠 Análisis profundo del mecanismo original
+
+El binario original de minipro (y la mayoría de herramientas CLI nativas de Linux) utilizan la biblioteca estandar `libusb` para buscar y conectarse a dispositivos USB. En sistemas Linux convencionales, `libusb` escanea la ruta `/dev/bus/usb/` buscando dispositivos. El problema en Android es que esta ruta está fuertemente protegida y requiere acceso Root para ser leída directamente por un binario de C/C++.
+
+Para solucionar esto sin root, tu app delega la conexión a Android usando el USB Host API oficial (`UsbManager` en Java). Android solicita permiso al usuario mostrando un diálogo y, una vez aceptado, devuelve un File Descriptor (FD) sin procesar. Tu app captura este FD en `MainActivity`, lo pasa a través de JNI (`setUsbFd()`) y lo expone al entorno nativo de C como una variable de entorno: `ANDROID_USB_FD`.
+
+### 🛠️ Cómo funciona el parche de libusb
+
+El script `build_libusb_custom_mini.sh` inyecta un parche inteligente escrito en Python (`patch_libusb.py`) que modifica el código fuente de `libusb` (principalmente `core.c` y `descriptor.c`) antes de compilarlo. Esto es lo que hace el parche cuando detecta la variable `ANDROID_USB_FD`:
+
+1. **`libusb_init()`**: Intercepta la inicialización. En lugar de fallar intentando escanear buses a los que no tiene permiso, la función simplemente retorna éxito inmediato (`return 0;`) y evita usar la enumeración hardware.
+2. **`libusb_get_device_list()`**: En lugar de leer `/dev/bus/usb`, la biblioteca crea "mágicamente" una lista falsa con un único dispositivo (`usbi_alloc_device()`) y se lo entrega a minipro para engañarlo de que el programador está conectado.
+3. **`libusb_get_device_descriptor()`**: Cuando minipro intenta saber qué programador es (su VID, PID, etc), el parche lee los primeros 18 bytes del dispositivo leyendo directamente del File Descriptor de Android usando `pread(fd, buf, 18, 0)`.
+4. **`libusb_open()`**: Envuelve el File Descriptor de Android en una estructura interna de `libusb` usando la función oculta `libusb_wrap_sys_device(ctx, fd, ...)`. A partir de este momento, minipro envía todas sus transferencias directamente a través del FD de Android, creyendo que está hablando con el kernel de Linux de forma tradicional.
+
 Para replicar esto localmente:
 1. Se compila `libusb` **nativamente** con nuestro parche interceptor de Python (`patch_libusb.py`).
 2. Se compila `minipro` vinculándolo contra esa `libusb` parcheada.
