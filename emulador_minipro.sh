@@ -26,17 +26,10 @@ def run_patch():
                 lines.insert(i + 1, '#include <stdlib.h>\n#include <stdint.h>\n')
                 break
         for i, line in enumerate(lines):
-            if 'int API_EXPORTED libusb_init(' in line:
-                for j in range(i, i + 15):
-                    if '{' in lines[j]:
-                        lines[j+1:j+1] = [
-                            '\n\tchar *f3 = getenv("ANDROID_USB_FD");\n',
-                            '\tif (f3) {\n',
-                            '\t\tfprintf(stderr, "[LIBUSB-HACK] libusb_init interceptado\\n");\n',
-                            '\t\tif (ctx) *ctx = NULL;\n',
-                            '\t\treturn 0;\n',
-                            '\t}\n'
-                        ]
+            if 'r = usbi_backend.init(_ctx);' in line:
+                for j in range(i, i + 10):
+                    if 'if (r) {' in lines[j] or 'if (r)' in lines[j]:
+                        lines[j] = '\t\t\tif (r) { r = 0; /* HACK para Android: Ignorar fallo netlink */ }\n\t\t\tif (0)\n'
                         break
                 break
         for i, line in enumerate(lines):
@@ -45,14 +38,16 @@ def run_patch():
                     if 'ssize_t i, len' in lines[j]:
                         lines[j+1:j+1] = [
                             '\n\tchar *f1 = getenv("ANDROID_USB_FD");\n',
-                            '\tif (f1) {\n',
-                            '\t\tfprintf(stderr, "[LIBUSB-HACK] Creando dispositivo emulado en la lista\\n");\n',
-                            '\t\tret = calloc(2, sizeof(void*));\n',
-                            '\t\tstruct libusb_device *d = usbi_alloc_device(usbi_get_context(ctx), 0);\n',
-                            '\t\tret[0] = d; ret[1] = NULL; *list = ret;\n',
-                            '\t\tif (discdevs) discovered_devs_free(discdevs);\n',
-                            '\t\treturn 1;\n',
-                            '\t}\n'
+                            '\tif (!f1) {\n',
+                            '\t\t*list = calloc(1, sizeof(void*));\n',
+                            '\t\treturn 0;\n',
+                            '\t}\n',
+                            '\tfprintf(stderr, "[LIBUSB-HACK] Creando dispositivo emulado en la lista\\n");\n',
+                            '\tret = calloc(2, sizeof(void*));\n',
+                            '\tstruct libusb_device *d = usbi_alloc_device(usbi_get_context(ctx), 0);\n',
+                            '\tret[0] = d; ret[1] = NULL; *list = ret;\n',
+                            '\tif (discdevs) discovered_devs_free(discdevs);\n',
+                            '\treturn 1;\n'
                         ]
                         break
                 break
@@ -76,7 +71,7 @@ def run_patch():
         with open(desc_path, 'r') as f: lines = f.readlines()
         for i, line in enumerate(lines):
             if '#include <stdio.h>' in line or '#include <string.h>' in line:
-                lines.insert(i + 1, '#include <stdlib.h>\n#include <unistd.h>\n')
+                lines.insert(i + 1, '#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n')
                 break
         for i, line in enumerate(lines):
             if 'int API_EXPORTED libusb_get_device_descriptor(' in line:
@@ -114,6 +109,15 @@ def run_patch():
                         break
                 break
         with open(desc_path, 'w') as f: f.writelines(lines)
+
+    linux_usbfs_path = 'os/linux_usbfs.c'
+    if os.path.exists(linux_usbfs_path):
+        with open(linux_usbfs_path, 'r') as f: lines = f.readlines()
+        for i, line in enumerate(lines):
+            if 'assert(init_count != 0);' in line:
+                lines[i] = '\tif (init_count == 0) return;\n'
+        with open(linux_usbfs_path, 'w') as f: f.writelines(lines)
+run_patch()
 EOF
 
 python3 patch_libusb.py
@@ -139,7 +143,7 @@ cd "$HOME"
 python3 -c '
 desc = bytearray([
     18, 1, 0x00, 0x02, 0, 0, 0, 64, 
-    0xd8, 0x04, 0xe0, 0x00, 0x01, 0x00, 
+    0x66, 0xa4, 0x53, 0x0a, 0x01, 0x00, 
     1, 2, 0, 1
 ])
 with open("mock_usb.bin", "wb") as f:
