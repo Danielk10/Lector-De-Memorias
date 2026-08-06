@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ==========================================
 # Script para emular la conexión USB en local
-# usando el parche libusb de Lector De Memorias
+# usando el parche libusb de FlashProgrammer
 # ==========================================
 
 export NATIVE_PREFIX="$HOME/native_test_root"

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔌 Lector De Memorias
+# 🔌 FlashProgrammer
 
 ### Programador de Memorias EEPROM/Flash para Android
 
@@ -23,7 +23,7 @@
 
 ## 📋 Descripción
 
-**Lector De Memorias** es una aplicación Android que permite interactuar con programadores de memorias universales directamente desde tu dispositivo móvil, sin necesidad de PC. Utiliza el binario [minipro](https://gitlab.com/DavidGriffith/minipro) compilado nativamente para `arm64-v8a` con una versión parcheada de [libusb](https://github.com/libusb/libusb) que intercepta los file descriptors del USB Host API de Android.
+**FlashProgrammer** es una aplicación Android que permite interactuar con programadores de memorias universales directamente desde tu dispositivo móvil, sin necesidad de PC. Utiliza el binario [minipro](https://gitlab.com/DavidGriffith/minipro) compilado nativamente para `arm64-v8a` con una versión parcheada de [libusb](https://github.com/libusb/libusb) que intercepta los file descriptors del USB Host API de Android.
 
 ## ✨ Características
 
@@ -167,7 +167,7 @@ El FD se obtiene vía Android USB Host API (`UsbDeviceConnection.getFileDescript
 
 | Componente | Licencia |
 |---|---|
-| **Lector De Memorias** | [GNU GPLv3](LICENSE) |
+| **FlashProgrammer** | [GNU GPLv3](LICENSE) |
 | **minipro** | [GNU GPLv3](https://gitlab.com/DavidGriffith/minipro/-/blob/master/COPYING) |
 | **libusb** | [GNU LGPLv2.1](https://github.com/libusb/libusb/blob/master/COPYING) |
 | **usb-serial-for-android** | [MIT](https://github.com/mik3y/usb-serial-for-android/blob/master/LICENSE) |
