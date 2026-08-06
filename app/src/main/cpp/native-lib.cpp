@@ -1,6 +1,9 @@
 #include <jni.h>
 #include <string>
 #include <cstdlib>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <android/log.h>
 
 #define LOG_TAG "MiniNative"
@@ -32,4 +35,35 @@ Java_com_diamon_mini_MainActivity_clearUsbFd(
         jobject /* this */) {
     unsetenv("ANDROID_USB_FD");
     LOGI("ANDROID_USB_FD cleared");
+}
+
+extern "C" JNIEXPORT jint JNICALL
+Java_com_diamon_mini_core_MiniproExecutor_dupFdForChild(JNIEnv *env, jclass clazz, jint fd) {
+    if (fd < 0) {
+        LOGE("dupFdForChild: FD inválido (%d)", (int) fd);
+        return -1;
+    }
+
+    int newFd = dup((int) fd);
+    if (newFd < 0) {
+        LOGE("dupFdForChild: dup(%d) falló, errno=%d", (int) fd, errno);
+        return -1;
+    }
+
+    int flags = fcntl(newFd, F_GETFD);
+    if (flags >= 0 && (flags & FD_CLOEXEC)) {
+        fcntl(newFd, F_SETFD, flags & ~FD_CLOEXEC);
+        LOGI("dupFdForChild: O_CLOEXEC removido explícitamente del FD %d", newFd);
+    }
+
+    LOGI("dupFdForChild: FD %d -> %d (heredable)", (int) fd, newFd);
+    return (jint) newFd;
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_diamon_mini_core_MiniproExecutor_closeDupedFd(JNIEnv *env, jclass clazz, jint fd) {
+    if (fd >= 0) {
+        LOGI("closeDupedFd: cerrando FD %d", (int) fd);
+        close((int) fd);
+    }
 }
