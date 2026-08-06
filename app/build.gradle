@@ -3,6 +3,8 @@ plugins {
 }
 
 android {
+// Redirigir la carpeta build a /tmp
+    project.layout.buildDirectory.set(file("/tmp/calculo"))
     namespace 'com.diamon.myapplication'
     compileSdk {
         version = release(37) {
@@ -10,14 +12,21 @@ android {
         }
     }
 
+    buildToolsVersion '37.0.0'
+    ndkVersion '30.0.14904198 rc1'
+
     defaultConfig {
         applicationId "com.diamon.myapplication"
         minSdk 23
         targetSdk 37
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
     }
 
     buildTypes {
@@ -37,8 +46,17 @@ android {
             version '4.1.2'
         }
     }
+
+packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+        doNotStrip "**/*.so"
+    }
+
     buildFeatures {
         viewBinding true
+        resValues true
     }
 }
 
@@ -46,6 +64,7 @@ dependencies {
     implementation libs.appcompat
     implementation libs.constraintlayout
     implementation libs.material
+    implementation(libs.usb.serial.for1.android)
     testImplementation libs.junit
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.ext.junit
