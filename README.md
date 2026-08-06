@@ -183,7 +183,8 @@ El FD se obtiene vía Android USB Host API (`UsbDeviceConnection.getFileDescript
 
 <div align="center">
 
-**Desarrollado por [Diamon](https://github.com/Danielk10)**
+**Desarrollado por Daniel Diamon** ([@Danielk10](https://github.com/Danielk10))
+*Tinaquillo, Cojedes, Venezuela*
 
 *Si este proyecto te resulta útil, ¡dale una ⭐!*
 
