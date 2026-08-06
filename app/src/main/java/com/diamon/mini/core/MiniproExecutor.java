@@ -54,9 +54,32 @@ public class MiniproExecutor {
                     return;
                 }
 
+                File shareDir = new File(filesDir, "usr/share/minipro");
+
                 // Construir comando
                 List<String> command = new ArrayList<>();
                 command.add(miniproBin.getAbsolutePath());
+
+                // Asegurar paso de base de datos XML de manera dinámica mediante argumentos
+                File infoicXml = new File(shareDir, "infoic.xml");
+                File logicicXml = new File(shareDir, "logicic.xml");
+
+                boolean hasInfoic = false;
+                boolean hasLogicic = false;
+                for (String arg : args) {
+                    if ("--infoic".equals(arg)) hasInfoic = true;
+                    if ("--logicic".equals(arg)) hasLogicic = true;
+                }
+
+                if (!hasInfoic && infoicXml.exists()) {
+                    command.add("--infoic");
+                    command.add(infoicXml.getAbsolutePath());
+                }
+                if (!hasLogicic && logicicXml.exists()) {
+                    command.add("--logicic");
+                    command.add(logicicXml.getAbsolutePath());
+                }
+
                 command.addAll(Arrays.asList(args));
 
                 ProcessBuilder pb = new ProcessBuilder(command);
@@ -85,7 +108,6 @@ public class MiniproExecutor {
                 }
 
                 // Configurar ruta de datos de minipro
-                File shareDir = new File(filesDir, "usr/share/minipro");
                 if (shareDir.exists()) {
                     env.put("MINIPRO_DATA", shareDir.getAbsolutePath());
                 }
