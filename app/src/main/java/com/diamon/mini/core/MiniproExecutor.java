@@ -59,8 +59,6 @@ public class MiniproExecutor {
                 command.add(miniproBin.getAbsolutePath());
                 command.addAll(Arrays.asList(args));
 
-                callback.log("$ " + String.join(" ", command));
-
                 ProcessBuilder pb = new ProcessBuilder(command);
                 pb.directory(filesDir);
                 pb.redirectErrorStream(true);
@@ -106,12 +104,6 @@ public class MiniproExecutor {
 
                 int exitCode = currentProcess.waitFor();
                 currentProcess = null;
-
-                if (exitCode == 0) {
-                    callback.log("[OK] Comando completado exitosamente (código: 0)");
-                } else {
-                    callback.log("[ERROR] Comando finalizó con código: " + exitCode);
-                }
 
                 callback.onProcessFinished(exitCode, args);
 

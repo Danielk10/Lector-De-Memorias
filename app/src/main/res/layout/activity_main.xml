@@ -80,7 +80,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:background="#1B1E2B"
+                android:background="@drawable/bg_spinner"
                 android:popupBackground="#1B1E2B" />
         </LinearLayout>
 

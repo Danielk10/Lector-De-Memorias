@@ -175,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup device spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, SUPPORTED_DEVICES);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.layout.custom_spinner_item, SUPPORTED_DEVICES);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         spinnerDevices.setAdapter(adapter);
 
         // Initialize USB controller
@@ -426,7 +426,6 @@ public class MainActivity extends AppCompatActivity {
                 logBuffer.setLength(0);
             }
             tvLog.setText("");
-            log(getString(R.string.str_log_terminal_reset));
         });
 
         btnAbort.setOnClickListener(v -> miniproExecutor.abort());
@@ -467,8 +466,7 @@ public class MainActivity extends AppCompatActivity {
     // ========== Helpers ==========
 
     private void log(String msg) {
-        String timestamp = new SimpleDateFormat("HH:mm:ss", Locale.US).format(new Date());
-        String line = "[" + timestamp + "] " + msg + "\n";
+        String line = msg + "\n";
         synchronized (logBuffer) {
             logBuffer.append(line);
             if (!isLogUpdatePending) {
@@ -528,13 +526,25 @@ public class MainActivity extends AppCompatActivity {
         hasReadData = false;
         lastReadFile = "rom.bin";
         File dumpFile = new File(getFilesDir(), "rom.bin");
-        if (dumpFile.exists()) dumpFile.delete();
+        boolean exists = dumpFile.exists();
+        boolean deleted = false;
+        if (exists) {
+            deleted = dumpFile.delete();
+        }
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .remove("bios_source")
                 .remove(KEY_LAST_READ_FILE)
                 .apply();
         if (notify) {
-            log("Datos de ROM limpiados.");
+            if (exists) {
+                if (deleted) {
+                    log("Archivo de datos (rom.bin) eliminado.");
+                } else {
+                    log("Error al intentar eliminar el archivo de datos.");
+                }
+            } else {
+                log("No se eliminó ningún archivo porque no había datos.");
+            }
         }
     }
 
