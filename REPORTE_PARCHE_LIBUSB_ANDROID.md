@@ -32,15 +32,18 @@ Gracias a que la inicialización fue exitosa, si ejecutamos `minipro -V` (o cual
 ### C. El Comportamiento "Con Dispositivo" (Inyección de FD)
 Cuando el usuario concede permisos USB en la interfaz gráfica de Android, la capa Java extrae el File Descriptor (FD) y lo pasa por entorno mediante la variable `ANDROID_USB_FD`.
 
-El parche intercepta dos puntos vitales:
+El parche intercepta tres puntos vitales:
 1. **Falsificación de la Lista de Dispositivos (`libusb_get_device_list`):**
    Si la variable `ANDROID_USB_FD` existe, forzamos a que `libusb` devuelva una lista que contiene un solo "dispositivo emulado" usando la función `usbi_alloc_device()`. Como el contexto de libusb es válido (gracias al parche A), esta función reserva memoria sin provocar Segfault.
 
-2. **Envoltura del Dispositivo (`libusb_open`):**
+2. **Lectura y Caché del Descriptor (`libusb_get_device_descriptor`):**
+   Android expone el dispositivo USB como un stream (character device), por lo cual las funciones de búsqueda y lectura como `pread(..., 0)` fallan al intentar mover el cursor (`Illegal Seek`). El parche intercepta la solicitud del descriptor, hace una lectura secuencial `read(fd, buf, 18)` directa del kernel y la **almacena en una caché estática en memoria**. Las subsecuentes llamadas hechas por `minipro` se responden instantáneamente desde esta caché para no agotar el stream.
+
+3. **Envoltura del Dispositivo (`libusb_open`):**
    Cuando `minipro` intenta abrir el dispositivo, interceptamos la llamada y en su lugar usamos la función oficial de libusb para sistemas embebidos: `libusb_wrap_sys_device(ctx, fd, dev_handle)`. 
    Esta función toma el FD nativo que Android nos regaló (pasado en `ANDROID_USB_FD`) y se lo entrega directamente al contexto de `libusb`.
 
-**Resultado:** `minipro` ahora tiene acceso directo e ininterrumpido al hardware USB, saltándose por completo las restricciones de escaneo de SELinux, sin violar la integridad de la memoria interna de C.
+**Resultado:** `minipro` ahora tiene acceso directo e ininterrumpido al hardware USB, saltándose por completo las restricciones de escaneo de SELinux, sin violar la integridad de la memoria interna de C y sin errores de lectura secuencial.
 
 ### D. Cierre Limpio del Sistema (`os/linux_usbfs.c`)
 Durante el apagado del programa (`libusb_exit`), `libusb` intentaba liberar recursos del bus de sistema que en Android nunca llegó a abrir, disparando el error `assert(init_count != 0);` y crasheando el proceso al finalizar.
