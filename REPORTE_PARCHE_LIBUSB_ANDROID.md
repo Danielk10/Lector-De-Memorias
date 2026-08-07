@@ -1,4 +1,4 @@
-# Reporte Técnico: Parche Nivel Dios para Libusb en Android (Portabilidad Nativa)
+# Reporte Técnico: Parche para Libusb en Android (Portabilidad Nativa)
 
 Este documento explica de manera detallada y técnica la arquitectura del parche aplicado a `libusb-1.0` en los scripts de compilación de este proyecto. Este parche es el responsable de que herramientas de línea de comandos diseñadas originalmente para Linux de escritorio (como `minipro` y `flashrom`) puedan ejecutarse de manera nativa y directa dentro de Android sin requerir acceso root, utilizando el File Descriptor (FD) proveído por la API Java de Android.
 
