@@ -21,6 +21,11 @@ public class MiniproExecutor {
     // JNI: cierra el FD duplicado tras finalizar minipro
     private static native void closeDupedFd(int fd);
 
+    // Native process control to bypass ProcessBuilder FD closure
+    private static native int[] startNativeProcess(String executable, String[] args, int usbFd, String ldLibraryPath, String miniproData);
+    private static native int waitForNativeProcess(int pid);
+    private static native void terminateNativeProcess(int pid);
+
     static {
         System.loadLibrary("mini");
     }
@@ -34,7 +39,7 @@ public class MiniproExecutor {
     private final Context context;
     private final Callback callback;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private volatile Process currentProcess;
+    private volatile int currentPid = -1;
 
     public MiniproExecutor(Context context, Callback callback) {
         this.context = context;
@@ -91,53 +96,46 @@ public class MiniproExecutor {
 
                 command.addAll(Arrays.asList(args));
 
-                ProcessBuilder pb = new ProcessBuilder(command);
-                pb.directory(filesDir);
-                pb.redirectErrorStream(true);
+                // Construct command line arguments (argv array without the executable itself)
+                String[] commandArgs = command.subList(1, command.size()).toArray(new String[0]);
 
                 int inheritableFd = -1;
+                int childPid = -1;
+                int readFd = -1;
                 try {
-                    // Configurar entorno
-                    Map<String, String> env = pb.environment();
                     String ldPath = nativeLibDir.getAbsolutePath();
                     File usrLib = new File(filesDir, "usr/lib");
                     if (usrLib.exists()) {
                         ldPath = nativeLibDir.getAbsolutePath() + ":" + usrLib.getAbsolutePath();
                     }
-                    env.put("LD_LIBRARY_PATH", ldPath);
-                    env.put("HOME", filesDir.getAbsolutePath());
-                    env.put("TMPDIR", context.getCacheDir().getAbsolutePath());
 
-                    String path = new File(filesDir, "usr/bin").getAbsolutePath()
-                            + ":" + nativeLibDir.getAbsolutePath()
-                            + ":" + System.getenv("PATH");
-                    env.put("PATH", path);
+                    String miniproDataPath = shareDir.exists() ? shareDir.getAbsolutePath() : "";
 
                     // Configurar FD USB para libusb parcheada
                     if (usbFd >= 0) {
                         inheritableFd = dupFdForChild(usbFd);
-                        if (inheritableFd >= 0) {
-                            env.put("ANDROID_USB_FD", String.valueOf(inheritableFd));
-                            Log.i(TAG, "USB FD duplicado: " + usbFd + " -> " + inheritableFd + " (heredable)");
-                        } else {
-                            env.put("ANDROID_USB_FD", String.valueOf(usbFd));
-                            Log.w(TAG, "dup() falló, usando FD original: " + usbFd);
-                        }
-                    } else {
-                        env.remove("ANDROID_USB_FD");
                     }
 
-                    // Configurar ruta de datos de minipro
-                    if (shareDir.exists()) {
-                        env.put("MINIPRO_DATA", shareDir.getAbsolutePath());
-                    }
+                    int fdToPass = inheritableFd >= 0 ? inheritableFd : usbFd;
 
                     callback.onProcessStarted();
-                    currentProcess = pb.start();
 
-                    // Leer salida línea por línea
-                    try (BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(currentProcess.getInputStream()))) {
+                    // Start process natively to prevent ProcessBuilder from closing the file descriptor
+                    int[] processInfo = startNativeProcess(miniproBin.getAbsolutePath(), commandArgs, fdToPass, ldPath, miniproDataPath);
+                    if (processInfo == null || processInfo[0] <= 0) {
+                        callback.log("[ERROR] Error al iniciar el proceso nativo.");
+                        callback.onProcessFinished(-1, args);
+                        return;
+                    }
+
+                    childPid = processInfo[0];
+                    readFd = processInfo[1];
+                    currentPid = childPid; // Store current pid to allow aborting
+
+                    // Leer la salida del pipe nativo usando ParcelFileDescriptor
+                    try (android.os.ParcelFileDescriptor pfd = android.os.ParcelFileDescriptor.adoptFd(readFd);
+                         java.io.FileInputStream fis = new java.io.FileInputStream(pfd.getFileDescriptor());
+                         BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             if (line.contains("Using overridden database file")
@@ -149,8 +147,8 @@ public class MiniproExecutor {
                         }
                     }
 
-                    int exitCode = currentProcess.waitFor();
-                    currentProcess = null;
+                    int exitCode = waitForNativeProcess(childPid);
+                    currentPid = -1;
 
                     callback.onProcessFinished(exitCode, args);
                 } finally {
@@ -164,7 +162,7 @@ public class MiniproExecutor {
                 Log.e(TAG, "Error ejecutando minipro: " + e.getMessage(), e);
                 callback.log("[EXCEPCIÓN] " + e.getMessage());
                 callback.onProcessFinished(-1, args);
-                currentProcess = null;
+                currentPid = -1;
             }
         });
     }
@@ -173,21 +171,21 @@ public class MiniproExecutor {
      * Aborta el proceso actual de minipro si está en ejecución.
      */
     public void abort() {
-        Process p = currentProcess;
-        if (p != null) {
+        int pid = currentPid;
+        if (pid > 0) {
             try {
-                p.destroy();
-                callback.log("[ABORT] Proceso minipro detenido por el usuario.");
+                terminateNativeProcess(pid);
+                callback.log("[ABORT] Proceso nativo minipro detenido por el usuario.");
             } catch (Exception e) {
-                callback.log("[ERROR] No se pudo detener el proceso: " + e.getMessage());
+                callback.log("[ERROR] No se pudo detener el proceso nativo: " + e.getMessage());
             }
-            currentProcess = null;
+            currentPid = -1;
         } else {
             callback.log("No hay proceso activo para detener.");
         }
     }
 
     public boolean isRunning() {
-        return currentProcess != null;
+        return currentPid > 0;
     }
 }

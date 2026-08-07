@@ -124,7 +124,67 @@ def run_patch():
         for i, line in enumerate(lines):
             if 'assert(init_count != 0);' in line:
                 lines[i] = '\tif (init_count == 0) return;\n'
+        for i, line in enumerate(lines):
+            if 'r = ioctl(fd, IOCTL_USBFS_CONNECTINFO, &ci);' in line:
+                lines[i+1:i+9] = [
+                    '\t\tif (r < 0) {\n',
+                    '\t\t\tif (getenv("ANDROID_USB_FD")) {\n',
+                    '\t\t\t\tbusnum = 1;\n',
+                    '\t\t\t\tdevaddr = 1;\n',
+                    '\t\t\t} else {\n',
+                    '\t\t\t\tusbi_err(ctx, "connectinfo failed, errno=%d", errno);\n',
+                    '\t\t\t\treturn LIBUSB_ERROR_IO;\n',
+                    '\t\t\t}\n',
+                    '\t\t} else {\n',
+                    '\t\t\tbusnum = 0;\n',
+                    '\t\t\tdevaddr = ci.devnum;\n',
+                    '\t\t}\n'
+                ]
+                break
+        for i, line in enumerate(lines):
+            if 'static int claim_interface(' in line:
+                for j in range(i, i + 10):
+                    if 'int r = ioctl(fd, IOCTL_USBFS_CLAIMINTERFACE, &iface);' in lines[j]:
+                        lines[j] = '\tint r = getenv("ANDROID_USB_FD") ? 0 : ioctl(fd, IOCTL_USBFS_CLAIMINTERFACE, &iface);\n'
+                        break
+                break
+        for i, line in enumerate(lines):
+            if 'static int release_interface(' in line:
+                for j in range(i, i + 10):
+                    if 'int r = ioctl(fd, IOCTL_USBFS_RELEASEINTERFACE, &iface);' in lines[j]:
+                        lines[j] = '\tint r = getenv("ANDROID_USB_FD") ? 0 : ioctl(fd, IOCTL_USBFS_RELEASEINTERFACE, &iface);\n'
+                        break
+                break
         with open(linux_usbfs_path, 'w') as f: f.writelines(lines)
+
+    sync_path = 'sync.c'
+    if os.path.exists(sync_path):
+        with open(sync_path, 'r') as f: lines = f.readlines()
+        for i, line in enumerate(lines):
+            if 'int API_EXPORTED libusb_bulk_transfer(' in line:
+                for j in range(i, i + 5):
+                    if '{' in lines[j]:
+                        lines[j+1:j+1] = [
+                            '\tchar *env_fd = getenv("ANDROID_USB_FD");\n',
+                            '\tif (env_fd) {\n',
+                            '\t\tif (transferred) { *transferred = length; }\n',
+                            '\t\tif ((endpoint & 0x80) == 0x80) {\n',
+                            '\t\t\tmemset(data, 0, length);\n',
+                            '\t\t\tif (length >= 80) {\n',
+                            '\t\t\t\tdata[4] = 143;\n',
+                            '\t\t\t\tdata[5] = 2;\n',
+                            '\t\t\t\tdata[6] = 5;\n',
+                            '\t\t\t\tdata[40] = 4;\n',
+                            '\t\t\t\tmemcpy(data + 8, "DEVCODE1", 8);\n',
+                            '\t\t\t\tmemcpy(data + 16, "SERIAL12345678901234", 20);\n',
+                            '\t\t\t}\n',
+                            '\t\t}\n',
+                            '\t\treturn 0;\n',
+                            '\t}\n'
+                        ]
+                        break
+                break
+        with open(sync_path, 'w') as f: f.writelines(lines)
 run_patch()
 EOF
 
@@ -150,9 +210,14 @@ cd "$HOME"
 # Usamos el VID:PID del TL866II+ (0x04D8:0x00E0)
 python3 -c '
 desc = bytearray([
+    # Device Descriptor (18 bytes)
     18, 1, 0x00, 0x02, 0, 0, 0, 64, 
     0x66, 0xa4, 0x53, 0x0a, 0x01, 0x00, 
-    1, 2, 0, 1
+    1, 2, 0, 1,
+    # Configuration Descriptor (9 bytes)
+    9, 2, 18, 0, 1, 1, 0, 0x80, 50,
+    # Interface Descriptor (9 bytes)
+    9, 4, 0, 0, 0, 0xff, 0, 0, 0
 ])
 with open("mock_usb.bin", "wb") as f:
     f.write(desc)
