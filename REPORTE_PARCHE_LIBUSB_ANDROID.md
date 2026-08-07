@@ -37,7 +37,7 @@ El parche intercepta tres puntos vitales:
    Si la variable `ANDROID_USB_FD` existe, forzamos a que `libusb` devuelva una lista que contiene un solo "dispositivo emulado" usando la función `usbi_alloc_device()`. Como el contexto de libusb es válido (gracias al parche A), esta función reserva memoria sin provocar Segfault.
 
 2. **Lectura y Caché del Descriptor (`libusb_get_device_descriptor`):**
-   Android expone el dispositivo USB como un stream (character device), por lo cual las funciones de búsqueda y lectura como `pread(..., 0)` fallan al intentar mover el cursor (`Illegal Seek`). El parche intercepta la solicitud del descriptor, hace una lectura secuencial `read(fd, buf, 18)` directa del kernel y la **almacena en una caché estática en memoria**. Las subsecuentes llamadas hechas por `minipro` se responden instantáneamente desde esta caché para no agotar el stream.
+   Android expone el dispositivo USB como un stream (character device). Si el puntero de lectura del FD ya había sido avanzado por llamadas previas, la lectura secuencial del descriptor fallaba. Para solucionarlo, el parche realiza una transferencia de control atómica directamente al kernel a través de `ioctl(fd, USBDEVFS_CONTROL, &ctrl)` (código de ioctl `0xC0185500`). El descriptor de 18 bytes obtenido se **almacena en una caché estática en memoria** para responder instantáneamente a solicitudes subsecuentes sin agotar el stream ni depender del estado del puntero de lectura.
 
 3. **Envoltura del Dispositivo (`libusb_open`):**
    Cuando `minipro` intenta abrir el dispositivo, interceptamos la llamada y en su lugar usamos la función oficial de libusb para sistemas embebidos: `libusb_wrap_sys_device(ctx, fd, dev_handle)`. 
@@ -52,6 +52,11 @@ El parche soluciona esto agregando una validación temprana:
 if (init_count == 0) return;
 ```
 Permitiendo que la aplicación nativa se cierre con código `0` de manera limpia.
+
+## 4. Bypass de Cierre de File Descriptor en Android 10+ (Exec / Fork JNI)
+A partir de Android 10 (API 29), las llamadas del sistema a través de la API estándar de Java (`ProcessBuilder` y `Runtime.exec`) realizan una limpieza interna en la que cierran de forma sistemática todos los descriptores de archivo (FD) abiertos mayores a 2 en el proceso hijo antes de llamar a `execve`. Esto invalidaba el FD inyectado para la comunicación USB sin Root (`ANDROID_USB_FD`).
+
+Para solucionarlo, la ejecución se realiza de manera nativa en C++ a través de llamadas JNI. El proceso se bifurca (`fork()`) y se ejecuta (`execv()`) en el cargador nativo preservando el FD de comunicación USB libre de la interferencia de Java. El texto de salida de terminal se redirige a través de un `pipe` POSIX en C++ y se lee en Java en tiempo real utilizando `ParcelFileDescriptor.adoptFd()`.
 
 ## Resumen de Estabilidad
 El parche actual es la solución definitiva para correr binarios C/C++ que dependan de libusb en Android no-root. Garantiza que la capa JNI de Java se comunique limpiamente con el hardware sin requerir que las librerías nativas o el programa final (`minipro`) sean reescritos masivamente.
