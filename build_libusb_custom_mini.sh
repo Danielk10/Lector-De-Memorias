@@ -92,7 +92,7 @@ def run_patch():
         with open(desc_path, 'r') as f: lines = f.readlines()
         for i, line in enumerate(lines):
             if '#include <stdio.h>' in line or '#include <string.h>' in line:
-                lines.insert(i + 1, '#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <errno.h>\n#include <string.h>\n')
+                lines.insert(i + 1, '#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <errno.h>\n#include <string.h>\n#include <sys/ioctl.h>\n#include <linux/usbdevice_fs.h>\n')
                 break
 
         for i, line in enumerate(lines):
@@ -107,13 +107,21 @@ def run_patch():
                             '\t\tint fd = atoi(f_fd);\n',
                             '\t\tunsigned char buf[18];\n',
                             '\t\tif (!has_cached_desc) {\n',
-                            '\t\t\tfprintf(stderr, "[LIBUSB-HACK] Leyendo Descriptor del FD %d... ", fd);\n',
-                            '\t\t\tssize_t res = read(fd, buf, 18);\n',
+                            '\t\t\tfprintf(stderr, "[LIBUSB-HACK] Obteniendo Descriptor por ioctl (FD %d)... ", fd);\n',
+                            '\t\t\tstruct usbdevfs_ctrltransfer ctrl;\n',
+                            '\t\t\tctrl.bRequestType = 0x80;\n',
+                            '\t\t\tctrl.bRequest = 0x06;\n',
+                            '\t\t\tctrl.wValue = 0x0100;\n',
+                            '\t\t\tctrl.wIndex = 0;\n',
+                            '\t\t\tctrl.wLength = 18;\n',
+                            '\t\t\tctrl.timeout = 1000;\n',
+                            '\t\t\tctrl.data = buf;\n',
+                            '\t\t\tint res = ioctl(fd, 0xC0185500, &ctrl); // USBDEVFS_CONTROL\n',
                             '\t\t\tif (res == 18) {\n',
                             '\t\t\t\tmemcpy(cached_desc, buf, 18);\n',
                             '\t\t\t\thas_cached_desc = 1;\n',
                             '\t\t\t} else {\n',
-                            '\t\t\t\tfprintf(stderr, "FALLO! (res=%ld, errno=%d: %s)\\n", (long)res, errno, strerror(errno));\n',
+                            '\t\t\t\tfprintf(stderr, "FALLO IOCTL! (res=%d, errno=%d: %s)\\n", res, errno, strerror(errno));\n',
                             '\t\t\t\treturn -1;\n',
                             '\t\t\t}\n',
                             '\t\t}\n',
