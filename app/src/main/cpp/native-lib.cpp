@@ -90,6 +90,7 @@ Java_com_diamon_mini_core_MiniproExecutor_startNativeProcess(
     int argc = env->GetArrayLength(jArgs);
     std::vector<char*> argv;
     std::vector<const char*> stringsToRelease;
+    argv.push_back(const_cast<char*>(execPath)); // argv[0] debe ser el nombre del ejecutable
     for (int i = 0; i < argc; i++) {
         jstring argStr = (jstring) env->GetObjectArrayElement(jArgs, i);
         const char *arg = env->GetStringUTFChars(argStr, nullptr);
