@@ -32,6 +32,7 @@ public class UsbController {
     // Mapa de VID:PID -> nombre de dispositivo para auto-detección
     public static final Map<String, String> USB_AUTO_MAP = new HashMap<String, String>() {{
         put("04d8:00e0", "TL866II+");
+        put("a466:0a53", "TL866II+");
         put("04d8:00de", "TL866A");
         put("04d8:00df", "TL866CS");
         put("1a86:5523", "CH341A");

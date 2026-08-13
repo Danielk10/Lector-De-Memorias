@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinnerDevices;
     private Button btnConnect, btnProbe, btnRead, btnWrite, btnImport, btnExport;
     private Button btnRunCustomCommand, btnClearLogs, btnQuickClear, btnEraseChip, btnAbort, btnVerify;
-    private EditText etCustomCommand;
+    private EditText etCustomCommand, etChipModel;
 
     // Log buffering
     private final StringBuilder logBuffer = new StringBuilder();
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         btnClearLogs = findViewById(R.id.btnClearLogs);
         btnAbort = findViewById(R.id.btnAbort);
         etCustomCommand = findViewById(R.id.etCustomCommand);
+        etChipModel = findViewById(R.id.etChipModel);
 
         // Setup device spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -352,23 +353,23 @@ public class MainActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(v -> usbController.searchAndRequestDevice());
 
         btnProbe.setOnClickListener(v -> {
-            String device = getSelectedDevice();
-            executeMinipro("-p", device);
+            String chip = etChipModel.getText().toString().trim();
+            executeMinipro("-p", chip);
         });
 
         btnVerify.setOnClickListener(v -> {
-            String device = getSelectedDevice();
-            executeMinipro("-p", device, "-m", "rom.bin");
+            String chip = etChipModel.getText().toString().trim();
+            executeMinipro("-p", chip, "-m", "rom.bin");
         });
 
         btnRead.setOnClickListener(v -> {
-            String device = getSelectedDevice();
-            executeMinipro("-p", device, "-r", "rom.bin");
+            String chip = etChipModel.getText().toString().trim();
+            executeMinipro("-p", chip, "-r", "rom.bin");
         });
 
         btnWrite.setOnClickListener(v -> {
-            String device = getSelectedDevice();
-            executeMinipro("-p", device, "-w", "rom.bin");
+            String chip = etChipModel.getText().toString().trim();
+            executeMinipro("-p", chip, "-w", "rom.bin");
         });
 
         btnImport.setOnClickListener(v -> {
@@ -402,8 +403,8 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle(R.string.str_confirm_erase_title)
                     .setMessage(R.string.str_confirm_erase_msg)
                     .setPositiveButton(R.string.str_yes_erase, (dialog, which) -> {
-                        String device = getSelectedDevice();
-                        executeMinipro("-p", device, "-E");
+                        String chip = etChipModel.getText().toString().trim();
+                        executeMinipro("-p", chip, "-E");
                     })
                     .setNegativeButton(R.string.str_cancelar, null)
                     .show();

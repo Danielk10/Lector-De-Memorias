@@ -58,6 +58,8 @@
     <string name="str__"> | </string>
     <string name="str_str">................</string>
     <string name="str_seleccionar_dispositivo">Seleccionar dispositivo:</string>
+    <string name="str_seleccionar_chip">Modelo de Chip:</string>
+    <string name="str_hint_chip">Ej: AT24C02C o W25Q80BV</string>
     <string name="str_copiado">Texto copiado al portapapeles</string>
     <string name="str_log_update_detected">Actualización detectada (v%1$d → v%2$d).</string>
     <string name="str_log_verifying_resources">Verificando recursos tras actualización…</string>
