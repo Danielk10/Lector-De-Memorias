@@ -19,8 +19,8 @@ android {
         applicationId "com.diamon.mini"
         minSdk 23
         targetSdk 37
-        versionCode 15
-        versionName "1.0.0-pre.15"
+        versionCode 16
+        versionName "1.0.0-pre.16"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
