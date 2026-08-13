@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean hasReadData = false;
     private volatile String lastReadFile = "rom.bin";
+    private final List<String> currentOutputLines = new ArrayList<>();
 
     private static final String[] SUPPORTED_DEVICES = {
             "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76"
@@ -247,10 +248,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void log(String message) {
                 MainActivity.this.log(message);
+                synchronized (currentOutputLines) {
+                    currentOutputLines.add(message);
+                }
             }
 
             @Override
             public void onProcessStarted() {
+                synchronized (currentOutputLines) {
+                    currentOutputLines.clear();
+                }
                 runOnUiThread(() -> {
                     if (btnAbort != null) btnAbort.setVisibility(View.VISIBLE);
                 });
@@ -272,6 +279,42 @@ public class MainActivity extends AppCompatActivity {
                             editor.putString(KEY_LAST_READ_FILE, lastReadFile);
                             editor.apply();
                             break;
+                        }
+                    }
+
+                    // Check if it was an autodetect operation (-a)
+                    boolean isAutodetect = false;
+                    for (String arg : args) {
+                        if ("-a".equals(arg)) {
+                            isAutodetect = true;
+                            break;
+                        }
+                    }
+                    if (isAutodetect) {
+                        String foundChip = null;
+                        boolean foundAutodetectLine = false;
+                        synchronized (currentOutputLines) {
+                            for (String line : currentOutputLines) {
+                                if (line.contains("Autodetecting device")) {
+                                    foundAutodetectLine = true;
+                                    continue;
+                                }
+                                if (foundAutodetectLine) {
+                                    String trimmed = line.trim();
+                                    if (!trimmed.isEmpty() && !trimmed.contains("device(s) found") && !trimmed.contains("Error")) {
+                                        int atIdx = trimmed.indexOf('@');
+                                        foundChip = atIdx > 0 ? trimmed.substring(0, atIdx) : trimmed;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (foundChip != null) {
+                            final String chipToSet = foundChip;
+                            runOnUiThread(() -> {
+                                etChipModel.setText(chipToSet);
+                                MainActivity.this.log("[AUTO] Modelo de chip autodetectado y configurado: " + chipToSet);
+                            });
                         }
                     }
                 }
@@ -353,8 +396,7 @@ public class MainActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(v -> usbController.searchAndRequestDevice());
 
         btnProbe.setOnClickListener(v -> {
-            String chip = etChipModel.getText().toString().trim();
-            executeMinipro("-p", chip);
+            executeMinipro("-a", "8");
         });
 
         btnVerify.setOnClickListener(v -> {
