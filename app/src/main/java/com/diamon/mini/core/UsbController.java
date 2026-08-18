@@ -68,7 +68,7 @@ public class UsbController {
                             connectToDevice(device);
                         }
                     } else {
-                        callback.log(activity.getString(R.string.str_error) + ": Permiso USB denegado.");
+                        callback.log(activity.getString(R.string.str_usb_permission_denied));
                     }
                 }
             }
@@ -107,7 +107,7 @@ public class UsbController {
     public void searchAndRequestDevice() {
         Map<String, UsbDevice> devices = usbManager.getDeviceList();
         if (devices == null || devices.isEmpty()) {
-            callback.log(activity.getString(R.string.str_error) + ": No se detectó ningún dispositivo USB conectado.");
+            callback.log(activity.getString(R.string.str_usb_no_device_detected));
             return;
         }
 
@@ -118,7 +118,7 @@ public class UsbController {
             String key = String.format(Locale.US, "%04x:%04x", device.getVendorId(), device.getProductId());
             if (USB_AUTO_MAP.containsKey(key)) {
                 String autoName = USB_AUTO_MAP.get(key);
-                callback.log("Detección automática: " + key + " reconocido como " + autoName);
+                callback.log(activity.getString(R.string.str_usb_auto_detected, key, autoName));
                 requestUsbPermission(device);
                 return;
             }
@@ -132,8 +132,7 @@ public class UsbController {
             }
         });
 
-        callback.log("[AVISO] Dispositivo no reconocido automáticamente en la base de datos.");
-        callback.log("Puedes intentar enlazarlo manualmente.");
+        callback.log(activity.getString(R.string.str_usb_not_recognized));
 
         if (candidates.size() == 1) {
             requestUsbPermission(candidates.get(0));
@@ -154,7 +153,7 @@ public class UsbController {
 
     public void requestUsbPermission(UsbDevice device) {
         String deviceName = device.getProductName() == null ? activity.getString(R.string.str_usb_device) : device.getProductName();
-        callback.log("Dispositivo detectado: " + deviceName + " | Solicitando permiso...");
+        callback.log(activity.getString(R.string.str_usb_device_detected, deviceName));
         callback.log("VID:PID => "
                 + String.format(Locale.US, "%04x:%04x", device.getVendorId(), device.getProductId()));
 

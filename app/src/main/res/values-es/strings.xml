@@ -30,6 +30,7 @@
     <string name="str_cerrar">Cerrar</string>
     <string name="str_close">Cerrar</string>
     <string name="str_guardar">Guardar</string>
+    <string name="str_list">Listar</string>
     <string name="str_confirm_erase_title">Confirmar borrado</string>
     <string name="str_confirm_erase_msg">¿Estás seguro de que deseas BORRAR completamente todo el chip? Todos los datos se perderán (se llenarán con 0xFF). Esta acción es irreversible.</string>
     <string name="str_yes_erase">Sí, borrar</string>
@@ -89,6 +90,47 @@
     <string name="str_export_downloads">Exportar a Descargas</string>
     <string name="str_export_downloads_success">Dump exportado a la carpeta Descargas/EEPROM Flasher con éxito.</string>
     <string name="str_export_downloads_error">Error al exportar a la carpeta Descargas.</string>
+
+    <!-- Strings Localizados Adicionales -->
+    <string name="str_app_started">--- Aplicación Iniciada ---</string>
+    <string name="str_system_ready">Sistema minipro y base de datos de chips listos.</string>
+    <string name="str_usb_permission_granted">¡Permiso otorgado! Token USB FD: %1$d</string>
+    <string name="str_connected_usb_vid_pid">Conectado a USB VID:PID %1$s</string>
+    <string name="str_device_recognized">[OK] Dispositivo reconocido: %1$s</string>
+    <string name="str_warn_unrecognized_usb">[AVISO] Dispositivo no identificado en la base de datos USB automática.\nPuedes seleccionar el modelo en el selector superior.</string>
+    <string name="str_usb_disconnected">Dispositivo USB desconectado.</string>
+    <string name="str_read_from_chip">Leído del chip (%1$s)</string>
+    <string name="str_chip_detected_configured">[AUTO] Chip detectado y configurado: %1$s</string>
+    <string name="str_starting_autodetect">Iniciando autodetección de chip con MiniPro...</string>
+    <string name="str_err_specify_chip">Error: Especifica un modelo de chip (ej: W25Q128FV).</string>
+    <string name="str_err_no_rom_loaded">Error: No hay archivo rom.bin cargado. Usa 'Cargar ROM' o 'Leer Chip' primero.</string>
+    <string name="str_err_no_data_read">Error: No hay datos leídos del chip aún.</string>
+    <string name="str_use_read_chip_first">Usa 'Leer Chip' primero para leer el contenido.</string>
+    <string name="str_file_not_found">Error: El archivo \'%1$s\' no existe.</string>
+    <string name="str_export_dir_saved">Directorio de exportación configurado y guardado.</string>
+    <string name="str_export_dir_no_persist">Directorio configurado (sin persistencia extendida).</string>
+    <string name="str_query_db_btn">Consultar BD</string>
+    <string name="str_query_db_title">Consultar Base de Datos MiniPro</string>
+    <string name="str_query_db_msg">Ingresa el término de búsqueda para listar los chips soportados:</string>
+    <string name="str_query_db_hint">Ej: 25Q, PIC16, 24C, ATmega...</string>
+    <string name="str_chip_configured">Chip configurado: %1$s</string>
+    <string name="str_custom_chip_added">Chip personalizado agregado y seleccionado: %1$s</string>
+    <string name="str_rom_deleted">Archivo de datos (rom.bin) eliminado.</string>
+    <string name="str_rom_delete_error">Error al intentar eliminar el archivo de datos.</string>
+    <string name="str_no_file_deleted">No se eliminó ningún archivo porque no había datos.</string>
+    <string name="str_rom_imported">ROM importada: \'%1$s\' (%2$s)\nArchivo guardado como \'rom.bin\' — listo para Flashear o Verificar.</string>
+    <string name="str_imported_label">Importado: %1$s (%2$s)</string>
+    <string name="str_file_empty">Error: El archivo seleccionado está vacío.</string>
+    <string name="str_file_too_large">Error: Archivo demasiado grande (%1$d MB). Máximo: 128 MB.</string>
+    <string name="str_export_success">Éxito: \'%1$s\' exportado correctamente.</string>
+    <string name="str_current_memory">Memoria actual</string>
+    <string name="str_usb_device_detected">Dispositivo detectado: %1$s | Solicitando permiso...</string>
+    <string name="str_usb_auto_detected">Detección automática: %1$s reconocido como %2$s</string>
+    <string name="str_usb_not_recognized">[AVISO] Dispositivo no reconocido automáticamente en la base de datos.\nPuedes intentar enlazarlo manualmente.</string>
+    <string name="str_usb_connection_failed">%1$s falló en enlazarse a la app (openDevice nulo).</string>
+    <string name="str_usb_no_device_detected">Error: No se detectó ningún dispositivo USB conectado.</string>
+    <string name="str_usb_permission_denied">Error: Permiso USB denegado.</string>
+    <string name="str_minipro_binary_not_found">[ERROR] No se encontró el binario minipro.</string>
 
     <!-- Pinouts Options -->
     <string name="str_pinout_opt_zif40">Socket ZIF 40 Pines — Regla de Alineación (TL866/T48)</string>

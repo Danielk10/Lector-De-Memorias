@@ -185,11 +185,11 @@ public class MainActivity extends AppCompatActivity {
                                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                                     .putString(KEY_EXPORT_URI, treeUri.toString()).apply();
-                            log("Directorio de exportación configurado y guardado.");
+                            log(getString(R.string.str_export_dir_saved));
                         } catch (Exception e) {
                             getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                                     .putString(KEY_EXPORT_URI, treeUri.toString()).apply();
-                            log("Directorio configurado (sin persistencia extendida).");
+                            log(getString(R.string.str_export_dir_no_persist));
                         }
                     }
                 }
@@ -248,14 +248,14 @@ public class MainActivity extends AppCompatActivity {
             public void onDeviceConnected(String deviceName, int fd, String vidPid, boolean isRecognized, String autoProgrammer) {
                 runOnUiThread(() -> {
                     tvStatus.setText(getString(R.string.str_status_usb_connected, deviceName));
-                    MainActivity.this.log("¡Permiso otorgado! Token USB FD: " + fd);
-                    MainActivity.this.log("Conectado a USB VID:PID " + vidPid);
+                    MainActivity.this.log(getString(R.string.str_usb_permission_granted, fd));
+                    MainActivity.this.log(getString(R.string.str_connected_usb_vid_pid, vidPid));
 
                     // Pasar FD al entorno nativo de libusb
                     setUsbFd(fd);
 
                     if (isRecognized && autoProgrammer != null) {
-                        MainActivity.this.log("[OK] Dispositivo reconocido: " + autoProgrammer);
+                        MainActivity.this.log(getString(R.string.str_device_recognized, autoProgrammer));
                         for (int i = 0; i < SUPPORTED_DEVICES.length; i++) {
                             if (SUPPORTED_DEVICES[i].equalsIgnoreCase(autoProgrammer)) {
                                 spinnerDevices.setSelection(i);
@@ -264,8 +264,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         MainActivity.this.log("════════════════════════════════════════");
-                        MainActivity.this.log("[AVISO] Dispositivo no identificado en el mapa USB.");
-                        MainActivity.this.log("Puedes seleccionar el modelo en el selector superior.");
+                        MainActivity.this.log(getString(R.string.str_warn_unrecognized_usb));
                         MainActivity.this.log("════════════════════════════════════════");
                     }
 
@@ -279,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDeviceConnectionFailed(String deviceName) {
-                MainActivity.this.log(deviceName + " falló en enlazarse a la app (openDevice nulo).");
+                MainActivity.this.log(getString(R.string.str_usb_connection_failed, deviceName));
             }
 
             @Override
@@ -292,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     btnRead.setEnabled(false);
                     btnWrite.setEnabled(false);
                     btnEraseChip.setEnabled(false);
-                    MainActivity.this.log("Dispositivo USB desconectado.");
+                    MainActivity.this.log(getString(R.string.str_usb_disconnected));
                 });
             }
         });
@@ -369,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                                 etChipModel.setText(chipToSet);
                                 ChipDatabase.addRecentChip(MainActivity.this, chipToSet);
                                 saveSelectedChip(chipToSet);
-                                MainActivity.this.log("[AUTO] Chip detectado y configurado: " + chipToSet);
+                                MainActivity.this.log(getString(R.string.str_chip_detected_configured, chipToSet));
                             });
                         }
                     }
@@ -379,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupLogCopySupport();
 
-        log("--- Aplicación Iniciada ---");
+        log(getString(R.string.str_app_started));
 
         // Runtime & Asset Initialization
         int currentVersion = getVersionCode();
@@ -390,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
         if (skipLoading) {
             layoutMainUI.setVisibility(View.VISIBLE);
             layoutLoading.setVisibility(View.GONE);
-            log("Sistema minipro y base de datos de chips listos.");
+            log(getString(R.string.str_system_ready));
 
             executor.execute(() -> {
                 File buggedDir = new File(getFilesDir(), "usr/usr");
@@ -454,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
         btnSearchChip.setOnClickListener(v -> showChipSelectorDialog());
 
         btnAutodetectChip.setOnClickListener(v -> {
-            log("Iniciando autodetección de chip con MiniPro...");
+            log(getString(R.string.str_starting_autodetect));
             executeMinipro("-a", "8");
         });
 
@@ -470,12 +469,12 @@ public class MainActivity extends AppCompatActivity {
         btnVerify.setOnClickListener(v -> {
             String chip = getSelectedChip();
             if (chip.isEmpty()) {
-                log("Error: Especifica un modelo de chip (ej: W25Q128FV).");
+                log(getString(R.string.str_err_specify_chip));
                 return;
             }
             File f = new File(getFilesDir(), "rom.bin");
             if (!f.exists() || f.length() == 0) {
-                log("Error: No hay archivo rom.bin cargado para verificar. Usa 'Cargar ROM' o 'Leer Chip'.");
+                log(getString(R.string.str_err_no_rom_loaded));
                 return;
             }
             executeMinipro("-p", chip, "-m", "rom.bin");
@@ -484,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
         btnRead.setOnClickListener(v -> {
             String chip = getSelectedChip();
             if (chip.isEmpty()) {
-                log("Error: Especifica un modelo de chip (ej: W25Q128FV).");
+                log(getString(R.string.str_err_specify_chip));
                 return;
             }
             executeMinipro("-p", chip, "-r", "rom.bin");
@@ -493,12 +492,12 @@ public class MainActivity extends AppCompatActivity {
         btnWrite.setOnClickListener(v -> {
             String chip = getSelectedChip();
             if (chip.isEmpty()) {
-                log("Error: Especifica un modelo de chip (ej: W25Q128FV).");
+                log(getString(R.string.str_err_specify_chip));
                 return;
             }
             File f = new File(getFilesDir(), "rom.bin");
             if (!f.exists() || f.length() == 0) {
-                log("Error: No hay archivo rom.bin cargado para escribir. Usa 'Cargar ROM' primero.");
+                log(getString(R.string.str_err_no_rom_loaded));
                 return;
             }
             executeMinipro("-p", chip, "-w", "rom.bin");
@@ -513,13 +512,13 @@ public class MainActivity extends AppCompatActivity {
 
         btnExport.setOnClickListener(v -> {
             if (!hasReadData) {
-                log("Error: No hay datos leídos del chip aún.");
-                log("Usa 'Leer Chip' primero para leer el contenido.");
+                log(getString(R.string.str_err_no_data_read));
+                log(getString(R.string.str_use_read_chip_first));
                 return;
             }
             File sourceFile = new File(getFilesDir(), lastReadFile);
             if (!sourceFile.exists()) {
-                log("Error: El archivo '" + lastReadFile + "' no existe.");
+                log(getString(R.string.str_file_not_found, lastReadFile));
                 return;
             }
             String exportName = lastReadFile.equals("rom.bin") ? "dump_backup.bin" : lastReadFile;
@@ -537,7 +536,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.str_yes_erase, (dialog, which) -> {
                         String chip = getSelectedChip();
                         if (chip.isEmpty()) {
-                            log("Error: Especifica un modelo de chip antes de borrar.");
+                            log(getString(R.string.str_err_specify_chip));
                             return;
                         }
                         executeMinipro("-p", chip, "-E");
@@ -648,7 +647,7 @@ public class MainActivity extends AppCompatActivity {
         btnRow.addView(btnAddManual, lp1);
 
         Button btnQueryDb = new Button(this);
-        btnQueryDb.setText("Consultar BD");
+        btnQueryDb.setText(R.string.str_query_db_btn);
         btnQueryDb.setTextSize(11f);
         btnQueryDb.setBackgroundColor(0xFF37474F);
         btnQueryDb.setTextColor(0xFFFFFFFF);
@@ -724,7 +723,7 @@ public class MainActivity extends AppCompatActivity {
                 etChipModel.setText(selected);
                 ChipDatabase.addRecentChip(this, selected);
                 saveSelectedChip(selected);
-                log("Chip configurado: " + selected);
+                log(getString(R.string.str_chip_configured, selected));
                 dialog.dismiss();
             }
         });
@@ -762,7 +761,7 @@ public class MainActivity extends AppCompatActivity {
                         ChipDatabase.addCustomChip(this, chip);
                         etChipModel.setText(chip);
                         saveSelectedChip(chip);
-                        log("Chip personalizado agregado y seleccionado: " + chip);
+                        log(getString(R.string.str_custom_chip_added, chip));
                     }
                 })
                 .setNegativeButton(R.string.str_cancelar, null)
@@ -771,7 +770,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showMiniproDbQueryDialog() {
         EditText input = new EditText(this);
-        input.setHint("Ej: 25Q, PIC16, 24C, ATmega...");
+        input.setHint(R.string.str_query_db_hint);
         input.setHintTextColor(0xFF757575);
         input.setTextColor(0xFFFFFFFF);
         input.setBackgroundResource(R.drawable.bg_spinner);
@@ -779,10 +778,10 @@ public class MainActivity extends AppCompatActivity {
         input.setPadding(pad, pad, pad, pad);
 
         new AlertDialog.Builder(this)
-                .setTitle("Consultar Base de Datos MiniPro")
-                .setMessage("Ingresa el término de búsqueda para listar los chips soportados:")
+                .setTitle(R.string.str_query_db_title)
+                .setMessage(R.string.str_query_db_msg)
                 .setView(input)
-                .setPositiveButton("Listar", (dialog, which) -> {
+                .setPositiveButton(R.string.str_list, (dialog, which) -> {
                     String query = input.getText().toString().trim();
                     if (query.isEmpty()) {
                         executeMinipro("-l");
@@ -982,7 +981,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void exportToDownloadsFolder() {
         if (!hasReadData) {
-            log("Error: No hay datos leídos del chip aún.");
+            log(getString(R.string.str_err_no_data_read));
             return;
         }
         boolean success = FileManager.exportToDownloads(this, lastReadFile);
@@ -1010,12 +1009,12 @@ public class MainActivity extends AppCompatActivity {
         if (notify) {
             if (exists) {
                 if (deleted) {
-                    log("Archivo de datos (rom.bin) eliminado.");
+                    log(getString(R.string.str_rom_deleted));
                 } else {
-                    log("Error al intentar eliminar el archivo de datos.");
+                    log(getString(R.string.str_rom_delete_error));
                 }
             } else {
-                log("No se eliminó ningún archivo porque no había datos.");
+                log(getString(R.string.str_no_file_deleted));
             }
         }
     }
@@ -1033,23 +1032,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logRuntimeInfo() {
-        log("Arquitectura: " + Build.SUPPORTED_ABIS[0] + " | SDK: " + Build.VERSION.SDK_INT);
-        log("Dispositivo: " + Build.MANUFACTURER + " " + Build.MODEL);
+        log("Architecture: " + Build.SUPPORTED_ABIS[0] + " | SDK: " + Build.VERSION.SDK_INT);
+        log("Device: " + Build.MANUFACTURER + " " + Build.MODEL);
 
         File nativeLibDir = new File(getApplicationInfo().nativeLibraryDir);
         File miniproBin = new File(nativeLibDir, "libminipro_bin.so");
-        log("minipro binario: " + (miniproBin.exists() ? "OK (" + miniproBin.length() / 1024 + " KB)" : "NO ENCONTRADO"));
+        log("minipro binary: " + (miniproBin.exists() ? "OK (" + miniproBin.length() / 1024 + " KB)" : "NOT FOUND"));
 
         File libusb = new File(nativeLibDir, "libusb_1_0.so");
-        log("libusb parcheada: " + (libusb.exists() ? "OK (" + libusb.length() / 1024 + " KB)" : "NO ENCONTRADO"));
+        log("patched libusb: " + (libusb.exists() ? "OK (" + libusb.length() / 1024 + " KB)" : "NOT FOUND"));
 
-        log("Puente JNI nativo: " + stringFromJNI());
+        log("Native JNI Bridge: " + stringFromJNI());
     }
 
     private void importFile(Uri uri) {
         try (InputStream in = getContentResolver().openInputStream(uri)) {
             if (in == null) {
-                throw new IllegalStateException("No se pudo abrir el archivo.");
+                throw new IllegalStateException(getString(R.string.str_err_open_file));
             }
 
             String fileName = "archivo";
@@ -1066,7 +1065,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception ignored) {}
 
             if (fileSize > 128L * 1024 * 1024) {
-                log("Error: Archivo demasiado grande (" + (fileSize / 1024 / 1024) + " MB). Máximo: 128 MB.");
+                log(getString(R.string.str_file_too_large, (int) (fileSize / 1024 / 1024)));
                 return;
             }
 
@@ -1097,7 +1096,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (totalWritten == 0) {
-                log("Error: El archivo seleccionado está vacío.");
+                log(getString(R.string.str_file_empty));
                 return;
             }
 
@@ -1108,17 +1107,16 @@ public class MainActivity extends AppCompatActivity {
                 sizeStr = String.format(Locale.US, "%.1f KB", totalWritten / 1024.0);
             }
 
-            log("ROM importada: '" + fileName + "' (" + sizeStr + ")");
-            log("Archivo guardado como 'rom.bin' — listo para Flashear o Verificar.");
+            log(getString(R.string.str_rom_imported, fileName, sizeStr));
             hasReadData = true;
             lastReadFile = "rom.bin";
 
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-            editor.putString("bios_source", "Importado: " + fileName + " (" + sizeStr + ")");
+            editor.putString("bios_source", getString(R.string.str_imported_label, fileName, sizeStr));
             editor.putString(KEY_LAST_READ_FILE, "rom.bin");
             editor.apply();
         } catch (Exception e) {
-            log("Error importando archivo: " + e.getMessage());
+            log(getString(R.string.str_error) + ": " + e.getMessage());
         }
     }
 
@@ -1127,16 +1125,16 @@ public class MainActivity extends AppCompatActivity {
         try (InputStream in = new java.io.FileInputStream(sourceFile);
              OutputStream out = getContentResolver().openOutputStream(uri)) {
 
-            if (out == null) throw new Exception("No se pudo acceder al archivo destino.");
+            if (out == null) throw new Exception(getString(R.string.str_err_open_file));
 
             byte[] buffer = new byte[8192];
             int read;
             while ((read = in.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
             }
-            log("Éxito: '" + lastReadFile + "' exportado correctamente.");
+            log(getString(R.string.str_export_success, lastReadFile));
         } catch (Exception e) {
-            log("Error exportando archivo: " + e.getMessage());
+            log(getString(R.string.str_error) + ": " + e.getMessage());
         }
     }
 
