@@ -15,7 +15,7 @@
 ---
 
 *Herramienta Android nativa para leer, escribir, verificar, comparar y borrar memorias EEPROM/Flash*
-*usando programadores TL866II+, TL866A/CS, T48, T56, CH341A y compatibles.*
+*usando programadores TL866II+, TL866A/CS, T48, T56, T76*
 
 </div>
 
@@ -60,8 +60,6 @@ Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado p
 | 🟡 **Xgecu T48** | `2E8A:000A` | ⚠️ Experimental |
 | 🟡 **Xgecu T56** | `2E8A:0005` | ⚠️ Experimental |
 | 🟡 **Xgecu T76** | — | ⚠️ Experimental |
-| 🔵 **CH341A / CH347** | `1A86:5512` / `1A86:5523` / `1A86:55DB` | ✅ Soportado |
-
 ---
 
 ## 📐 Diagramas de Conexión y Pinouts Incluidos
