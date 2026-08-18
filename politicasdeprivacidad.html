@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - EEPROM Flasher</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; text-align: justify; }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #2980b9; padding-bottom: 10px; }
+        h2 { color: #2980b9; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        p { margin-bottom: 15px; }
+        ul { margin-bottom: 15px; }
+        li { margin-bottom: 8px; }
+        .footer { font-size: 0.85em; color: #7f8c8d; text-align: center; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
+        .license-box { background: #f4f7f9; padding: 15px; border-left: 5px solid #2c3e50; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; margin: 20px 0; border-radius: 0 5px 5px 0; }
+        .important { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Política de Privacidad</h1>
+    <p><strong>Última actualización:</strong> 18 de agosto de 2026</p>
+
+    <p>Daniel Diamon ("nosotros", "nuestro" o "el desarrollador") se compromete a proteger su privacidad. Esta Política de Privacidad describe cómo <strong>EEPROM Flasher</strong> (la "Aplicación") maneja la información en un entorno de producción que incluye servicios de publicidad y análisis.</p>
+
+    <h2>1. Recopilación de Información y Datos Personales</h2>
+    <p>La Aplicación está diseñada para funcionar como una herramienta técnica de hardware. Sin embargo, para mantener la gratuidad del servicio y mejorar la estabilidad, se utilizan servicios de terceros que recopilan datos:</p>
+    <ul>
+        <li><strong>Identificadores de Dispositivo:</strong> Se recopila el <strong>ID de Publicidad de Android (AD_ID)</strong> para mostrar anuncios personalizados y realizar análisis de atribución.</li>
+        <li><strong>Información del Dispositivo:</strong> Versión del sistema operativo, modelo de hardware, resolución de pantalla y estado de la red.</li>
+        <li><strong>Datos de Uso:</strong> Interacciones con la interfaz, tiempo de uso y registros de errores (crash logs).</li>
+    </ul>
+
+    <h2>2. Publicidad (AdMob)</h2>
+    <p>Esta Aplicación utiliza <strong>Google AdMob</strong> como proveedor de publicidad. Al utilizar la Aplicación, usted acepta que:</p>
+    <ul>
+        <li>Se muestren anuncios (banners e intersticiales) gestionados por Google.</li>
+        <li>Google puede utilizar el <strong>ID de Publicidad</strong> de su dispositivo para servir anuncios basados en sus intereses.</li>
+        <li>Se pueden recopilar datos de ubicación aproximada (basada en IP) para mostrar publicidad relevante por región.</li>
+    </ul>
+    <p>Puede gestionar sus preferencias de publicidad o restablecer su ID de Publicidad en los ajustes de su dispositivo Android (Ajustes > Google > Anuncios).</p>
+
+    <h2>3. Servicios de Terceros y sus Políticas</h2>
+    <p>La Aplicación integra los siguientes servicios que actúan como encargados del tratamiento de datos:</p>
+    <ul>
+        <li><strong>Google Play Services:</strong> Necesario para la infraestructura base de la aplicación. <a href="https://www.google.com/policies/privacy/" target="_blank">[Ver Política]</a></li>
+        <li><strong>AdMob:</strong> Monetización y personalización de anuncios. <a href="https://support.google.com/admob/answer/6128543?hl=es" target="_blank">[Ver Política]</a></li>
+        <li><strong>Firebase Crashlytics:</strong> Informe de errores en tiempo real para mejorar la estabilidad técnica.</li>
+    </ul>
+
+    <h2>4. Permisos de Producción Requeridos</h2>
+    <p>Para su correcto funcionamiento en producción, la Aplicación utiliza:</p>
+    <ul>
+        <li><span class="important">com.google.android.gms.permission.AD_ID:</span> Permite a la Aplicación acceder al identificador de publicidad para la personalización de anuncios.</li>
+        <li><strong>INTERNET:</strong> Para la comunicación con los servidores de Google AdMob y la carga de bases de datos de chips externas.</li>
+        <li><strong>ACCESS_NETWORK_STATE / ACCESS_WIFI_STATE:</strong> Para optimizar la carga de anuncios según el tipo de conexión.</li>
+        <li><strong>USB_PERMISSION:</strong> Acceso crítico para la comunicación con programadores de hardware mediante USB OTG.</li>
+        <li><strong>READ_EXTERNAL_STORAGE:</strong> Carga de archivos binarios para el proceso de flasheo.</li>
+    </ul>
+
+    <h2>5. Software Libre y Licencias</h2>
+    <p><strong>EEPROM Flasher</strong> es un proyecto de código abierto que respeta las licencias de sus dependencias:</p>
+    
+    <div class="license-box">
+        • <strong>Proyecto Principal:</strong> GNU GPLv3<br>
+        • <strong>Motor minipro:</strong> GNU GPLv3 (David Griffith & contributors)<br>
+        • <strong>Biblioteca libusb:</strong> GNU LGPLv2.1<br>
+        • <strong>usb-serial-for-android:</strong> MIT License<br>
+        • <strong>Android Material Components:</strong> Apache 2.0
+    </div>
+    <p>Las referencias completas a estas licencias están disponibles en la sección "Acerca de" dentro de la Aplicación y en el repositorio oficial de GitHub.</p>
+
+    <h2>6. Protección de Datos y Seguridad</h2>
+    <p>No vendemos ni alquilamos su información personal a terceros. Los datos recopilados por los servicios de Google se protegen bajo sus estándares de seguridad global. Los archivos de volcado de memoria (.bin) procesados por la aplicación nunca salen de su dispositivo, a menos que usted los comparta explícitamente.</p>
+
+    <h2>7. Cambios en esta Política</h2>
+    <p>Nos reservamos el derecho de actualizar esta política para reflejar cambios en la ley o en nuestras prácticas de datos. La continuación del uso de la Aplicación tras la publicación de cambios implica la aceptación de los mismos.</p>
+
+    <h2>8. Contacto</h2>
+    <p>Para cualquier consulta técnica o sobre sus datos, puede contactar al desarrollador a través del repositorio de GitHub del proyecto: <strong>Danielk10/Lector-De-Memorias</strong>.</p>
+
+    <div class="footer">
+        <p>Copyright © 2026 Daniel Diamon | EEPROM Flasher</p>
+        <p>Tinaquillo, Cojedes - Venezuela</p>
+    </div>
+
+</body>
+</html>
