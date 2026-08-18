@@ -11,6 +11,8 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 
+import com.diamon.mini.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,20 +26,22 @@ public class UsbController {
 
     public interface Callback {
         void log(String message);
-        void onDeviceConnected(String deviceName, int fd, String vidPid, boolean isRecognized);
+        void onDeviceConnected(String deviceName, int fd, String vidPid, boolean isRecognized, String autoProgrammer);
         void onDeviceConnectionFailed(String deviceName);
         void onDeviceDisconnected();
     }
 
-    // Mapa de VID:PID -> nombre de dispositivo para auto-detección
+    // Mapa de VID:PID -> nombre de programador para auto-detección
     public static final Map<String, String> USB_AUTO_MAP = new HashMap<String, String>() {{
         put("04d8:00e0", "TL866II+");
         put("a466:0a53", "TL866II+");
         put("04d8:00de", "TL866A");
         put("04d8:00df", "TL866CS");
-        put("1a86:5523", "CH341A");
         put("2e8a:000a", "T48");
         put("2e8a:0005", "T56");
+        put("1a86:5512", "CH341A");
+        put("1a86:5523", "CH341A");
+        put("1a86:55db", "CH347");
     }};
 
     private final Activity activity;
@@ -64,7 +68,7 @@ public class UsbController {
                             connectToDevice(device);
                         }
                     } else {
-                        callback.log("Error: Permiso USB denegado.");
+                        callback.log(activity.getString(R.string.str_error) + ": Permiso USB denegado.");
                     }
                 }
             }
@@ -103,7 +107,7 @@ public class UsbController {
     public void searchAndRequestDevice() {
         Map<String, UsbDevice> devices = usbManager.getDeviceList();
         if (devices == null || devices.isEmpty()) {
-            callback.log("Error: No se detectó ningún dispositivo USB.");
+            callback.log(activity.getString(R.string.str_error) + ": No se detectó ningún dispositivo USB conectado.");
             return;
         }
 
@@ -128,8 +132,8 @@ public class UsbController {
             }
         });
 
-        callback.log("[AVISO] Dispositivo no reconocido automáticamente como programador minipro.");
-        callback.log("Puedes intentar conectarte manualmente.");
+        callback.log("[AVISO] Dispositivo no reconocido automáticamente en la base de datos.");
+        callback.log("Puedes intentar enlazarlo manualmente.");
 
         if (candidates.size() == 1) {
             requestUsbPermission(candidates.get(0));
@@ -142,15 +146,15 @@ public class UsbController {
         }
 
         new android.app.AlertDialog.Builder(activity)
-                .setTitle("Seleccionar dispositivo USB")
+                .setTitle(activity.getString(R.string.str_select_usb_device))
                 .setItems(labels, (dialog, which) -> requestUsbPermission(candidates.get(which)))
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(activity.getString(R.string.str_cancelar), null)
                 .show();
     }
 
     public void requestUsbPermission(UsbDevice device) {
-        String deviceName = device.getProductName() == null ? "Dispositivo USB" : device.getProductName();
-        callback.log("Dispositivo detectado: " + deviceName + " | Solicitando enlace...");
+        String deviceName = device.getProductName() == null ? activity.getString(R.string.str_usb_device) : device.getProductName();
+        callback.log("Dispositivo detectado: " + deviceName + " | Solicitando permiso...");
         callback.log("VID:PID => "
                 + String.format(Locale.US, "%04x:%04x", device.getVendorId(), device.getProductId()));
 
@@ -171,11 +175,11 @@ public class UsbController {
     private String formatUsbDeviceLabel(UsbDevice device) {
         String productName = device.getProductName();
         if (productName == null || productName.trim().isEmpty()) {
-            productName = "Dispositivo USB";
+            productName = activity.getString(R.string.str_usb_device);
         }
         String manufacturer = device.getManufacturerName();
         if (manufacturer == null || manufacturer.trim().isEmpty()) {
-            manufacturer = "Fabricante desconocido";
+            manufacturer = activity.getString(R.string.str_unknown_manufacturer);
         }
         return productName + " (" + manufacturer + ")\nVID:PID "
                 + String.format(Locale.US, "%04x:%04x", device.getVendorId(), device.getProductId());
@@ -189,11 +193,12 @@ public class UsbController {
         }
 
         currentFd = currentConnection.getFileDescriptor();
-        String deviceName = device.getProductName() == null ? "Dispositivo USB" : device.getProductName();
+        String deviceName = device.getProductName() == null ? activity.getString(R.string.str_usb_device) : device.getProductName();
         String vidPid = String.format(Locale.US, "%04x:%04x", device.getVendorId(), device.getProductId());
 
         boolean isRecognized = USB_AUTO_MAP.containsKey(vidPid);
-        callback.onDeviceConnected(deviceName, currentFd, vidPid, isRecognized);
+        String autoProg = isRecognized ? USB_AUTO_MAP.get(vidPid) : null;
+        callback.onDeviceConnected(deviceName, currentFd, vidPid, isRecognized, autoProg);
     }
 
     public void disconnectDevice() {

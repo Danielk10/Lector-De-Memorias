@@ -1,12 +1,17 @@
 package com.diamon.mini;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +25,18 @@ public class HexViewerActivity extends AppCompatActivity {
 
     private TextView tvHexSummary;
     private RecyclerView recyclerHex;
+    private HexAdapter hexAdapter;
+
+    private final ActivityResultLauncher<Intent> fileOpenLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri uri = result.getData().getData();
+                    if (uri != null) {
+                        loadFromUri(uri);
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,40 +55,76 @@ public class HexViewerActivity extends AppCompatActivity {
         loadDataFromIntent();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.hex_viewer_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_open_hex_file) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            fileOpenLauncher.launch(intent);
+            return true;
+        } else if (id == R.id.action_compare_hex) {
+            startActivity(new Intent(this, HexDiffActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void loadDataFromIntent() {
         Uri fileUri = getIntent().getData();
-        String fileName = "dump.bin";
+        if (fileUri != null) {
+            loadFromUri(fileUri);
+        } else {
+            loadDefaultRom();
+        }
+    }
 
+    private void loadDefaultRom() {
         String biosSource = getSharedPreferences("minipro_prefs", MODE_PRIVATE)
                 .getString("bios_source", null);
 
-        byte[] data;
-        try {
-            if (fileUri != null) {
-                data = readUriToBytes(fileUri);
-                fileName = fileUri.getLastPathSegment();
-                biosSource = "Archivo externo: " + fileName;
-            } else {
-                String trackedFile = getSharedPreferences("minipro_prefs", MODE_PRIVATE)
-                        .getString("last_read_file", "dump.bin");
-                File dataFile = new File(getFilesDir(), trackedFile);
-                if (!dataFile.exists()) {
-                    dataFile = new File(getFilesDir(), "dump.bin");
-                }
-                if (!dataFile.exists()) {
-                    tvHexSummary.setText(R.string.str_err_no_data_visualize);
-                    return;
-                }
-                fileName = dataFile.getName();
-                data = java.nio.file.Files.readAllBytes(dataFile.toPath());
-            }
+        String trackedFile = getSharedPreferences("minipro_prefs", MODE_PRIVATE)
+                .getString("last_read_file", "rom.bin");
+        File dataFile = new File(getFilesDir(), trackedFile);
+        if (!dataFile.exists()) {
+            dataFile = new File(getFilesDir(), "rom.bin");
+        }
+        if (!dataFile.exists()) {
+            tvHexSummary.setText(R.string.str_err_no_data_visualize);
+            return;
+        }
 
-            if (fileName != null && fileName.toLowerCase().endsWith(".hex")) {
+        try {
+            String fileName = dataFile.getName();
+            byte[] data = java.nio.file.Files.readAllBytes(dataFile.toPath());
+            if (fileName.toLowerCase().endsWith(".hex")) {
                 parseIntelHex(data, biosSource);
             } else {
                 displayBinary(data, fileName, biosSource);
             }
+        } catch (Exception e) {
+            tvHexSummary.setText(getString(R.string.str_err_load_data, e.getMessage()));
+        }
+    }
 
+    private void loadFromUri(Uri uri) {
+        try {
+            byte[] data = readUriToBytes(uri);
+            String fileName = getFileName(uri);
+            String source = "Archivo: " + fileName;
+
+            if (fileName.toLowerCase().endsWith(".hex")) {
+                parseIntelHex(data, source);
+            } else {
+                displayBinary(data, fileName, source);
+            }
         } catch (Exception e) {
             tvHexSummary.setText(getString(R.string.str_err_load_data, e.getMessage()));
         }
@@ -91,13 +144,27 @@ public class HexViewerActivity extends AppCompatActivity {
         }
     }
 
+    private String getFileName(Uri uri) {
+        String name = "archivo";
+        try {
+            android.database.Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int idx = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                if (idx >= 0) name = cursor.getString(idx);
+                cursor.close();
+            }
+        } catch (Exception ignored) {}
+        return name;
+    }
+
     private void displayBinary(byte[] data, String name, String biosSource) {
         String summary = getString(R.string.str_binary_summary, name, data.length);
         if (biosSource != null) {
             summary += getString(R.string.str_source_label, biosSource);
         }
         tvHexSummary.setText(summary);
-        recyclerHex.setAdapter(new HexAdapter(data, 0));
+        hexAdapter = new HexAdapter(data, 0);
+        recyclerHex.setAdapter(hexAdapter);
     }
 
     private void parseIntelHex(byte[] hexData, String biosSource) {
@@ -173,7 +240,8 @@ public class HexViewerActivity extends AppCompatActivity {
                 summary += getString(R.string.str_source_label, biosSource);
             }
             tvHexSummary.setText(summary);
-            recyclerHex.setAdapter(new HexAdapter(binBuffer, (int) minAddr));
+            hexAdapter = new HexAdapter(binBuffer, (int) minAddr);
+            recyclerHex.setAdapter(hexAdapter);
 
         } catch (Exception e) {
             tvHexSummary.setText(getString(R.string.str_err_parse_hex, e.getMessage()));

@@ -49,6 +49,11 @@
             android:exported="false"
             android:label="@string/str_visor_hexadecim" />
 
+        <activity
+            android:name=".HexDiffActivity"
+            android:exported="false"
+            android:label="@string/str_comparar_hex" />
+
     </application>
 
 </manifest>

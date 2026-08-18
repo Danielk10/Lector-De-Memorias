@@ -2,7 +2,7 @@
 
 # 🔌 EepromFlasher
 
-### Programador de Memorias EEPROM/Flash para Android
+### Programador de Memorias EEPROM / Flash / MCU para Android
 
 [![Android](https://img.shields.io/badge/Android-23%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Architecture](https://img.shields.io/badge/Arch-arm64--v8a-FF6F00?logo=arm&logoColor=white)](https://developer.android.com/ndk/guides/abis)
@@ -14,8 +14,8 @@
 
 ---
 
-*Herramienta Android nativa para leer, escribir, verificar y borrar memorias EEPROM/Flash*
-*usando programadores TL866II+, TL866A/CS, T48, T56 y compatibles.*
+*Herramienta Android nativa para leer, escribir, verificar, comparar y borrar memorias EEPROM/Flash*
+*usando programadores TL866II+, TL866A/CS, T48, T56, CH341A y compatibles.*
 
 </div>
 
@@ -23,169 +23,122 @@
 
 ## 📋 Descripción
 
-**EepromFlasher** es una aplicación Android que permite interactuar con programadores de memorias universales directamente desde tu dispositivo móvil, sin necesidad de PC. Utiliza el binario [minipro](https://gitlab.com/DavidGriffith/minipro) compilado nativamente para `arm64-v8a` con una versión parcheada de [libusb](https://github.com/libusb/libusb) que intercepta los file descriptors del USB Host API de Android.
+**EepromFlasher** es una aplicación Android profesional que permite programar e interactuar con memorias EEPROM, Flash SPI, EPROM paralelas, microcontroladores PIC/AVR y dispositivos lógicos directamente desde tu móvil o tablet Android mediante conexión USB OTG directa (sin root).
 
-## ✨ Características
+Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado para `arm64-v8a` junto con un puente [libusb](https://github.com/libusb/libusb) que intercepta los descriptores de archivo del USB Host API de Android.
+
+---
+
+## ✨ Características Principales
 
 | Característica | Descripción |
 |---|---|
-| 🔍 **Identificar Chip** | Detecta automáticamente el chip conectado al programador |
-| 📖 **Leer Chip** | Lee el contenido completo de la memoria a un archivo `.bin` |
-| ✏️ **Escribir Chip** | Flashea un archivo `.bin` o `.hex` al chip |
-| ✅ **Verificar** | Compara el contenido del chip con un archivo local |
-| 🗑️ **Borrar Chip** | Borra completamente el contenido del chip |
-| 📂 **Importar/Exportar** | Carga archivos `.bin`/`.hex` y exporta dumps |
-| 🔢 **Visor Hexadecimal** | Visualiza archivos binarios e Intel HEX con dirección, hex y ASCII |
-| 💻 **Terminal** | Consola integrada para comandos minipro personalizados |
-| 📋 **Copiar Log** | Copia la salida de la terminal al portapapeles (long-press) |
-| 🔌 **Auto-detección USB** | Reconoce automáticamente programadores compatibles |
+| 🔍 **Auto-detectar Chip** | Identifica automáticamente el chip insertado en el programador (`-a 8`, `-a 16`, `-d`) |
+| 📚 **Catálogo de Chips** | Selector con búsqueda en tiempo real categorizado por familias (SPI 25xxx, I2C 24xxx, Microwire 93xxx, Paralelas 27/28/29/39/49, PIC, AVR, GAL/PLD) |
+| ➕ **Agregar Chips Propios** | Agrega y guarda modelos de chips personalizados en una lista rápida persistente |
+| 📖 **Lectura / Backup** | Lee el contenido íntegro de la memoria a un archivo `.bin` |
+| ✏️ **Escritura y Flasheo** | Graba archivos `.bin` o Intel `.hex` directamente en la memoria |
+| ✅ **Verificación** | Compara el contenido de la memoria física contra el archivo cargado |
+| 🗑️ **Borrado Seguro** | Borra completamente el contenido del chip con diálogo de confirmación |
+| 🔢 **Visor Hexadecimal** | Visualizador de archivos `.bin` e Intel `.hex` con direcciones, volcado hexadecimal y caracteres ASCII |
+| ⚖️ **Comparador de Binarios** | Herramienta de Diff side-by-side que resalta discrepancias (`02X→02X`), porcentaje y conteo de bytes distintos |
+| 🔌 **Diagramas de Pinouts** | Diagramas esquemáticos renderizados en Canvas para ZIF 40 pines, SOIC8 SPI, 24Cxx, 93Cxx, DIP32, ICSP 6 pines, AVR ISP y adaptadores PLCC32 |
+| 💾 **Exportar a Descargas / SAF** | Exporta volcados a la carpeta `Descargas/EepromFlasher` o a cualquier almacenamiento con Storage Access Framework |
+| 💻 **Terminal Integrada** | Consola con soporte para retornos de carro (`\r`), buffer optimizado y scroll estable (`LogScrollView`) |
+| 📋 **Portapapeles Rápido** | Copia la salida completa de la consola manteniendo presionado el log |
+| 🛡️ **Acerca de y Licencias** | Información detallada del software y licencias de código abierto con enlaces interactivos |
 
-## 🎯 Dispositivos Compatibles
+---
+
+## 🎯 Programadores Compatibles
 
 | Programador | VID:PID | Estado |
 |---|---|---|
-| 🟢 TL866II+ | `04D8:00E0` | ✅ Soportado |
-| 🟢 TL866A | `04D8:00DE` | ✅ Soportado |
-| 🟢 TL866CS | `04D8:00DF` | ✅ Soportado |
-| 🟡 T48 | `2E8A:000A` | ⚠️ Experimental |
-| 🟡 T56 | `2E8A:0005` | ⚠️ Experimental |
-| 🟡 T76 | — | ⚠️ Experimental |
-| 🔵 CH341A | `1A86:5523` | ✅ Soportado |
+| 🟢 **TL866II+** | `04D8:00E0` / `A466:0A53` | ✅ Soportado |
+| 🟢 **TL866A** | `04D8:00DE` | ✅ Soportado |
+| 🟢 **TL866CS** | `04D8:00DF` | ✅ Soportado |
+| 🟡 **Xgecu T48** | `2E8A:000A` | ⚠️ Experimental |
+| 🟡 **Xgecu T56** | `2E8A:0005` | ⚠️ Experimental |
+| 🟡 **Xgecu T76** | — | ⚠️ Experimental |
+| 🔵 **CH341A / CH347** | `1A86:5512` / `1A86:5523` / `1A86:55DB` | ✅ Soportado |
 
-> **Nota:** La base de datos de chips soportados proviene del proyecto minipro e incluye más de **15,000 dispositivos** (EEPROM, Flash, MCU, PLD, etc.)
+---
 
-## 🏗️ Arquitectura
+## 📐 Diagramas de Conexión y Pinouts Incluidos
+
+1. **Socket ZIF 40 Pines**: Regla de alineación universal para TL866/T48 (alineación inferior, muesca arriba).
+2. **SPI Flash SOIC8 / SOP8 / DIP8 (25xxx)**: Pinout estándar, CS#, DO, WP#, GND, DI, CLK, HOLD#, VCC.
+3. **I2C EEPROM SOIC8 / DIP8 (24Cxx)**: A0, A1, A2, GND, SDA, SCL, WP, VCC.
+4. **Microwire EEPROM (93Cxx)**: CS, SK, DI, DO, GND, ORG (8/16 bits), NC, VCC.
+5. **Memorias Paralelas Flash / EPROM (DIP28 / DIP32)**: Buses de direcciones A0-A18, datos D0-D7, control /CE, /OE, /WE, VPP.
+6. **Puerto ICSP 6 Pines (TL866 / T48)**: VPP/MCLR, VCC, GND, PGD/MOSI, PGC/SCK, AUX/MISO para PIC/AVR in-circuit.
+7. **Conectores AVR ISP (6 y 10 Pines)**: MISO, SCK, RESET, VCC, MOSI, GND.
+8. **Adaptador PLCC32 a DIP32**: Mapeo y orientación para chips BIOS.
+
+---
+
+## 🏗️ Arquitectura del Sistema
 
 ```
-┌──────────────────────────────────────────┐
-│              Android App (Java)          │
-│  ┌──────────┐ ┌────────────┐ ┌────────┐ │
-│  │ MainActivity │ HexViewer │ │ Policy │ │
-│  └─────┬────┘ └────────────┘ └────────┘ │
-│        │                                 │
-│  ┌─────▼────┐    ┌──────────────────┐    │
-│  │UsbControl│    │ MiniproExecutor  │    │
-│  │  ler     │───▶│  (ProcessBuilder)│    │
-│  └─────┬────┘    └────────┬─────────┘    │
-│        │ FD               │              │
-│  ┌─────▼────┐    ┌────────▼─────────┐    │
-│  │ JNI/NDK  │    │ libminipro_bin.so│    │
-│  │setUsbFd()│    │   (ELF arm64)    │    │
-│  └─────┬────┘    └────────┬─────────┘    │
-│        │                  │              │
-│  ┌─────▼──────────────────▼─────────┐    │
-│  │    libusb_1_0.so (parcheada)     │    │
-│  │    ANDROID_USB_FD interception   │    │
-│  └──────────────────────────────────┘    │
-└──────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Android App (Java)                       │
+│  ┌──────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────┐  │
+│  │ MainActivity │ │  HexViewer  │ │   HexDiff   │ │Policy│  │
+│  └──────┬───────┘ └─────────────┘ └─────────────┘ └──────┘  │
+│         │                                                   │
+│  ┌──────▼───────┐    ┌─────────────────┐ ┌───────────────┐  │
+│  │ UsbController│───▶│ MiniproExecutor │ │  PinoutView   │  │
+│  └──────┬───────┘    └────────┬────────┘ └───────────────┘  │
+│         │ FD                  │                             │
+│  ┌──────▼───────┐    ┌────────▼────────┐ ┌───────────────┐  │
+│  │   JNI Bridge │    │libminipro_bin.so│ │  FileManager  │  │
+│  │ (native-lib) │    │  (ELF arm64)    │ │ (MediaStore)  │  │
+│  └──────┬───────┘    └────────┬────────┘ └───────────────┘  │
+│         │                     │                             │
+│  ┌──────▼─────────────────────▼────────┐                    │
+│  │      libusb_1_0.so (parcheada)      │                    │
+│  │      ANDROID_USB_FD Interception    │                    │
+│  └─────────────────────────────────────┘                    │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## 🔧 Compilación
+---
+
+## 🔧 Compilación y Ejecución
 
 ### Requisitos
 
-- Android SDK 37 / Build Tools 37.0.0
-- NDK 30.0.14904198
+- Android SDK 37 (Build Tools 37.0.0)
+- NDK 30.0.14904198 rc1
 - CMake 4.1.2
-- JDK 11+
+- JDK 11 o superior
 
-### Setup rápido
+### Compilación desde terminal
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/Danielk10/Lector-De-Memorias.git
-cd Lector-De-Memorias
-
-# 2. Configurar SDK (opcional, si no tienes Android Studio)
+# Configurar SDK (si no está disponible)
 chmod +x setup-sdk.sh
 ./setup-sdk.sh
 
-# 3. Compilar la app
+# Compilar APK Debug
 ./gradlew assembleDebug
 ```
 
-### Compilar binarios nativos (desde Termux)
+---
 
-```bash
-# Compilar libusb parcheada para Android
-chmod +x build_libusb_custom_mini.sh
-./build_libusb_custom_mini.sh
+## 📄 Licencias y Atribuciones
 
-# Compilar minipro
-chmod +x build_minipro_custom.sh
-./build_minipro_custom.sh
-```
-
-## 📁 Estructura del Proyecto
-
-```
-Lector-De-Memorias/
-├── app/src/main/
-│   ├── java/com/diamon/mini/
-│   │   ├── MainActivity.java          # Activity principal
-│   │   ├── HexViewerActivity.java     # Visor hexadecimal
-│   │   ├── PolicyActivity.java        # Políticas de privacidad
-│   │   ├── core/
-│   │   │   ├── UsbController.java     # Control USB + auto-detección
-│   │   │   └── MiniproExecutor.java   # Ejecutor de comandos minipro
-│   │   └── utils/
-│   │       └── AssetHelper.java       # Extracción de assets + symlinks
-│   ├── cpp/
-│   │   ├── native-lib.cpp             # JNI bridge (setUsbFd/clearUsbFd)
-│   │   ├── CMakeLists.txt             # Config CMake
-│   │   └── include/libusb-1.0/        # Headers libusb
-│   ├── jniLibs/arm64-v8a/
-│   │   ├── libminipro_bin.so          # Binario minipro (PIE arm64)
-│   │   └── libusb_1_0.so             # libusb parcheada
-│   ├── assets/.../usr/share/minipro/
-│   │   ├── infoic.xml                 # Base de datos de chips (19 MB)
-│   │   └── logicic.xml               # Definiciones de lógica IC
-│   └── res/
-│       ├── layout/                    # Layouts XML
-│       ├── menu/                      # Menú de opciones
-│       ├── values/                    # Strings, colors, themes
-│       └── xml/                       # device_filter, backup rules
-├── fake_root/                         # Staging de binarios compilados
-├── build_libusb_custom_mini.sh        # Script: compilar libusb parcheada
-├── build_minipro_custom.sh            # Script: compilar minipro
-├── setup-sdk.sh                       # Script: configurar Android SDK
-└── LICENSE                            # GNU GPLv3
-```
-
-## 🔐 Mecanismo USB (sin root)
-
-La app funciona **sin root** gracias a un parche en libusb que intercepta las funciones clave:
-
-1. `libusb_init()` → detecta `ANDROID_USB_FD` y omite escaneo de `/dev/bus/usb/`
-2. `libusb_get_device_list()` → crea dispositivo virtual desde el FD
-3. `libusb_open()` → llama `libusb_wrap_sys_device()` con el FD de Android
-4. `libusb_get_device_descriptor()` → lee descriptor directo del FD con `pread()`
-
-El FD se obtiene vía Android USB Host API (`UsbDeviceConnection.getFileDescriptor()`) y se pasa al entorno nativo mediante JNI.
-
-## 📄 Licencias
-
-| Componente | Licencia |
-|---|---|
-| **EepromFlasher** | [GNU GPLv3](LICENSE) |
-| **minipro** | [GNU GPLv3](https://gitlab.com/DavidGriffith/minipro/-/blob/master/COPYING) |
-| **libusb** | [GNU LGPLv2.1](https://github.com/libusb/libusb/blob/master/COPYING) |
-| **usb-serial-for-android** | [MIT](https://github.com/mik3y/usb-serial-for-android/blob/master/LICENSE) |
-| **AndroidX / Material** | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
-
-## 🤝 Créditos
-
-- [minipro](https://gitlab.com/DavidGriffith/minipro) — David Griffith y colaboradores
-- [libusb](https://github.com/libusb/libusb) — libusb contributors
-- [usb-serial-for-android](https://github.com/mik3y/usb-serial-for-android) — mik3y
+- **EepromFlasher**: [GNU GPLv3](LICENSE)
+- **minipro**: [GNU GPLv3](https://gitlab.com/DavidGriffith/minipro) — David Griffith y colaboradores
+- **libusb**: [GNU LGPLv2.1](https://github.com/libusb/libusb) — libusb contributors
+- **usb-serial-for-android**: [MIT](https://github.com/mik3y/usb-serial-for-android) — mik3y
+- **AndroidX & Material Design**: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ---
 
 <div align="center">
 
-**Desarrollado por Daniel Diamon** ([@Danielk10](https://github.com/Danielk10))
+**Desarrollado por Daniel Diamon** ([@Danielk10](https://github.com/Danielk10))  
 *Tinaquillo, Cojedes, Venezuela*
-
-*Si este proyecto te resulta útil, ¡dale una ⭐!*
 
 </div>

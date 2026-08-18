@@ -8,18 +8,38 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_hex_diff"
+        android:title="@string/str_comparar_hex"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_pinouts"
+        android:title="@string/str_pinouts_de_hard"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_chip_selector"
+        android:title="@string/str_seleccionar_chip_dialog_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_export_downloads"
+        android:title="@string/str_export_downloads"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_select_dir"
         android:title="@string/str_seleccionar_dir"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_about"
-        android:title="@string/str_acerca_de"
+        android:id="@+id/action_policy"
+        android:title="@string/str_polticas_de_pri"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_policy"
-        android:title="@string/str_polticas_de_pri"
+        android:id="@+id/action_about"
+        android:title="@string/str_acerca_de"
         app:showAsAction="never" />
 
 </menu>

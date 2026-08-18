@@ -11,14 +11,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,17 +37,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.diamon.mini.core.MiniproExecutor;
 import com.diamon.mini.core.UsbController;
+import com.diamon.mini.ui.views.LogScrollView;
+import com.diamon.mini.ui.views.PinoutView;
 import com.diamon.mini.utils.AssetHelper;
+import com.diamon.mini.utils.ChipDatabase;
+import com.diamon.mini.utils.FileManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -53,8 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_EXPORT_URI = "export_uri";
     private static final String KEY_LAST_READ_FILE = "last_read_file";
     private static final String KEY_LAST_VERSION = "last_version_code";
+    private static final String KEY_SELECTED_CHIP = "selected_chip_model";
 
-    // Used to load the 'mini' library on application startup.
+    // Used to load the 'mini' native library on application startup.
     static {
         System.loadLibrary("mini");
     }
@@ -64,27 +74,65 @@ public class MainActivity extends AppCompatActivity {
 
     // UI
     private LinearLayout layoutLoading, layoutMainUI;
-    private ScrollView scrollLog;
+    private LogScrollView scrollLog;
     private TextView tvStatus, tvLog, tvLoadingText, tvOperationStatus;
     private Spinner spinnerDevices;
     private Button btnConnect, btnProbe, btnRead, btnWrite, btnImport, btnExport;
     private Button btnRunCustomCommand, btnClearLogs, btnQuickClear, btnEraseChip, btnAbort, btnVerify;
+    private Button btnSearchChip, btnAutodetectChip;
     private EditText etCustomCommand, etChipModel;
 
-    // Log buffering
-    private final StringBuilder logBuffer = new StringBuilder();
+    // Terminal Log Buffering with Carriage Return (\r) Overwrite Handling
+    private final List<StringBuilder> consoleLines = new ArrayList<>();
+    private int currentLineIndex = -1;
+    private boolean cursorAtStartOfLine = false;
     private final Handler logHandler = new Handler(Looper.getMainLooper());
     private boolean isLogUpdatePending = false;
-    private final Runnable logUpdater = () -> {
-        String newLogs;
-        synchronized (logBuffer) {
-            newLogs = logBuffer.toString();
-            logBuffer.setLength(0);
-            isLogUpdatePending = false;
-        }
-        if (!newLogs.isEmpty()) {
-            tvLog.append(newLogs);
-            scrollLog.post(() -> scrollLog.fullScroll(ScrollView.FOCUS_DOWN));
+
+    private boolean isScrollAtBottom() {
+        if (scrollLog == null || tvLog == null) return true;
+        int scrollY = scrollLog.getScrollY();
+        int scrollHeight = scrollLog.getHeight();
+        int contentHeight = tvLog.getHeight();
+        if (contentHeight == 0) return true;
+        return (scrollY + scrollHeight) >= (contentHeight - 100);
+    }
+
+    private final Runnable logUpdater = new Runnable() {
+        @Override
+        public void run() {
+            if (isFinishing() || isDestroyed()) {
+                isLogUpdatePending = false;
+                return;
+            }
+            String fullLogs;
+            synchronized (consoleLines) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < consoleLines.size(); i++) {
+                    if (i > 0) sb.append("\n");
+                    sb.append(consoleLines.get(i).toString());
+                }
+                fullLogs = sb.toString();
+                isLogUpdatePending = false;
+            }
+
+            final boolean wasAtBottom = isScrollAtBottom();
+            final int scrollY = scrollLog != null ? scrollLog.getScrollY() : 0;
+
+            tvLog.setText(fullLogs);
+
+            boolean shouldScrollToBottom = wasAtBottom;
+            if (miniproExecutor != null && miniproExecutor.isRunning()) {
+                shouldScrollToBottom = true;
+            }
+
+            if (scrollLog != null) {
+                if (shouldScrollToBottom) {
+                    scrollLog.post(() -> scrollLog.fullScroll(ScrollView.FOCUS_DOWN));
+                } else {
+                    scrollLog.post(() -> scrollLog.setScrollY(scrollY));
+                }
+            }
         }
     };
 
@@ -94,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
     private final List<String> currentOutputLines = new ArrayList<>();
 
     private static final String[] SUPPORTED_DEVICES = {
-            "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76"
+            "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76", "CH341A"
     };
 
     // Activity Result Launchers
@@ -118,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             getContentResolver().takePersistableUriPermission(uri,
                                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                                    .putString(KEY_EXPORT_URI, uri.toString()).apply();
                         } catch (Exception ignored) {}
                         exportFileToUri(uri);
                     }
@@ -150,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Find views
+        // Find Views
         layoutLoading = findViewById(R.id.layoutLoading);
         layoutMainUI = findViewById(R.id.layoutMainUI);
         tvLoadingText = findViewById(R.id.tvLoadingText);
@@ -160,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         tvOperationStatus = findViewById(R.id.tvOperationStatus);
         spinnerDevices = findViewById(R.id.spinnerDevices);
 
+        btnSearchChip = findViewById(R.id.btnSearchChip);
+        btnAutodetectChip = findViewById(R.id.btnAutodetectChip);
         btnConnect = findViewById(R.id.btnConnect);
         btnProbe = findViewById(R.id.btnProbe);
         btnVerify = findViewById(R.id.btnVerify);
@@ -175,13 +227,17 @@ public class MainActivity extends AppCompatActivity {
         etCustomCommand = findViewById(R.id.etCustomCommand);
         etChipModel = findViewById(R.id.etChipModel);
 
-        // Setup device spinner
+        // Restore saved chip model
+        String savedChip = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SELECTED_CHIP, "W25Q128FV");
+        etChipModel.setText(savedChip);
+
+        // Setup Device Spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.custom_spinner_item, SUPPORTED_DEVICES);
-        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
+                android.R.layout.simple_spinner_item, SUPPORTED_DEVICES);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDevices.setAdapter(adapter);
 
-        // Initialize USB controller
+        // Initialize USB Controller
         usbController = new UsbController(this, new UsbController.Callback() {
             @Override
             public void log(String message) {
@@ -189,29 +245,27 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onDeviceConnected(String deviceName, int fd, String vidPid, boolean isRecognized) {
+            public void onDeviceConnected(String deviceName, int fd, String vidPid, boolean isRecognized, String autoProgrammer) {
                 runOnUiThread(() -> {
                     tvStatus.setText(getString(R.string.str_status_usb_connected, deviceName));
-                    MainActivity.this.log("¡Permiso otorgado! Token USB: " + fd);
+                    MainActivity.this.log("¡Permiso otorgado! Token USB FD: " + fd);
                     MainActivity.this.log("Conectado a USB VID:PID " + vidPid);
 
-                    // Pasar FD al entorno nativo
+                    // Pasar FD al entorno nativo de libusb
                     setUsbFd(fd);
 
-                    if (isRecognized) {
-                        String autoName = UsbController.USB_AUTO_MAP.get(vidPid);
-                        MainActivity.this.log("[OK] Dispositivo reconocido: " + autoName);
-                        // Seleccionar en spinner si es posible
+                    if (isRecognized && autoProgrammer != null) {
+                        MainActivity.this.log("[OK] Dispositivo reconocido: " + autoProgrammer);
                         for (int i = 0; i < SUPPORTED_DEVICES.length; i++) {
-                            if (SUPPORTED_DEVICES[i].equals(autoName)) {
+                            if (SUPPORTED_DEVICES[i].equalsIgnoreCase(autoProgrammer)) {
                                 spinnerDevices.setSelection(i);
                                 break;
                             }
                         }
                     } else {
                         MainActivity.this.log("════════════════════════════════════════");
-                        MainActivity.this.log("[AVISO] Dispositivo NO reconocido como programador minipro.");
-                        MainActivity.this.log("Puedes intentar con los botones o la consola.");
+                        MainActivity.this.log("[AVISO] Dispositivo no identificado en el mapa USB.");
+                        MainActivity.this.log("Puedes seleccionar el modelo en el selector superior.");
                         MainActivity.this.log("════════════════════════════════════════");
                     }
 
@@ -225,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDeviceConnectionFailed(String deviceName) {
-                MainActivity.this.log(deviceName + " falló en enlazarse a la app.");
+                MainActivity.this.log(deviceName + " falló en enlazarse a la app (openDevice nulo).");
             }
 
             @Override
@@ -243,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize MiniPro executor
+        // Initialize MiniPro Executor
         miniproExecutor = new MiniproExecutor(this, new MiniproExecutor.Callback() {
             @Override
             public void log(String message) {
@@ -275,17 +329,17 @@ public class MainActivity extends AppCompatActivity {
                             hasReadData = true;
                             lastReadFile = args[i + 1];
                             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                            editor.putString("bios_source", "Leído del chip (" + getSelectedDevice() + ")");
+                            editor.putString("bios_source", "Leído del chip (" + getSelectedChip() + ")");
                             editor.putString(KEY_LAST_READ_FILE, lastReadFile);
                             editor.apply();
                             break;
                         }
                     }
 
-                    // Check if it was an autodetect operation (-a)
+                    // Autodetección (-a)
                     boolean isAutodetect = false;
                     for (String arg : args) {
-                        if ("-a".equals(arg)) {
+                        if ("-a".equals(arg) || "-d".equals(arg)) {
                             isAutodetect = true;
                             break;
                         }
@@ -295,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
                         boolean foundAutodetectLine = false;
                         synchronized (currentOutputLines) {
                             for (String line : currentOutputLines) {
-                                if (line.contains("Autodetecting device")) {
+                                if (line.contains("Autodetecting device") || line.contains("Found")) {
                                     foundAutodetectLine = true;
                                     continue;
                                 }
@@ -313,7 +367,9 @@ public class MainActivity extends AppCompatActivity {
                             final String chipToSet = foundChip;
                             runOnUiThread(() -> {
                                 etChipModel.setText(chipToSet);
-                                MainActivity.this.log("[AUTO] Modelo de chip autodetectado y configurado: " + chipToSet);
+                                ChipDatabase.addRecentChip(MainActivity.this, chipToSet);
+                                saveSelectedChip(chipToSet);
+                                MainActivity.this.log("[AUTO] Chip detectado y configurado: " + chipToSet);
                             });
                         }
                     }
@@ -321,12 +377,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Setup copy on long click for terminal
         setupLogCopySupport();
 
         log("--- Aplicación Iniciada ---");
 
-        // Asset extraction logic
+        // Runtime & Asset Initialization
         int currentVersion = getVersionCode();
         int lastVersion = getSharedPreferences(PREFS, MODE_PRIVATE).getInt(KEY_LAST_VERSION, -1);
         boolean assetsReady = AssetHelper.areAssetsExtracted(getApplicationContext());
@@ -335,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
         if (skipLoading) {
             layoutMainUI.setVisibility(View.VISIBLE);
             layoutLoading.setVisibility(View.GONE);
-            log("Sistema minipro y assets listos.");
+            log("Sistema minipro y base de datos de chips listos.");
 
             executor.execute(() -> {
                 File buggedDir = new File(getFilesDir(), "usr/usr");
@@ -392,25 +447,60 @@ public class MainActivity extends AppCompatActivity {
         // Register USB receiver
         usbController.registerReceiver();
 
-        // Button listeners
+        // ────────── Button Listeners ─────────────────────────────────────────
+
         btnConnect.setOnClickListener(v -> usbController.searchAndRequestDevice());
 
-        btnProbe.setOnClickListener(v -> {
+        btnSearchChip.setOnClickListener(v -> showChipSelectorDialog());
+
+        btnAutodetectChip.setOnClickListener(v -> {
+            log("Iniciando autodetección de chip con MiniPro...");
             executeMinipro("-a", "8");
         });
 
+        btnProbe.setOnClickListener(v -> {
+            String chip = getSelectedChip();
+            if (chip.isEmpty()) {
+                executeMinipro("-a", "8");
+            } else {
+                executeMinipro("-p", chip);
+            }
+        });
+
         btnVerify.setOnClickListener(v -> {
-            String chip = etChipModel.getText().toString().trim();
+            String chip = getSelectedChip();
+            if (chip.isEmpty()) {
+                log("Error: Especifica un modelo de chip (ej: W25Q128FV).");
+                return;
+            }
+            File f = new File(getFilesDir(), "rom.bin");
+            if (!f.exists() || f.length() == 0) {
+                log("Error: No hay archivo rom.bin cargado para verificar. Usa 'Cargar ROM' o 'Leer Chip'.");
+                return;
+            }
             executeMinipro("-p", chip, "-m", "rom.bin");
         });
 
         btnRead.setOnClickListener(v -> {
-            String chip = etChipModel.getText().toString().trim();
+            String chip = getSelectedChip();
+            if (chip.isEmpty()) {
+                log("Error: Especifica un modelo de chip (ej: W25Q128FV).");
+                return;
+            }
             executeMinipro("-p", chip, "-r", "rom.bin");
         });
 
         btnWrite.setOnClickListener(v -> {
-            String chip = etChipModel.getText().toString().trim();
+            String chip = getSelectedChip();
+            if (chip.isEmpty()) {
+                log("Error: Especifica un modelo de chip (ej: W25Q128FV).");
+                return;
+            }
+            File f = new File(getFilesDir(), "rom.bin");
+            if (!f.exists() || f.length() == 0) {
+                log("Error: No hay archivo rom.bin cargado para escribir. Usa 'Cargar ROM' primero.");
+                return;
+            }
             executeMinipro("-p", chip, "-w", "rom.bin");
         });
 
@@ -445,7 +535,11 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle(R.string.str_confirm_erase_title)
                     .setMessage(R.string.str_confirm_erase_msg)
                     .setPositiveButton(R.string.str_yes_erase, (dialog, which) -> {
-                        String chip = etChipModel.getText().toString().trim();
+                        String chip = getSelectedChip();
+                        if (chip.isEmpty()) {
+                            log("Error: Especifica un modelo de chip antes de borrar.");
+                            return;
+                        }
                         executeMinipro("-p", chip, "-E");
                     })
                     .setNegativeButton(R.string.str_cancelar, null)
@@ -465,8 +559,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnClearLogs.setOnClickListener(v -> {
-            synchronized (logBuffer) {
-                logBuffer.setLength(0);
+            synchronized (consoleLines) {
+                consoleLines.clear();
+                currentLineIndex = -1;
+                cursorAtStartOfLine = false;
             }
             tvLog.setText("");
         });
@@ -474,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
         btnAbort.setOnClickListener(v -> miniproExecutor.abort());
     }
 
-    // ========== Menu ==========
+    // ────────── Menu ─────────────────────────────────────────────────────────
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -488,16 +584,24 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_hex_viewer) {
             startActivity(new Intent(this, HexViewerActivity.class));
             return true;
+        } else if (id == R.id.action_hex_diff) {
+            startActivity(new Intent(this, HexDiffActivity.class));
+            return true;
+        } else if (id == R.id.action_pinouts) {
+            showPinoutsDialog();
+            return true;
+        } else if (id == R.id.action_chip_selector) {
+            showChipSelectorDialog();
+            return true;
+        } else if (id == R.id.action_export_downloads) {
+            exportToDownloadsFolder();
+            return true;
         } else if (id == R.id.action_select_dir) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             directoryPickerLauncher.launch(intent);
             return true;
         } else if (id == R.id.action_about) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.str_acerca_de_titulo)
-                    .setMessage(R.string.str_acerca_de_msg)
-                    .setPositiveButton(R.string.str_cerrar, null)
-                    .show();
+            showAboutDialog();
             return true;
         } else if (id == R.id.action_policy) {
             startActivity(new Intent(this, PolicyActivity.class));
@@ -506,22 +610,335 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // ========== Helpers ==========
+    // ────────── Chip Selection Dialog & Search ───────────────────────────────
 
-    private void log(String msg) {
-        String line = msg + "\n";
-        synchronized (logBuffer) {
-            logBuffer.append(line);
-            if (!isLogUpdatePending) {
-                isLogUpdatePending = true;
-                logHandler.postDelayed(logUpdater, 100);
-            }
+    private void showChipSelectorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.custom_spinner_dropdown_item, null);
+
+        // Crear vista personalizada programática limpia
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) (12 * getResources().getDisplayMetrics().density);
+        layout.setPadding(pad, pad, pad, pad);
+        layout.setBackgroundColor(0xFF12141D);
+
+        // Barra de búsqueda
+        EditText searchBox = new EditText(this);
+        searchBox.setHint(R.string.str_buscar_chip_hint);
+        searchBox.setHintTextColor(0xFF757575);
+        searchBox.setTextColor(0xFFFFFFFF);
+        searchBox.setBackgroundResource(R.drawable.bg_spinner);
+        searchBox.setPadding(pad, pad / 2, pad, pad / 2);
+        searchBox.setTextSize(14f);
+        layout.addView(searchBox);
+
+        // Fila de botones de acción rápida
+        LinearLayout btnRow = new LinearLayout(this);
+        btnRow.setOrientation(LinearLayout.HORIZONTAL);
+        btnRow.setPadding(0, pad / 2, 0, pad / 2);
+
+        Button btnAddManual = new Button(this);
+        btnAddManual.setText(R.string.str_agregar_chip_manual);
+        btnAddManual.setTextSize(11f);
+        btnAddManual.setBackgroundColor(0xFF1565C0);
+        btnAddManual.setTextColor(0xFFFFFFFF);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        lp1.setMargins(0, 0, pad / 4, 0);
+        btnRow.addView(btnAddManual, lp1);
+
+        Button btnQueryDb = new Button(this);
+        btnQueryDb.setText("Consultar BD");
+        btnQueryDb.setTextSize(11f);
+        btnQueryDb.setBackgroundColor(0xFF37474F);
+        btnQueryDb.setTextColor(0xFFFFFFFF);
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        lp2.setMargins(pad / 4, 0, 0, 0);
+        btnRow.addView(btnQueryDb, lp2);
+
+        layout.addView(btnRow);
+
+        // Lista de chips
+        ListView listView = new ListView(this);
+        List<String> allChips = new ArrayList<>();
+        List<String> recentChips = ChipDatabase.getRecentChips(this);
+        if (!recentChips.isEmpty()) {
+            allChips.addAll(recentChips);
         }
+        List<String> customChips = ChipDatabase.getCustomChips(this);
+        for (String c : customChips) {
+            if (!allChips.contains(c)) allChips.add(c);
+        }
+        for (String c : ChipDatabase.getAllPredefinedChips()) {
+            if (!allChips.contains(c)) allChips.add(c);
+        }
+
+        final List<String> currentFiltered = new ArrayList<>(allChips);
+        ArrayAdapter<String> chipAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, currentFiltered) {
+            @Override
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                TextView tv = (TextView) super.getView(position, convertView, parent);
+                tv.setTextColor(0xFFECEFF1);
+                tv.setTextSize(14f);
+                return tv;
+            }
+        };
+        listView.setAdapter(chipAdapter);
+        layout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 600));
+
+        AlertDialog dialog = builder.setTitle(R.string.str_seleccionar_chip_dialog_title)
+                .setView(layout)
+                .setNegativeButton(R.string.str_cerrar, null)
+                .create();
+
+        // Filtro en tiempo real
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim().toUpperCase();
+                currentFiltered.clear();
+                if (query.isEmpty()) {
+                    currentFiltered.addAll(allChips);
+                } else {
+                    for (String chip : allChips) {
+                        if (chip.toUpperCase().contains(query)) {
+                            currentFiltered.add(chip);
+                        }
+                    }
+                }
+                chipAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Selección de chip
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < currentFiltered.size()) {
+                String selected = currentFiltered.get(position);
+                etChipModel.setText(selected);
+                ChipDatabase.addRecentChip(this, selected);
+                saveSelectedChip(selected);
+                log("Chip configurado: " + selected);
+                dialog.dismiss();
+            }
+        });
+
+        // Botón Agregar Manual
+        btnAddManual.setOnClickListener(v -> {
+            dialog.dismiss();
+            showAddManualChipDialog();
+        });
+
+        // Botón Consultar BD minipro
+        btnQueryDb.setOnClickListener(v -> {
+            dialog.dismiss();
+            showMiniproDbQueryDialog();
+        });
+
+        dialog.show();
     }
 
-    private String getSelectedDevice() {
-        Object selected = spinnerDevices.getSelectedItem();
-        return selected != null ? selected.toString() : "TL866II+";
+    private void showAddManualChipDialog() {
+        EditText input = new EditText(this);
+        input.setHint(R.string.str_chip_manual_hint);
+        input.setHintTextColor(0xFF757575);
+        input.setTextColor(0xFFFFFFFF);
+        input.setBackgroundResource(R.drawable.bg_spinner);
+        int pad = (int) (12 * getResources().getDisplayMetrics().density);
+        input.setPadding(pad, pad, pad, pad);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.str_chip_manual_title)
+                .setView(input)
+                .setPositiveButton(R.string.str_guardar, (dialog, which) -> {
+                    String chip = input.getText().toString().trim().toUpperCase();
+                    if (!chip.isEmpty()) {
+                        ChipDatabase.addCustomChip(this, chip);
+                        etChipModel.setText(chip);
+                        saveSelectedChip(chip);
+                        log("Chip personalizado agregado y seleccionado: " + chip);
+                    }
+                })
+                .setNegativeButton(R.string.str_cancelar, null)
+                .show();
+    }
+
+    private void showMiniproDbQueryDialog() {
+        EditText input = new EditText(this);
+        input.setHint("Ej: 25Q, PIC16, 24C, ATmega...");
+        input.setHintTextColor(0xFF757575);
+        input.setTextColor(0xFFFFFFFF);
+        input.setBackgroundResource(R.drawable.bg_spinner);
+        int pad = (int) (12 * getResources().getDisplayMetrics().density);
+        input.setPadding(pad, pad, pad, pad);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Consultar Base de Datos MiniPro")
+                .setMessage("Ingresa el término de búsqueda para listar los chips soportados:")
+                .setView(input)
+                .setPositiveButton("Listar", (dialog, which) -> {
+                    String query = input.getText().toString().trim();
+                    if (query.isEmpty()) {
+                        executeMinipro("-l");
+                    } else {
+                        executeCustomCommand("minipro -l | grep -i " + query);
+                    }
+                })
+                .setNegativeButton(R.string.str_cancelar, null)
+                .show();
+    }
+
+    // ────────── Pinouts Dialog ───────────────────────────────────────────────
+
+    private void showPinoutsDialog() {
+        String[] options = {
+                getString(R.string.str_pinout_opt_zif40),
+                getString(R.string.str_pinout_opt_spi25),
+                getString(R.string.str_pinout_opt_i2c24),
+                getString(R.string.str_pinout_opt_mw93),
+                getString(R.string.str_pinout_opt_parallel),
+                getString(R.string.str_pinout_opt_icsp),
+                getString(R.string.str_pinout_opt_avrisp),
+                getString(R.string.str_pinout_opt_plcc32)
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.str_pinouts_de_hard)
+                .setItems(options, (dialog, which) -> {
+                    ImageView iv = new ImageView(this);
+                    iv.setBackgroundColor(0xFF12141D);
+                    int pad = (int) (8 * getResources().getDisplayMetrics().density);
+                    iv.setPadding(pad, pad, pad, pad);
+                    String title = options[which];
+
+                    switch (which) {
+                        case 0:
+                            PinoutView.dibujarZIF40(this, iv);
+                            break;
+                        case 1:
+                            PinoutView.dibujarSPI25(this, iv);
+                            break;
+                        case 2:
+                            PinoutView.dibujarI2C24(this, iv);
+                            break;
+                        case 3:
+                            PinoutView.dibujarMicrowire93(this, iv);
+                            break;
+                        case 4:
+                            PinoutView.dibujarParallelDIP(this, iv);
+                            break;
+                        case 5:
+                            PinoutView.dibujarICSP(this, iv);
+                            break;
+                        case 6:
+                            PinoutView.dibujarAVRISP(this, iv);
+                            break;
+                        case 7:
+                        default:
+                            PinoutView.dibujarPLCC32(this, iv);
+                            break;
+                    }
+
+                    ScrollView scroll = new ScrollView(this);
+                    scroll.addView(iv);
+                    new AlertDialog.Builder(this)
+                            .setTitle(title)
+                            .setView(scroll)
+                            .setPositiveButton(R.string.str_cerrar, null)
+                            .show();
+                })
+                .setNegativeButton(R.string.str_cancelar, null)
+                .show();
+    }
+
+    // ────────── About & Licenses Dialog ──────────────────────────────────────
+
+    private void showAboutDialog() {
+        TextView aboutText = new TextView(this);
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        aboutText.setPadding(padding, padding, padding, padding / 2);
+        aboutText.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutText.setTextColor(0xFFECEFF1);
+        aboutText.setLinkTextColor(0xFF29B6F6);
+        String aboutHtml = getString(R.string.str_about_html);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            aboutText.setText(Html.fromHtml(aboutHtml, Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            @SuppressWarnings("deprecation")
+            CharSequence text = Html.fromHtml(aboutHtml);
+            aboutText.setText(text);
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.str_acerca_de_titulo)
+                .setView(aboutText)
+                .setPositiveButton(R.string.str_cerrar, null)
+                .show();
+    }
+
+    // ────────── Helpers ──────────────────────────────────────────────────────
+
+    private String getSelectedChip() {
+        return etChipModel.getText() != null ? etChipModel.getText().toString().trim() : "";
+    }
+
+    private void saveSelectedChip(String chip) {
+        getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                .putString(KEY_SELECTED_CHIP, chip).apply();
+    }
+
+    private void log(String msg) {
+        appendRawLogOnUi(msg + "\n");
+    }
+
+    private void appendRawLogOnUi(String text) {
+        synchronized (consoleLines) {
+            if (consoleLines.isEmpty()) {
+                consoleLines.add(new StringBuilder());
+                currentLineIndex = 0;
+            }
+
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                if (c == '\n') {
+                    consoleLines.add(new StringBuilder());
+                    currentLineIndex = consoleLines.size() - 1;
+                    cursorAtStartOfLine = false;
+                } else if (c == '\r') {
+                    cursorAtStartOfLine = true;
+                } else if (c == '\b') {
+                    StringBuilder currentLine = consoleLines.get(currentLineIndex);
+                    if (currentLine.length() > 0) {
+                        currentLine.setLength(currentLine.length() - 1);
+                    }
+                } else {
+                    StringBuilder currentLine = consoleLines.get(currentLineIndex);
+                    if (cursorAtStartOfLine) {
+                        currentLine.setLength(0);
+                        cursorAtStartOfLine = false;
+                    }
+                    currentLine.append(c);
+                }
+            }
+
+            while (consoleLines.size() > 1200) {
+                consoleLines.remove(0);
+                currentLineIndex--;
+            }
+            if (currentLineIndex < 0) currentLineIndex = 0;
+        }
+
+        if (!isLogUpdatePending) {
+            isLogUpdatePending = true;
+            logHandler.postDelayed(logUpdater, 80);
+        }
     }
 
     private void executeMinipro(String... args) {
@@ -529,7 +946,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void executeCustomCommand(String raw) {
-        // Parsear comando: puede ser "minipro -p TL866II+ -r rom.bin" o simplemente "-p TL866II+ -r rom.bin"
         String command = raw.trim();
         if (command.startsWith("minipro ")) {
             command = command.substring(8).trim();
@@ -538,11 +954,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (command.isEmpty()) {
-            executeMinipro(); // sin args, muestra ayuda
+            executeMinipro();
             return;
         }
 
-        // Parseo simple de argumentos respetando comillas
         List<String> args = new ArrayList<>();
         StringBuilder current = new StringBuilder();
         boolean inQuotes = false;
@@ -563,6 +978,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         miniproExecutor.executeCommand(args.toArray(new String[0]), usbController.getCurrentFd());
+    }
+
+    private void exportToDownloadsFolder() {
+        if (!hasReadData) {
+            log("Error: No hay datos leídos del chip aún.");
+            return;
+        }
+        boolean success = FileManager.exportToDownloads(this, lastReadFile);
+        if (success) {
+            log(getString(R.string.str_export_downloads_success));
+            Toast.makeText(this, R.string.str_export_downloads_success, Toast.LENGTH_LONG).show();
+        } else {
+            log(getString(R.string.str_export_downloads_error));
+        }
     }
 
     private void clearTransientRomState(boolean notify) {
@@ -604,18 +1033,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logRuntimeInfo() {
-        log("Arch: " + Build.SUPPORTED_ABIS[0] + " | SDK: " + Build.VERSION.SDK_INT);
+        log("Arquitectura: " + Build.SUPPORTED_ABIS[0] + " | SDK: " + Build.VERSION.SDK_INT);
         log("Dispositivo: " + Build.MANUFACTURER + " " + Build.MODEL);
 
         File nativeLibDir = new File(getApplicationInfo().nativeLibraryDir);
         File miniproBin = new File(nativeLibDir, "libminipro_bin.so");
-        log("minipro: " + (miniproBin.exists() ? "OK (" + miniproBin.length() / 1024 + " KB)" : "NO ENCONTRADO"));
+        log("minipro binario: " + (miniproBin.exists() ? "OK (" + miniproBin.length() / 1024 + " KB)" : "NO ENCONTRADO"));
 
         File libusb = new File(nativeLibDir, "libusb_1_0.so");
-        log("libusb: " + (libusb.exists() ? "OK (" + libusb.length() / 1024 + " KB)" : "NO ENCONTRADO"));
+        log("libusb parcheada: " + (libusb.exists() ? "OK (" + libusb.length() / 1024 + " KB)" : "NO ENCONTRADO"));
 
-        // Check native bridge
-        log("Native bridge: " + stringFromJNI());
+        log("Puente JNI nativo: " + stringFromJNI());
     }
 
     private void importFile(Uri uri) {
@@ -656,7 +1084,6 @@ public class MainActivity extends AppCompatActivity {
                         baos.write(buffer, 0, read);
                     }
                     byte[] data = baos.toByteArray();
-                    // Simplemente copiar como binario
                     out.write(data);
                     totalWritten = data.length;
                 } else {
@@ -745,12 +1172,8 @@ public class MainActivity extends AppCompatActivity {
         executor.shutdownNow();
     }
 
-    // ========== Native methods ==========
+    // ────────── Native methods ───────────────────────────────────────────────
 
-    /**
-     * A native method that is implemented by the 'mini' native library,
-     * which is packaged with this application.
-     */
     public native String stringFromJNI();
     public native void setUsbFd(int fd);
     public native void clearUsbFd();

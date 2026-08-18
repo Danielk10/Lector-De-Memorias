@@ -1,0 +1,142 @@
+<resources>
+    <string name="app_name">EepromFlasher</string>
+    <string name="str_estado_usb_desc">Estado: USB desconectado</string>
+    <string name="str_status_usb_connected">Estado: Conectado a %1$s</string>
+    <string name="str_detectar_y_cone">Detectar y Conectar USB</string>
+    <string name="str_identificar_chi">Auto-detectar Chip</string>
+    <string name="str_verificar">Verificar</string>
+    <string name="str_leer_backup">Leer Chip</string>
+    <string name="str_escribir">Escribir Chip</string>
+    <string name="str_cargar_rom">Cargar ROM</string>
+    <string name="str_guardar_rom">Guardar ROM</string>
+    <string name="str_borrar_chip">Borrar Chip</string>
+    <string name="str_borrar_rom">Limpiar Datos</string>
+    <string name="str_terminal_salida">Terminal — Salida</string>
+    <string name="str_limpiar">Limpiar</string>
+    <string name="str_detener">Detener</string>
+    <string name="str_hint_comando">Ej: minipro --version o minipro -p W25Q128FV -r rom.bin</string>
+    <string name="str_ejecutar_instru">Ejecutar Comando</string>
+    <string name="str_log_">$ log\n</string>
+    <string name="str_preparando_depe">Preparando dependencias…</string>
+    <string name="str_polticas_de_pri">Políticas de Privacidad</string>
+    <string name="str_visor_hexadecim">Visor Hexadecimal</string>
+    <string name="str_comparar_hex">Comparar archivos HEX</string>
+    <string name="str_pinouts_de_hard">Pinouts de Hardware</string>
+    <string name="str_cargando_archiv">Cargando archivo…</string>
+    <string name="str_seleccionar_dir">Ruta de Guardado/Carga</string>
+    <string name="str_acerca_de">Acerca de y Licencias</string>
+    <string name="str_acerca_de_titulo">Acerca de EepromFlasher</string>
+    <string name="str_cancelar">Cancelar</string>
+    <string name="str_cerrar">Cerrar</string>
+    <string name="str_close">Cerrar</string>
+    <string name="str_guardar">Guardar</string>
+    <string name="str_confirm_erase_title">Confirmar borrado</string>
+    <string name="str_confirm_erase_msg">¿Estás seguro de que deseas BORRAR completamente todo el chip? Todos los datos se perderán (se llenarán con 0xFF). Esta acción es irreversible.</string>
+    <string name="str_yes_erase">Sí, borrar</string>
+    <string name="str_extracting_libs">Extrayendo bibliotecas…</string>
+    <string name="str_verifying_dependencies">Verificando dependencias…</string>
+    <string name="str_log_new_install">--- Primera instalación detectada ---</string>
+    <string name="str_log_preparing_resources">Preparando recursos del sistema…</string>
+    <string name="str_log_assets_copied">Assets copiados correctamente.</string>
+    <string name="str_log_resources_verified">Recursos verificados.</string>
+    <string name="str_log_warn_dependencies_failed">[WARN] Algunas dependencias no se pudieron verificar.</string>
+    <string name="str_log_terminal_reset">--- Terminal reiniciada ---</string>
+    <string name="str_log_write_command_help">Escribe un comando minipro válido.</string>
+    <string name="str_error">Error</string>
+    <string name="str_usb_device">Dispositivo USB</string>
+    <string name="str_unknown_manufacturer">Fabricante desconocido</string>
+    <string name="str_select_usb_device">Seleccionar dispositivo USB</string>
+    <string name="str_err_no_data_visualize">No hay datos para visualizar. Lee un chip o importa un archivo primero.</string>
+    <string name="str_err_load_data">Error al cargar datos: %1$s</string>
+    <string name="str_err_open_file">No se pudo abrir el archivo.</string>
+    <string name="str_binary_summary">Archivo: %1$s | Tamaño: %2$d bytes</string>
+    <string name="str_source_label">\nOrigen: %1$s</string>
+    <string name="str_hex_detected">Intel HEX detectado | Rango: 0x%1$08X - 0x%2$08X</string>
+    <string name="str_err_hex_no_records">No se encontraron registros de datos en el archivo HEX.</string>
+    <string name="str_err_hex_too_large">Archivo HEX demasiado grande para visualizar (%1$s MB).</string>
+    <string name="str_err_parse_hex">Error al parsear Intel HEX: %1$s</string>
+    <string name="str_00000000">00000000</string>
+    <string name="str___"> | </string>
+    <string name="str_ff_ff_ff_ff_ff_">FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</string>
+    <string name="str__"> | </string>
+    <string name="str_str">................</string>
+    <string name="str_seleccionar_dispositivo">Programador:</string>
+    <string name="str_seleccionar_chip">Modelo de Chip:</string>
+    <string name="str_hint_chip">Ej: W25Q128FV, AT24C02C, 27C512</string>
+    <string name="str_buscar_chip">Catálogo</string>
+    <string name="str_autodetectar_chip">Auto-detectar</string>
+    <string name="str_agregar_chip_manual">Agregar chip manual</string>
+    <string name="str_chip_manual_title">Agregar Modelo de Chip Personalizado</string>
+    <string name="str_chip_manual_hint">Ingresa el nombre del chip (ej: W25Q64JV)</string>
+    <string name="str_seleccionar_chip_dialog_title">Seleccionar Modelo de Chip</string>
+    <string name="str_buscar_chip_hint">Buscar chip por nombre...</string>
+    <string name="str_todos_los_chips">Todos</string>
+    <string name="str_recientes_personalizados">Recientes / Propios</string>
+    <string name="str_copiado">Texto copiado al portapapeles</string>
+    <string name="str_log_update_detected">Actualización detectada (v%1$d → v%2$d).</string>
+    <string name="str_log_verifying_resources">Verificando recursos tras actualización…</string>
+    <string name="str_archivo_a">Archivo A</string>
+    <string name="str_archivo_b">Archivo B</string>
+    <string name="str_file_a">Archivo A: %1$s</string>
+    <string name="str_file_b">Archivo B: %1$s</string>
+    <string name="str_selecciona_dos_">Selecciona dos archivos para comparar</string>
+    <string name="str_load_both_files">Carga ambos archivos para comparar.</string>
+    <string name="str_files_identical">✅ Archivos idénticos — 0 diferencias.</string>
+    <string name="str_files_different">⚠ %1$d bytes diferentes (%2$.1f%%) de %3$d bytes totales.</string>
+    <string name="str_compare_summary">A: %1$s (%2$d bytes) vs B: %3$s (%4$d bytes)</string>
+    <string name="str_err_load_file_a">Error cargando Archivo A: %1$s</string>
+    <string name="str_err_load_file_b">Error cargando Archivo B: %1$s</string>
+    <string name="str_export_downloads">Exportar a Descargas</string>
+    <string name="str_export_downloads_success">Dump exportado a la carpeta Descargas/EepromFlasher con éxito.</string>
+    <string name="str_export_downloads_error">Error al exportar a la carpeta Descargas.</string>
+
+    <!-- Pinouts Options -->
+    <string name="str_pinout_opt_zif40">Socket ZIF 40 Pines — Regla de Alineación (TL866/T48)</string>
+    <string name="str_pinout_opt_spi25">SPI Flash SOIC8 / SOP8 / DIP8 (Serie 25xxx)</string>
+    <string name="str_pinout_opt_i2c24">I2C EEPROM SOIC8 / DIP8 (Serie 24Cxx)</string>
+    <string name="str_pinout_opt_mw93">Microwire EEPROM (Serie 93Cxx)</string>
+    <string name="str_pinout_opt_parallel">Memorias Paralelas Flash / EPROM (DIP28 / DIP32)</string>
+    <string name="str_pinout_opt_icsp">Puerto ICSP 6 Pines (TL866 / T48 / PIC / AVR)</string>
+    <string name="str_pinout_opt_avrisp">Conectores Estándar AVR ISP (6 y 10 Pines)</string>
+    <string name="str_pinout_opt_plcc32">Adaptador PLCC32 a DIP32 (Memorias BIOS / Flash)</string>
+
+    <string name="str_pinout_zif40_header">Socket Universal ZIF 40 Pines (TL866 / T48 / T56)</string>
+    <string name="str_pinout_zif40_note">⚠️ SIEMPRE alinear chips DIP al FONDO INFERIOR del ZIF con muesca hacia arriba</string>
+    <string name="str_pinout_spi25_header">SPI Flash 25xxx (SOIC8 / DIP8) — Conexión a MiniPro</string>
+    <string name="str_pinout_spi25_note">⚠️ Pines WP# y HOLD# deben estar en HIGH (VCC 3.3V) si no se usan</string>
+    <string name="str_pinout_i2c24_header">I2C EEPROM 24Cxx — Pinout y Conexión MiniPro</string>
+    <string name="str_pinout_i2c24_note">⚠️ Pin 7 WP a GND para permitir escritura. A0/A1/A2 definen la dirección I2C</string>
+    <string name="str_pinout_mw93_header">Microwire 93Cxx — Pinout y Organización (8/16 bits)</string>
+    <string name="str_pinout_mw93_note">⚠️ Pin 6 ORG a VCC = modo 16 bits (Word), a GND = modo 8 bits (Byte)</string>
+    <string name="str_pinout_parallel_header">Memorias Paralelas EPROM / Flash DIP32 (27C, 28C, 29F, 39SF)</string>
+    <string name="str_pinout_parallel_note">⚠️ Cuidado con el voltaje VPP en EPROMs 27C (12.5V o 21V según datasheet)</string>
+    <string name="str_pinout_icsp_header">Header ICSP 6 Pines (Programación en Circuito TL866 / T48)</string>
+    <string name="str_pinout_icsp_note">⚠️ Mantener cables ICSP cortos (&lt;15 cm). Verificar voltajes VDD / VPP</string>
+    <string name="str_pinout_avrisp_header">Conectores AVR ISP Estándar (6 Pines y 10 Pines)</string>
+    <string name="str_pinout_avrisp_note">⚠️ Para ATmega328P / Arduino / ATtiny — conectar MISO, MOSI, SCK, RESET, VCC, GND</string>
+    <string name="str_pinout_plcc32_header">Adaptador PLCC32 a DIP32 (Memorias BIOS / Flash)</string>
+    <string name="str_pinout_plcc32_note">⚠️ Respetar el chaflán / bisel de Pin 1 en el zócalo PLCC32 del adaptador</string>
+
+    <string name="str_about_html"><![CDATA[
+<h2>🔌 EepromFlasher</h2>
+<p>Aplicación Android avanzada para lectura, verificación, escritura y borrado de memorias EEPROM y Flash usando <b>minipro</b> nativo mediante conexión directa USB Host API.</p>
+<hr/>
+<b>Programadores Compatibles:</b><br/>
+• TL866II+ / TL866A / TL866CS<br/>
+• Xgecu T48 / T56 / T76<br/>
+• Programador CH341A / CH347<br/>
+<br/>
+<b>Licencia del Proyecto:</b> GPLv3 / GPLv2<br/>
+<br/>
+<b>Librerías y Créditos de Código Abierto:</b><br/>
+• <a href="https://gitlab.com/DavidGriffith/minipro">minipro</a> — Software libre para TL866 / T48 / T56 por David Griffith y colaboradores (GPLv3)<br/>
+• <a href="https://github.com/libusb/libusb">libusb</a> — Librería multiplataforma USB (LGPL-2.1+)<br/>
+• <a href="https://github.com/mik3y/usb-serial-for-android">usb-serial-for-android</a> — Driver USB serial para Android (MIT)<br/>
+• <a href="https://github.com/google/material-design-icons">Material Components</a> — Sistema de diseño UI por Google (Apache 2.0)<br/>
+<br/>
+<b>Desarrollador y Repositorios:</b><br/>
+• <a href="https://github.com/Danielk10/Lector-De-Memorias">Lector-De-Memorias GitHub</a><br/>
+• <a href="https://github.com/Danielk10/Flash-EEPROM-Tool">Flash-EEPROM-Tool GitHub</a><br/>
+• <a href="https://github.com/Danielk10/PIC-k150-Programing">PIC k150 Programming</a><br/>
+]]></string>
+</resources>

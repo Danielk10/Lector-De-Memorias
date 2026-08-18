@@ -64,6 +64,7 @@ dependencies {
     implementation libs.appcompat
     implementation libs.constraintlayout
     implementation libs.material
+    implementation libs.documentfile
     implementation(libs.usb.serial.for1.android)
     testImplementation libs.junit
     androidTestImplementation libs.espresso.core
