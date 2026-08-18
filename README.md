@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔌 EEPROM Flasher
+# EEPROM Flasher
 
 ### Programador de Memorias EEPROM / Flash / MCU para Android
 
