@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EepromFlasher</string>
+    <string name="app_name">EEPROM Flasher</string>
     <string name="str_estado_usb_desc">USB Status: Disconnected</string>
     <string name="str_status_usb_connected">Status: Connected to %1$s</string>
     <string name="str_detectar_y_cone">Detect and Connect USB</string>
@@ -25,7 +25,7 @@
     <string name="str_cargando_archiv">Loading file…</string>
     <string name="str_seleccionar_dir">Storage Directory</string>
     <string name="str_acerca_de">About &amp; Licenses</string>
-    <string name="str_acerca_de_titulo">About EepromFlasher</string>
+    <string name="str_acerca_de_titulo">About EEPROM Flasher</string>
     <string name="str_cancelar">Cancel</string>
     <string name="str_cerrar">Close</string>
     <string name="str_close">Close</string>
@@ -87,7 +87,7 @@
     <string name="str_err_load_file_a">Error loading File A: %1$s</string>
     <string name="str_err_load_file_b">Error loading File B: %1$s</string>
     <string name="str_export_downloads">Export to Downloads</string>
-    <string name="str_export_downloads_success">Dump exported to Downloads/EepromFlasher folder.</string>
+    <string name="str_export_downloads_success">Dump exported to Downloads/EEPROM Flasher folder.</string>
     <string name="str_export_downloads_error">Error exporting to Downloads folder.</string>
 
     <!-- Pinouts Options -->
@@ -118,7 +118,7 @@
     <string name="str_pinout_plcc32_note">⚠️ Match Pin 1 chamfer/notch on the PLCC32 adapter socket</string>
 
     <string name="str_about_html"><![CDATA[
-<h2>🔌 EepromFlasher</h2>
+<h2>🔌 EEPROM Flasher</h2>
 <p>Universal Android application for reading, verifying, writing, and erasing EEPROM and Flash memories using native <b>minipro</b> with direct USB Host API connection.</p>
 <hr/>
 <b>Supported Programmers:</b><br/>
@@ -135,7 +135,7 @@
 • <a href="https://github.com/google/material-design-icons">Material Components</a> — UI design system by Google (Apache 2.0)<br/>
 <br/>
 <b>Developer &amp; Repository:</b><br/>
-• <a href="https://github.com/Danielk10/Lector-De-Memorias">Lector-De-Memorias GitHub</a><br/>
+• <a href="https://github.com/Danielk10/Lector-De-Memorias">EEPROM Flasher GitHub</a><br/>
 • <a href="https://github.com/Danielk10/Flash-EEPROM-Tool">Flash-EEPROM-Tool GitHub</a><br/>
 • <a href="https://github.com/Danielk10/PIC-k150-Programing">PIC k150 Programming</a><br/>
 ]]></string>

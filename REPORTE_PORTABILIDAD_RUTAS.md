@@ -1,4 +1,4 @@
-# Reporte de Auditoría y Corrección: Rutas, Portabilidad y Ejecución de EepromFlasher
+# Reporte de Auditoría y Corrección: Rutas, Portabilidad y Ejecución de EEPROM Flasher
 ESTADO: CORREGIDO (Última actualización: Agosto 2026)
 
 Este documento detalla los hallazgos críticos, parches aplicados y soluciones de ingeniería implementadas para garantizar la portabilidad y ejecución nativa de herramientas como `minipro` y `libusb` dentro de Android, sin permisos root, en el paquete `com.diamon.mini`.
@@ -25,12 +25,12 @@ Este documento detalla los hallazgos críticos, parches aplicados y soluciones d
 
 ### 5. Bypass de Cierre de File Descriptor en Android 10+ (Exec / Fork JNI)
 * **Problema Crítico:** A partir de Android 10 (API 29), las llamadas del sistema a través de la API estándar de Java (`ProcessBuilder` y `Runtime.exec`) realizan una limpieza interna en la que cierran sistemáticamente todos los descriptores de archivo (FD) abiertos mayores a 2 en el proceso hijo antes de llamar a `execve`. Esto invalidaba el FD inyectado para la comunicación USB sin Root (`ANDROID_USB_FD`).
-* **Acción:** Se eliminó la dependencia de `ProcessBuilder` y se reescribió el módulo de ejecución en C++ mediante JNI en [native-lib.cpp](file:///home/danielpdiamon/Lector-De-Memorias/app/src/main/cpp/native-lib.cpp).
+* **Acción:** Se eliminó la dependencia de `ProcessBuilder` y se reescribió el módulo de ejecución en C++ mediante JNI en [native-lib.cpp](app/src/main/cpp/native-lib.cpp).
   * **Ejecución Nativa:** El proceso se bifurca (`fork()`) y se ejecuta (`execv()`) a nivel nativo en C++, preservando el FD USB abierto sin interferencia del recolector de FDs de Java.
   * **Captura de Salida en Tiempo Real:** Se creó un pipe POSIX en C++. En Java se adopta el FD del pipe mediante `ParcelFileDescriptor.adoptFd(readFd)`, pasándolo a un `BufferedReader` para actualizar la consola en la interfaz gráfica de usuario en tiempo real.
   * **Interrupción / Aborto:** El hilo de cancelación detiene la ejecución inmediatamente enviando una señal `SIGKILL` al PID del proceso hijo mediante JNI.
 
 ### 6. Optimización de Consulta de Descriptor en Libusb
 * **Problema:** En el código original de intercepción del FD USB, se leía el descriptor de dispositivo mediante la llamada secuencial `read(fd, buf, 18)`. Si otro proceso o lectura previa ya había avanzado el puntero del FD, la lectura fallaba o devolvía descriptores corruptos.
-* **Acción:** Se actualizó [build_libusb_custom_mini.sh](file:///home/danielpdiamon/Lector-De-Memorias/build_libusb_custom_mini.sh) para consultar el descriptor de dispositivo enviando la llamada de control directamente a la controladora USB mediante `ioctl(fd, USBDEVFS_CONTROL, &ctrl)` (ioctl `0xC0185500`).
+* **Acción:** Se actualizó [build_libusb_custom_mini.sh](build_libusb_custom_mini.sh) para consultar el descriptor de dispositivo enviando la llamada de control directamente a la controladora USB mediante `ioctl(fd, USBDEVFS_CONTROL, &ctrl)` (ioctl `0xC0185500`).
 * **Resultado:** La lectura del descriptor es ahora atómica, concurrente y completamente independiente del estado del cursor del File Descriptor.

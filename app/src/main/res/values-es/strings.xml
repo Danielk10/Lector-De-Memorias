@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EepromFlasher</string>
+    <string name="app_name">EEPROM Flasher</string>
     <string name="str_estado_usb_desc">Estado: USB desconectado</string>
     <string name="str_status_usb_connected">Estado: Conectado a %1$s</string>
     <string name="str_detectar_y_cone">Detectar y Conectar USB</string>
@@ -25,7 +25,7 @@
     <string name="str_cargando_archiv">Cargando archivo…</string>
     <string name="str_seleccionar_dir">Ruta de Guardado/Carga</string>
     <string name="str_acerca_de">Acerca de y Licencias</string>
-    <string name="str_acerca_de_titulo">Acerca de EepromFlasher</string>
+    <string name="str_acerca_de_titulo">Acerca de EEPROM Flasher</string>
     <string name="str_cancelar">Cancelar</string>
     <string name="str_cerrar">Cerrar</string>
     <string name="str_close">Cerrar</string>
@@ -87,7 +87,7 @@
     <string name="str_err_load_file_a">Error cargando Archivo A: %1$s</string>
     <string name="str_err_load_file_b">Error cargando Archivo B: %1$s</string>
     <string name="str_export_downloads">Exportar a Descargas</string>
-    <string name="str_export_downloads_success">Dump exportado a la carpeta Descargas/EepromFlasher con éxito.</string>
+    <string name="str_export_downloads_success">Dump exportado a la carpeta Descargas/EEPROM Flasher con éxito.</string>
     <string name="str_export_downloads_error">Error al exportar a la carpeta Descargas.</string>
 
     <!-- Pinouts Options -->
@@ -118,7 +118,7 @@
     <string name="str_pinout_plcc32_note">⚠️ Respetar el chaflán / bisel de Pin 1 en el zócalo PLCC32 del adaptador</string>
 
     <string name="str_about_html"><![CDATA[
-<h2>🔌 EepromFlasher</h2>
+<h2>🔌 EEPROM Flasher</h2>
 <p>Aplicación Android avanzada para lectura, verificación, escritura y borrado de memorias EEPROM y Flash usando <b>minipro</b> nativo mediante conexión directa USB Host API.</p>
 <hr/>
 <b>Programadores Compatibles:</b><br/>
@@ -135,7 +135,7 @@
 • <a href="https://github.com/google/material-design-icons">Material Components</a> — Sistema de diseño UI por Google (Apache 2.0)<br/>
 <br/>
 <b>Desarrollador y Repositorios:</b><br/>
-• <a href="https://github.com/Danielk10/Lector-De-Memorias">Lector-De-Memorias GitHub</a><br/>
+• <a href="https://github.com/Danielk10/Lector-De-Memorias">EEPROM Flasher GitHub</a><br/>
 • <a href="https://github.com/Danielk10/Flash-EEPROM-Tool">Flash-EEPROM-Tool GitHub</a><br/>
 • <a href="https://github.com/Danielk10/PIC-k150-Programing">PIC k150 Programming</a><br/>
 ]]></string>

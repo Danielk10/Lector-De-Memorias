@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔌 EepromFlasher
+# 🔌 EEPROM Flasher
 
 ### Programador de Memorias EEPROM / Flash / MCU para Android
 
@@ -23,7 +23,7 @@
 
 ## 📋 Descripción
 
-**EepromFlasher** es una aplicación Android profesional que permite programar e interactuar con memorias EEPROM, Flash SPI, EPROM paralelas, microcontroladores PIC/AVR y dispositivos lógicos directamente desde tu móvil o tablet Android mediante conexión USB OTG directa (sin root).
+**EEPROM Flasher** es una aplicación Android profesional que permite programar e interactuar con memorias EEPROM, Flash SPI, EPROM paralelas, microcontroladores PIC/AVR y dispositivos lógicos directamente desde tu móvil o tablet Android mediante conexión USB OTG directa (sin root).
 
 Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado para `arm64-v8a` junto con un puente [libusb](https://github.com/libusb/libusb) que intercepta los descriptores de archivo del USB Host API de Android.
 
@@ -43,7 +43,7 @@ Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado p
 | 🔢 **Visor Hexadecimal** | Visualizador de archivos `.bin` e Intel `.hex` con direcciones, volcado hexadecimal y caracteres ASCII |
 | ⚖️ **Comparador de Binarios** | Herramienta de Diff side-by-side que resalta discrepancias (`02X→02X`), porcentaje y conteo de bytes distintos |
 | 🔌 **Diagramas de Pinouts** | Diagramas esquemáticos renderizados en Canvas para ZIF 40 pines, SOIC8 SPI, 24Cxx, 93Cxx, DIP32, ICSP 6 pines, AVR ISP y adaptadores PLCC32 |
-| 💾 **Exportar a Descargas / SAF** | Exporta volcados a la carpeta `Descargas/EepromFlasher` o a cualquier almacenamiento con Storage Access Framework |
+| 💾 **Exportar a Descargas / SAF** | Exporta volcados a la carpeta `Descargas/EEPROM Flasher` o a cualquier almacenamiento con Storage Access Framework |
 | 💻 **Terminal Integrada** | Consola con soporte para retornos de carro (`\r`), buffer optimizado y scroll estable (`LogScrollView`) |
 | 📋 **Portapapeles Rápido** | Copia la salida completa de la consola manteniendo presionado el log |
 | 🛡️ **Acerca de y Licencias** | Información detallada del software y licencias de código abierto con enlaces interactivos |
@@ -128,7 +128,7 @@ chmod +x setup-sdk.sh
 
 ## 📄 Licencias y Atribuciones
 
-- **EepromFlasher**: [GNU GPLv3](LICENSE)
+- **EEPROM Flasher**: [GNU GPLv3](LICENSE)
 - **minipro**: [GNU GPLv3](https://gitlab.com/DavidGriffith/minipro) — David Griffith y colaboradores
 - **libusb**: [GNU LGPLv2.1](https://github.com/libusb/libusb) — libusb contributors
 - **usb-serial-for-android**: [MIT](https://github.com/mik3y/usb-serial-for-android) — mik3y

@@ -1,5 +1,5 @@
 # Reporte de Limpieza de Assets y Corrección de Rutas
-Paquete: `com.diamon.mini` (EepromFlasher)
+Paquete: `com.diamon.mini` (EEPROM Flasher)
 
 Este reporte documenta los archivos y carpetas dentro de `app/src/main/assets/data/data/com.diamon.mini/files/usr` que no son necesarios para la ejecución de los binarios en la arquitectura arm64-v8a del proyecto Android y que, por lo tanto, han sido eliminados para reducir significativamente el peso del APK y mejorar el rendimiento de la aplicación.
 

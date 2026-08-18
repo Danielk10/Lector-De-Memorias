@@ -1,20 +1,20 @@
 # 🔌 Emulador Local de USB FD (TL866II+) para Minipro (Android / Local)
 
-Este documento explica cómo utilizar el entorno de emulación local y dinámica de USB para **minipro** (`EepromFlasher`). Este entorno emula el mecanismo de inyección de File Descriptor (`ANDROID_USB_FD`) usado en la aplicación Android.
+Este documento explica cómo utilizar el entorno de emulación local y dinámica de USB para **minipro** (`EEPROM Flasher`). Este entorno emula el mecanismo de inyección de File Descriptor (`ANDROID_USB_FD`) usado en la aplicación Android.
 
 ---
 
 ## 🛠️ Estructura del Entorno
 
 El emulador está organizado en los siguientes directorios para mayor comodidad:
-1. **En el repositorio**: [`Lector-De-Memorias/emulador_minipro/`](file:///home/danielpdiamon/Lector-De-Memorias/emulador_minipro/)
-2. **En el home del usuario**: `/home/danielpdiamon/emulador_minipro/`
+1. **En el repositorio**: [`emulador_minipro/`](emulador_minipro/)
+2. **En el home del usuario**: `~/emulador_minipro/`
 
 ### Archivos clave:
-* **[`emulador_minipro.cpp`](file:///home/danielpdiamon/Lector-De-Memorias/emulador_minipro/emulador_minipro.cpp)**: Código fuente en C++ del emulador de hardware del programador TL866II+ con una memoria virtual de 1MB.
-* **[`patch_libusb_local.py`](file:///home/danielpdiamon/Lector-De-Memorias/emulador_minipro/patch_libusb_local.py)**: Script Python que realiza el parchado de red/sockets en el código de `libusb`.
-* **[`Makefile`](file:///home/danielpdiamon/Lector-De-Memorias/emulador_minipro/Makefile)**: Archivo para compilar el emulador con un simple `make`.
-* **[`emulador_minipro.sh`](file:///home/danielpdiamon/Lector-De-Memorias/emulador_minipro/emulador_minipro.sh)**: Script automatizado "todo en uno" que compila y corre una simulación completa de lectura.
+* **[`emulador_minipro.cpp`](emulador_minipro/emulador_minipro.cpp)**: Código fuente en C++ del emulador de hardware del programador TL866II+ con una memoria virtual de 1MB.
+* **[`patch_libusb_local.py`](emulador_minipro/patch_libusb_local.py)**: Script Python que realiza el parchado de red/sockets en el código de `libusb`.
+* **[`Makefile`](emulador_minipro/Makefile)**: Archivo para compilar el emulador con un simple `make`.
+* **[`emulador_minipro.sh`](emulador_minipro/emulador_minipro.sh)**: Script automatizado "todo en uno" que compila y corre una simulación completa de lectura.
 
 ---
 

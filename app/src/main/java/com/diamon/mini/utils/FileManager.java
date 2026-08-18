@@ -17,7 +17,7 @@ import java.io.OutputStream;
 
 public class FileManager {
     private static final String TAG = "FileManager";
-    private static final String FOLDER_NAME = "EepromFlasher";
+    private static final String FOLDER_NAME = "EEPROM Flasher";
 
     public static boolean exportToDownloads(Context context, String fileName) {
         File sourceFile = new File(context.getFilesDir(), fileName);
