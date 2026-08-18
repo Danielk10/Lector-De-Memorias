@@ -103,9 +103,9 @@
     <string name="str_chip_detected_configured">[AUTO] Detected and configured chip: %1$s</string>
     <string name="str_starting_autodetect">Starting chip autodetection with MiniPro...</string>
     <string name="str_err_specify_chip">Error: Specify a chip model (e.g. W25Q128FV).</string>
-    <string name="str_err_no_rom_loaded">Error: No rom.bin file loaded. Use 'Load ROM' or 'Read Chip' first.</string>
+    <string name="str_err_no_rom_loaded">Error: No rom.bin file loaded. Use \'Load ROM\' or \'Read Chip\' first.</string>
     <string name="str_err_no_data_read">Error: No chip data read yet.</string>
-    <string name="str_use_read_chip_first">Use 'Read Chip' first to read contents.</string>
+    <string name="str_use_read_chip_first">Use \'Read Chip\' first to read contents.</string>
     <string name="str_file_not_found">Error: The file \'%1$s\' does not exist.</string>
     <string name="str_export_dir_saved">Export directory configured and saved.</string>
     <string name="str_export_dir_no_persist">Directory configured (no extended persistence).</string>
@@ -158,6 +158,34 @@
     <string name="str_pinout_avrisp_note">⚠️ For ATmega328P / Arduino / ATtiny — connect MISO, MOSI, SCK, RESET, VCC, GND</string>
     <string name="str_pinout_plcc32_header">PLCC32 to DIP32 Adapter (BIOS / Flash Chips)</string>
     <string name="str_pinout_plcc32_note">⚠️ Match Pin 1 chamfer/notch on the PLCC32 adapter socket</string>
+
+    <!-- PinoutView strings -->
+    <string name="str_pinout_universal_alignment">📌 UNIVERSAL ALIGNMENT RULE (TL866/T48)</string>
+    <string name="str_pinout_dip_notch_up">All DIP chips are placed with the NOTCH UP</string>
+    <string name="str_pinout_dip_align_bottom">and ALIGNED TO THE BOTTOM of the ZIF socket:</string>
+    <string name="str_pinout_pin1_corner">✓ Chip Pin 1 always stays in the top-left corner of the inserted chip.</string>
+    <string name="str_pinout_lock_lever">✓ Lock the lever by lowering it completely before operating.</string>
+    <string name="str_pinout_parallel_title">PARALLEL DIP32 MEMORIES (27C512, 28C256, 29F010, 39SF040)</string>
+    <string name="str_pinout_left_pins">LEFT PINS (1 to 16)</string>
+    <string name="str_pinout_right_pins">RIGHT PINS (17 to 32)</string>
+    <string name="str_pinout_icsp_in_circuit">IN-CIRCUIT PROGRAMMING CONNECTION (ICSP)</string>
+    <string name="str_pinout_icsp_precautions">⚠️ ICSP PRECAUTIONS:</string>
+    <string name="str_pinout_icsp_warn_mclr">• Isolate the MCLR/RESET line from large capacitors on the board.</string>
+    <string name="str_pinout_icsp_warn_vcc">• Power from programmer ONLY if circuit consumption &lt; 100mA.</string>
+    <string name="str_pinout_icsp_warn_external">• If circuit has own power, disconnect Pin 2 (VCC) or turn off external supply.</string>
+    <string name="str_pinout_icsp_warn_length">• Keep ICSP cables shorter than 15 cm to avoid noise on PGC/PGD.</string>
+    <string name="str_pinout_avr_standard">STANDARD AVR ISP PINOUT (6 PINS vs 10 PINES)</string>
+    <string name="str_pinout_avr_compatible">Compatible with ATmega328P, ATmega8, ATmega16, ATmega32, ATtiny85, etc.</string>
+    <string name="str_pinout_avr_use_icsp">Use the TL866 ICSP port by connecting the corresponding lines.</string>
+    <string name="str_pinout_plcc_adapter">PLCC32 → DIP32 ADAPTER</string>
+    <string name="str_pinout_plcc_used_for">Used for programming BIOS / Firmware memories:</string>
+    <string name="str_pinout_plcc_orientation">Orientation:</string>
+    <string name="str_pinout_plcc_step1">1. Insert chip into PLCC socket with chamfer/dot matching adapter mark.</string>
+    <string name="str_pinout_plcc_step2">2. Insert DIP32 adapter into TL866 ZIF socket aligned to bottom.</string>
+    <string name="str_pinout_plcc_step3">3. In minipro select model with @PLCC32 suffix if applicable.</string>
+    <string name="str_pinout_top_view">Top View</string>
+    <string name="str_pinout_ground">Ground</string>
+
 
     <string name="str_about_html"><![CDATA[
 <h2>🔌 EEPROM Flasher</h2>

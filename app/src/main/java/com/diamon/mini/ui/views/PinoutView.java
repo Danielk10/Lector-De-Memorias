@@ -87,11 +87,11 @@ public class PinoutView {
         bordes(canvas, tx, ty, tw, th, COL_BORDE);
 
         configurarTexto(13f, true);
-        dibujarTexto(canvas, "📌 REGLA DE ALINEACIÓN UNIVERSAL (TL866/T48)", tx + 14, ty + 28, COL_YELLOW);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_universal_alignment), tx + 14, ty + 28, COL_YELLOW);
 
         configurarTexto(10.5f, false);
-        dibujarTexto(canvas, "Todos los chips DIP se colocan con la MUESCA HACIA ARRIBA", tx + 14, ty + 60, COL_TITULO);
-        dibujarTexto(canvas, "y ALINEADOS AL FONDO INFERIOR del socket ZIF:", tx + 14, ty + 80, COL_TITULO);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_dip_notch_up), tx + 14, ty + 60, COL_TITULO);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_dip_align_bottom), tx + 14, ty + 80, COL_TITULO);
 
         // Tabla de colocación
         float tby = ty + 105;
@@ -103,8 +103,8 @@ public class PinoutView {
         dibujarFilaInfo(canvas, tx + 14, tby + 175, "DIP40 (PIC, AVR, 27C400):", "Pines 1-20 (Izq) y 21-40 (Der - Completo)", COL_ACCENT);
 
         configurarTexto(10f, true);
-        dibujarTexto(canvas, "✓ Pin 1 del chip siempre queda en la esquina superior izquierda del chip insertado.", tx + 14, ty + 335, COL_PIN_NUM);
-        dibujarTexto(canvas, "✓ Bloquea la palanca bajándola completamente antes de operar.", tx + 14, ty + 360, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_pin1_corner), tx + 14, ty + 335, COL_PIN_NUM);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_lock_lever), tx + 14, ty + 360, COL_LABEL);
 
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_zif40_note));
         aplicar(bmp, target);
@@ -188,16 +188,16 @@ public class PinoutView {
         bordes(canvas, x, y, w, h, COL_BORDE);
 
         configurarTexto(13f, true);
-        dibujarTexto(canvas, "MEMORIAS PARALELAS DIP32 (27C512, 28C256, 29F010, 39SF040)", x + 16, y + 26, COL_YELLOW);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_parallel_title), x + 16, y + 26, COL_YELLOW);
 
         // Tabla 2 columnas DIP32
         float colW = 340;
         configurarTexto(10f, false);
         dibujarRectangulo(canvas, x + 16, y + 42, colW, 20, COL_HEADER);
-        dibujarTexto(canvas, "PINES IZQUIERDOS (1 a 16)", x + 24, y + 56, COL_TITULO);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_left_pins), x + 24, y + 56, COL_TITULO);
 
         dibujarRectangulo(canvas, x + 360, y + 42, colW, 20, COL_HEADER);
-        dibujarTexto(canvas, "PINES DERECHOS (17 a 32)", x + 368, y + 56, COL_TITULO);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_right_pins), x + 368, y + 56, COL_TITULO);
 
         String[] leftPins = {
                 "1: VPP / A18 (Voltaje Prog. / Dir)",
@@ -287,7 +287,7 @@ public class PinoutView {
         bordes(canvas, tx, ty, tw, th, COL_BORDE);
 
         configurarTexto(12f, true);
-        dibujarTexto(canvas, "CONEXIÓN DE PROGRAMACIÓN EN CIRCUITO (ICSP)", tx + 14, ty + 26, COL_YELLOW);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_in_circuit), tx + 14, ty + 26, COL_YELLOW);
 
         configurarTexto(10f, false);
         dibujarFilaInfo(canvas, tx + 14, ty + 50, "Microchip PIC (ej. 16F, 18F):", "Pin 1→MCLR(VPP), 2→VDD, 3→VSS, 4→PGD, 5→PGC", COL_SIGNAL);
@@ -295,12 +295,12 @@ public class PinoutView {
         dibujarFilaInfo(canvas, tx + 14, ty + 140, "SPI Flash en placa (25xxx):", "Pin 1→CS#, 2→VCC, 3→GND, 4→DI(MOSI), 5→CLK, 6→DO(MISO)", COL_ACCENT);
 
         configurarTexto(10f, true);
-        dibujarTexto(canvas, "⚠️ PRECAUCIONES ICSP:", tx + 14, ty + 205, COL_AVISO);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_precautions), tx + 14, ty + 205, COL_AVISO);
         configurarTexto(9.5f, false);
-        dibujarTexto(canvas, "• Aislar la línea MCLR/RESET de condensadores grandes en la placa.", tx + 14, ty + 230, COL_LABEL);
-        dibujarTexto(canvas, "• Alimentar desde el programador SOLO si el circuito no consume > 100mA.", tx + 14, ty + 252, COL_LABEL);
-        dibujarTexto(canvas, "• Si el circuito tiene fuente propia, desconectar el Pin 2 (VCC) o apagar la fuente externa.", tx + 14, ty + 274, COL_LABEL);
-        dibujarTexto(canvas, "• Mantener los cables ICSP menores a 15 cm para evitar ruido en PGC/PGD.", tx + 14, ty + 296, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_warn_mclr), tx + 14, ty + 230, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_warn_vcc), tx + 14, ty + 252, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_warn_external), tx + 14, ty + 274, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_warn_length), tx + 14, ty + 296, COL_LABEL);
 
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_icsp_note));
         aplicar(bmp, target);
@@ -318,7 +318,7 @@ public class PinoutView {
         bordes(canvas, x, y, w, h, COL_BORDE);
 
         configurarTexto(13f, true);
-        dibujarTexto(canvas, "PINOUT ESTÁNDAR AVR ISP (6 PINES vs 10 PINES)", x + 16, y + 26, COL_YELLOW);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_avr_standard), x + 16, y + 26, COL_YELLOW);
 
         // Header 6 Pines
         float b1x = x + 20, b1y = y + 50, b1w = 320, b1h = 240;
@@ -355,8 +355,8 @@ public class PinoutView {
         }
 
         configurarTexto(10f, false);
-        dibujarTexto(canvas, "Compatible con ATmega328P, ATmega8, ATmega16, ATmega32, ATtiny85, etc.", b1x + 4, y + 330, COL_LABEL);
-        dibujarTexto(canvas, "Usa el puerto ICSP de TL866 conectando las líneas correspondientes.", b1x + 4, y + 355, COL_ACCENT);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_avr_compatible), b1x + 4, y + 330, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_avr_use_icsp), b1x + 4, y + 355, COL_ACCENT);
 
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_avrisp_note));
         aplicar(bmp, target);
@@ -384,7 +384,7 @@ public class PinoutView {
         configurarTexto(11f, true);
         dibujarTexto(canvas, "PLCC32", px + 65, py + 95, COL_TITULO);
         configurarTexto(9f, false);
-        dibujarTexto(canvas, "Vista Superior", px + 55, py + 115, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_top_view), px + 55, py + 115, COL_LABEL);
 
         // Mapeo explicativo
         float tx = 300, ty = 40, tw = 440, th = 440;
@@ -392,22 +392,20 @@ public class PinoutView {
         bordes(canvas, tx, ty, tw, th, COL_BORDE);
 
         configurarTexto(12f, true);
-        dibujarTexto(canvas, "ADAPTADOR PLCC32 → DIP32", tx + 14, ty + 26, COL_YELLOW);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_adapter), tx + 14, ty + 26, COL_YELLOW);
 
         configurarTexto(10f, false);
-        dibujarTexto(canvas, "Utilizado para programar memorias BIOS / Firmware:", tx + 14, ty + 55, COL_TITULO);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_used_for), tx + 14, ty + 55, COL_TITULO);
         dibujarTexto(canvas, "• SST39SF010A / 020A / 040 (PLCC32)", tx + 14, ty + 78, COL_SIGNAL);
         dibujarTexto(canvas, "• W29EE011 / W49F002 (PLCC32)", tx + 14, ty + 100, COL_SIGNAL);
         dibujarTexto(canvas, "• 27C256 / 27C512 / 29C010 (PLCC32)", tx + 14, ty + 122, COL_SIGNAL);
 
         configurarTexto(10f, true);
-        dibujarTexto(canvas, "Orientación:", tx + 14, ty + 160, COL_ACCENT);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_orientation), tx + 14, ty + 160, COL_ACCENT);
         configurarTexto(9.5f, false);
-        dibujarTexto(canvas, "1. Inserta el chip en el zócalo PLCC con el chaflán / punto", tx + 14, ty + 185, COL_LABEL);
-        dibujarTexto(canvas, "   coincidiendo con la marca del adaptador.", tx + 14, ty + 205, COL_LABEL);
-        dibujarTexto(canvas, "2. Inserta el adaptador DIP32 en el socket ZIF de TL866", tx + 14, ty + 230, COL_LABEL);
-        dibujarTexto(canvas, "   alineado al fondo inferior (Pines 5 a 20 / 21 a 36).", tx + 14, ty + 250, COL_LABEL);
-        dibujarTexto(canvas, "3. En minipro selecciona el modelo con sufijo @PLCC32 si aplica.", tx + 14, ty + 275, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_step1), tx + 14, ty + 185, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_step2), tx + 14, ty + 230, COL_LABEL);
+        dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_step3), tx + 14, ty + 275, COL_LABEL);
 
         canvas.restore();
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_plcc32_note));
@@ -553,7 +551,7 @@ public class PinoutView {
         if (pin == null) return COL_LABEL;
         String p = pin.toUpperCase();
         if (p.contains("VCC") || p.contains("VDD") || p.contains("3.3") || p.contains("5V")) return COL_VCC;
-        if (p.contains("GND") || p.contains("VSS") || p.contains("TIERRA")) return COL_GND;
+        if (p.contains("GND") || p.contains("VSS") || p.contains("TIERRA") || p.contains("GROUND")) return COL_GND;
         if (p.contains("MOSI") || p.contains("DI") || p.contains("PGD") || p.contains("SDA")) return COL_SIGNAL;
         if (p.contains("MISO") || p.contains("DO") || p.contains("SDO")) return COL_ACCENT;
         if (p.contains("CLK") || p.contains("SCK") || p.contains("PGC") || p.contains("SCL")) return COL_YELLOW;

@@ -103,9 +103,9 @@
     <string name="str_chip_detected_configured">[AUTO] Chip detectado y configurado: %1$s</string>
     <string name="str_starting_autodetect">Iniciando autodetección de chip con MiniPro...</string>
     <string name="str_err_specify_chip">Error: Especifica un modelo de chip (ej: W25Q128FV).</string>
-    <string name="str_err_no_rom_loaded">Error: No hay archivo rom.bin cargado. Usa 'Cargar ROM' o 'Leer Chip' primero.</string>
+    <string name="str_err_no_rom_loaded">Error: No hay archivo rom.bin cargado. Usa \'Cargar ROM\' o \'Leer Chip\' primero.</string>
     <string name="str_err_no_data_read">Error: No hay datos leídos del chip aún.</string>
-    <string name="str_use_read_chip_first">Usa 'Leer Chip' primero para leer el contenido.</string>
+    <string name="str_use_read_chip_first">Usa \'Leer Chip\' primero para leer el contenido.</string>
     <string name="str_file_not_found">Error: El archivo \'%1$s\' no existe.</string>
     <string name="str_export_dir_saved">Directorio de exportación configurado y guardado.</string>
     <string name="str_export_dir_no_persist">Directorio configurado (sin persistencia extendida).</string>
@@ -158,6 +158,34 @@
     <string name="str_pinout_avrisp_note">⚠️ Para ATmega328P / Arduino / ATtiny — conectar MISO, MOSI, SCK, RESET, VCC, GND</string>
     <string name="str_pinout_plcc32_header">Adaptador PLCC32 a DIP32 (Memorias BIOS / Flash)</string>
     <string name="str_pinout_plcc32_note">⚠️ Respetar el chaflán / bisel de Pin 1 en el zócalo PLCC32 del adaptador</string>
+
+    <!-- PinoutView strings -->
+    <string name="str_pinout_universal_alignment">📌 REGLA DE ALINEACIÓN UNIVERSAL (TL866/T48)</string>
+    <string name="str_pinout_dip_notch_up">Todos los chips DIP se colocan con la MUESCA HACIA ARRIBA</string>
+    <string name="str_pinout_dip_align_bottom">y ALINEADOS AL FONDO INFERIOR del socket ZIF:</string>
+    <string name="str_pinout_pin1_corner">✓ Pin 1 del chip siempre queda en la esquina superior izquierda del chip insertado.</string>
+    <string name="str_pinout_lock_lever">✓ Bloquea la palanca bajándola completamente antes de operar.</string>
+    <string name="str_pinout_parallel_title">MEMORIAS PARALELAS DIP32 (27C512, 28C256, 29F010, 39SF040)</string>
+    <string name="str_pinout_left_pins">PINES IZQUIERDOS (1 a 16)</string>
+    <string name="str_pinout_right_pins">PINES DERECHOS (17 a 32)</string>
+    <string name="str_pinout_icsp_in_circuit">CONEXIÓN DE PROGRAMACIÓN EN CIRCUITO (ICSP)</string>
+    <string name="str_pinout_icsp_precautions">⚠️ PRECAUCIONES ICSP:</string>
+    <string name="str_pinout_icsp_warn_mclr">• Aislar la línea MCLR/RESET de condensadores grandes en la placa.</string>
+    <string name="str_pinout_icsp_warn_vcc">• Alimentar desde el programador SOLO si el circuito no consume &gt; 100mA.</string>
+    <string name="str_pinout_icsp_warn_external">• Si el circuito tiene fuente propia, desconectar el Pin 2 (VCC) o apagar la fuente externa.</string>
+    <string name="str_pinout_icsp_warn_length">• Mantener los cables ICSP menores a 15 cm para evitar ruido en PGC/PGD.</string>
+    <string name="str_pinout_avr_standard">PINOUT ESTÁNDAR AVR ISP (6 PINES vs 10 PINES)</string>
+    <string name="str_pinout_avr_compatible">Compatible con ATmega328P, ATmega8, ATmega16, ATmega32, ATtiny85, etc.</string>
+    <string name="str_pinout_avr_use_icsp">Usa el puerto ICSP de TL866 conectando las líneas correspondientes.</string>
+    <string name="str_pinout_plcc_adapter">ADAPTADOR PLCC32 → DIP32</string>
+    <string name="str_pinout_plcc_used_for">Utilizado para programar memorias BIOS / Firmware:</string>
+    <string name="str_pinout_plcc_orientation">Orientación:</string>
+    <string name="str_pinout_plcc_step1">1. Inserta el chip en el zócalo PLCC con el chaflán / punto coincidiendo con la marca del adaptador.</string>
+    <string name="str_pinout_plcc_step2">2. Inserta el adaptador DIP32 en el socket ZIF de TL866 alineado al fondo inferior.</string>
+    <string name="str_pinout_plcc_step3">3. En minipro selecciona el modelo con sufijo @PLCC32 si aplica.</string>
+    <string name="str_pinout_top_view">Vista Superior</string>
+    <string name="str_pinout_ground">Tierra / Masa</string>
+
 
     <string name="str_about_html"><![CDATA[
 <h2>🔌 EEPROM Flasher</h2>
