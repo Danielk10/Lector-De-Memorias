@@ -11,11 +11,11 @@
     <string name="str_guardar_rom">Save ROM</string>
     <string name="str_borrar_chip">Erase Chip</string>
     <string name="str_borrar_rom">Clear Data</string>
-    <string name="str_terminal_salida">Terminal — Output</string>
+    <string name="str_terminal_salida">Terminal</string>
     <string name="str_limpiar">Clear</string>
     <string name="str_detener">Stop</string>
     <string name="str_hint_comando">E.g.: minipro --version or minipro -p W25Q128FV -r rom.bin</string>
-    <string name="str_ejecutar_instru">Execute Command</string>
+    <string name="str_ejecutar_instru">EJECUTAR</string>
     <string name="str_log_">$ log\n</string>
     <string name="str_preparando_depe">Preparing dependencies…</string>
     <string name="str_polticas_de_pri">Privacy Policy</string>
@@ -62,7 +62,7 @@
     <string name="str__"> | </string>
     <string name="str_str">................</string>
     <string name="str_seleccionar_dispositivo">Programmer:</string>
-    <string name="str_seleccionar_chip">Chip Model:</string>
+    <string name="str_seleccionar_chip">Chip:</string>
     <string name="str_hint_chip">E.g.: W25Q128FV, AT24C02C, 27C512</string>
     <string name="str_buscar_chip">Catalog</string>
     <string name="str_autodetectar_chip">Autodetect</string>

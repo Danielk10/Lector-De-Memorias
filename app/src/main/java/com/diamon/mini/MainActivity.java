@@ -1,21 +1,7 @@
 package com.diamon.mini;
 
-import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,9 +17,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.diamon.mini.core.MiniproExecutor;
 import com.diamon.mini.core.UsbController;
@@ -863,8 +866,15 @@ public class MainActivity extends AppCompatActivity {
         int padding = (int) (20 * getResources().getDisplayMetrics().density);
         aboutText.setPadding(padding, padding, padding, padding / 2);
         aboutText.setMovementMethod(LinkMovementMethod.getInstance());
-        aboutText.setTextColor(0xFFECEFF1);
-        aboutText.setLinkTextColor(0xFF29B6F6);
+
+        // Usar colores del tema para asegurar visibilidad en cualquier fondo
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        aboutText.setTextColor(typedValue.data);
+
+        getTheme().resolveAttribute(androidx.appcompat.R.attr.colorAccent, typedValue, true);
+        aboutText.setLinkTextColor(typedValue.data);
+
         String aboutHtml = getString(R.string.str_about_html);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

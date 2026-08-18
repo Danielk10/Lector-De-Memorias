@@ -112,6 +112,19 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="4dp">
 
+            <Button
+                android:id="@+id/btnAutodetectChip"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:minWidth="0dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/str_autodetectar_chip"
+                android:textSize="12sp"
+                app:backgroundTint="@color/btn_tint_orange"
+                android:textColor="@color/btn_text_color" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,7 +142,7 @@
                 android:text="W25Q128FV"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#757575"
-                android:background="@drawable/bg_spinner"
+                android:background="@drawable/bg_input_field"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:textSize="13sp"
@@ -147,19 +160,6 @@
                 android:text="@string/str_buscar_chip"
                 android:textSize="12sp"
                 app:backgroundTint="@color/btn_tint_grey"
-                android:textColor="@color/btn_text_color" />
-
-            <Button
-                android:id="@+id/btnAutodetectChip"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:minWidth="0dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:layout_marginStart="4dp"
-                android:text="@string/str_autodetectar_chip"
-                android:textSize="12sp"
-                app:backgroundTint="@color/btn_tint_orange"
                 android:textColor="@color/btn_text_color" />
         </LinearLayout>
 
@@ -369,7 +369,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:background="@color/surface_dark"
+                android:background="@drawable/bg_input_field"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:textColorHint="#757575"

@@ -31,8 +31,8 @@ public class PolicyActivity extends AppCompatActivity {
         settings.setDomStorageEnabled(true);
 
         webView.setWebViewClient(new WebViewClient());
-        // URL placeholder — reemplazar con la URL real de políticas de privacidad
-        webView.loadUrl("https://example.com/privacy-policy");
+        // URL de políticas de privacidad actualizada
+        webView.loadUrl("https://todoandroid.42web.io/politicasdeprivacidad.html");
     }
 
     @Override
