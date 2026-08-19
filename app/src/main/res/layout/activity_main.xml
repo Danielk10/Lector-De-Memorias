@@ -142,7 +142,6 @@
                 android:layout_height="38dp"
                 android:layout_weight="1"
                 android:hint="@string/str_hint_chip"
-                android:text="W25Q128FV"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#757575"
                 android:background="@drawable/bg_input_field"

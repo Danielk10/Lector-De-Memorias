@@ -229,8 +229,23 @@ public class MainActivity extends AppCompatActivity {
         etChipModel = findViewById(R.id.etChipModel);
 
         // Restore saved chip model
-        String savedChip = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SELECTED_CHIP, "W25Q128FV");
-        etChipModel.setText(savedChip);
+        String savedChip = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SELECTED_CHIP, "");
+        if (savedChip != null && !savedChip.isEmpty()) {
+            etChipModel.setText(savedChip);
+        }
+
+        etChipModel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                saveSelectedChip(s.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // Setup Device Spinner with Custom Item Layouts
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,

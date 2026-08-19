@@ -61,14 +61,14 @@
     <string name="str_seleccionar_dispositivo">Programador:</string>
     <string name="str_seleccionar_chip">Chip:</string>
     <string name="str_hint_chip">Ej: W25Q128FV</string>
-    <string name="str_buscar_chip">Buscar en BD</string>
+    <string name="str_buscar_chip">CATÁLOGO</string>
     <string name="str_autodetectar_chip">Auto-detectar</string>
     <string name="str_agregar_chip_manual">Agregar chip manual</string>
     <string name="str_chip_manual_title">Agregar Modelo de Chip Personalizado</string>
     <string name="str_chip_manual_hint">Ingresa el nombre del chip, ej: W25Q64JV</string>
     <string name="str_seleccionar_chip_dialog_title">Seleccionar Modelo de Chip</string>
     <string name="str_buscar_chip_hint">Buscar chip por nombre...</string>
-    <string name="str_buscar_minipro_oficial">Buscar en Base Oficial MiniPro (-L)</string>
+    <string name="str_buscar_minipro_oficial">Buscar en BD</string>
     <string name="str_search_minipro_db_log">Buscando en catálogo oficial de MiniPro: \'%1$s\'...</string>
     <string name="str_copiado">Texto copiado al portapapeles</string>
     <string name="str_log_update_detected">Actualización detectada: versión %1$d a versión %2$d.</string>

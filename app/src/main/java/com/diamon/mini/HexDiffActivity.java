@@ -40,6 +40,9 @@ public class HexDiffActivity extends AppCompatActivity {
                         try {
                             dataA = readUriToBytes(uri);
                             nameA = getFileName(uri);
+                            if (nameA.toLowerCase().endsWith(".hex")) {
+                                dataA = parseIntelHexToBinary(dataA);
+                            }
                             btnLoadFile1.setText(getString(R.string.str_file_a, nameA));
                             tryCompare();
                         } catch (Exception e) {
@@ -58,6 +61,9 @@ public class HexDiffActivity extends AppCompatActivity {
                         try {
                             dataB = readUriToBytes(uri);
                             nameB = getFileName(uri);
+                            if (nameB.toLowerCase().endsWith(".hex")) {
+                                dataB = parseIntelHexToBinary(dataB);
+                            }
                             btnLoadFile2.setText(getString(R.string.str_file_b, nameB));
                             tryCompare();
                         } catch (Exception e) {
@@ -98,6 +104,9 @@ public class HexDiffActivity extends AppCompatActivity {
             try {
                 dataA = java.nio.file.Files.readAllBytes(romFile.toPath());
                 nameA = romFile.getName() + " — " + getString(R.string.str_current_memory);
+                if (romFile.getName().toLowerCase().endsWith(".hex")) {
+                    dataA = parseIntelHexToBinary(dataA);
+                }
                 btnLoadFile1.setText(getString(R.string.str_file_a, nameA));
             } catch (Exception ignored) {}
         }
@@ -196,6 +205,76 @@ public class HexDiffActivity extends AppCompatActivity {
             }
         } catch (Exception ignored) {}
         return name;
+    }
+
+    private byte[] parseIntelHexToBinary(byte[] hexData) {
+        try {
+            String content = new String(hexData, java.nio.charset.StandardCharsets.UTF_8);
+            String[] lines = content.split("\\r?\\n");
+
+            long minAddr = Long.MAX_VALUE;
+            long maxAddr = 0;
+            int upperAddress = 0;
+
+            for (String line : lines) {
+                line = line.trim();
+                if (!line.startsWith(":") || line.length() < 11) continue;
+                int byteCount = Integer.parseInt(line.substring(1, 3), 16);
+                int address = Integer.parseInt(line.substring(3, 7), 16);
+                int type = Integer.parseInt(line.substring(7, 9), 16);
+                if (type == 0x00) {
+                    long absolute = (long) upperAddress + address;
+                    minAddr = Math.min(minAddr, absolute);
+                    maxAddr = Math.max(maxAddr, absolute + byteCount);
+                } else if (type == 0x04 && line.length() >= 15) {
+                    upperAddress = Integer.parseInt(line.substring(9, 13), 16) << 16;
+                } else if (type == 0x02 && line.length() >= 15) {
+                    upperAddress = Integer.parseInt(line.substring(9, 13), 16) << 4;
+                } else if (type == 0x01) {
+                    break;
+                }
+            }
+
+            if (minAddr == Long.MAX_VALUE || maxAddr <= minAddr) {
+                return hexData;
+            }
+
+            long bufferSize = maxAddr - minAddr;
+            if (bufferSize > 32L * 1024 * 1024) {
+                return hexData;
+            }
+
+            byte[] binBuffer = new byte[(int) bufferSize];
+            java.util.Arrays.fill(binBuffer, (byte) 0xFF);
+
+            upperAddress = 0;
+            for (String line : lines) {
+                line = line.trim();
+                if (!line.startsWith(":") || line.length() < 11) continue;
+                int byteCount = Integer.parseInt(line.substring(1, 3), 16);
+                int address = Integer.parseInt(line.substring(3, 7), 16);
+                int type = Integer.parseInt(line.substring(7, 9), 16);
+                if (type == 0x00) {
+                    long absolute = (long) upperAddress + address;
+                    int offset = (int) (absolute - minAddr);
+                    for (int i = 0; i < byteCount; i++) {
+                        if (offset + i < binBuffer.length) {
+                            binBuffer[offset + i] = (byte) Integer.parseInt(
+                                    line.substring(9 + i * 2, 11 + i * 2), 16);
+                        }
+                    }
+                } else if (type == 0x04 && line.length() >= 15) {
+                    upperAddress = Integer.parseInt(line.substring(9, 13), 16) << 16;
+                } else if (type == 0x02 && line.length() >= 15) {
+                    upperAddress = Integer.parseInt(line.substring(9, 13), 16) << 4;
+                } else if (type == 0x01) {
+                    break;
+                }
+            }
+            return binBuffer;
+        } catch (Exception e) {
+            return hexData;
+        }
     }
 
     @Override
