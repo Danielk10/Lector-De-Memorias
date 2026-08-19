@@ -2,7 +2,7 @@
 
 # EEPROM Flasher
 
-### Programador de Memorias EEPROM / Flash / MCU para Android
+### Programador de Memorias EEPROM, Flash y Microcontroladores para Android
 
 [![Android](https://img.shields.io/badge/Android-23%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Architecture](https://img.shields.io/badge/Arch-arm64--v8a-FF6F00?logo=arm&logoColor=white)](https://developer.android.com/ndk/guides/abis)
@@ -10,12 +10,12 @@
 [![NDK](https://img.shields.io/badge/NDK-30-4285F4?logo=android&logoColor=white)](https://developer.android.com/ndk)
 [![CMake](https://img.shields.io/badge/CMake-4.1.2-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
 [![USB](https://img.shields.io/badge/USB-Host%20API-FF4081?logo=usb&logoColor=white)](https://developer.android.com/guide/topics/connectivity/usb/host)
-[![minipro](https://img.shields.io/badge/Basado%20en-minipro-orange?logo=gnubash&logoColor=white)](https://gitlab.com/DavidGriffith/minipro)
+[![minipro](https://img.shields.io/badge/Motor-minipro-orange?logo=gnubash&logoColor=white)](https://gitlab.com/DavidGriffith/minipro)
 
 ---
 
-*Herramienta Android nativa para leer, escribir, verificar, comparar y borrar memorias EEPROM/Flash*
-*usando programadores TL866II+, TL866A/CS, T48, T56, T76*
+*Herramienta Android nativa para leer, escribir, verificar, comparar y borrar memorias EEPROM y Flash*
+*mediante programadores TL866II+, TL866A, TL866CS, T48, T56 y T76 por USB OTG sin root.*
 
 </div>
 
@@ -23,9 +23,9 @@
 
 ## 📋 Descripción
 
-**EEPROM Flasher** es una aplicación Android profesional que permite programar e interactuar con memorias EEPROM, Flash SPI, EPROM paralelas, microcontroladores PIC/AVR y dispositivos lógicos directamente desde tu móvil o tablet Android mediante conexión USB OTG directa (sin root).
+**EEPROM Flasher** es una aplicación Android profesional de código abierto diseñada para la interacción directa con memorias EEPROM, Flash SPI, EPROM paralelas, microcontroladores y dispositivos lógicos desde teléfonos y tabletas Android mediante conexión USB OTG directa, sin requerir permisos de superusuario (root).
 
-Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado para `arm64-v8a` junto con un puente [libusb](https://github.com/libusb/libusb) que intercepta los descriptores de archivo del USB Host API de Android.
+El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/minipro) compilado para `arm64-v8a` junto con un puente [libusb](https://github.com/libusb/libusb) personalizado que intercepta descriptores de archivo del USB Host API de Android.
 
 ---
 
@@ -33,20 +33,20 @@ Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado p
 
 | Característica | Descripción |
 |---|---|
-| 🔍 **Auto-detectar Chip** | Identifica automáticamente el chip insertado en el programador (`-a 8`, `-a 16`, `-d`) |
-| 📚 **Catálogo de Chips** | Selector con búsqueda en tiempo real categorizado por familias (SPI 25xxx, I2C 24xxx, Microwire 93xxx, Paralelas 27/28/29/39/49, PIC, AVR, GAL/PLD) |
-| ➕ **Agregar Chips Propios** | Agrega y guarda modelos de chips personalizados en una lista rápida persistente |
-| 📖 **Lectura / Backup** | Lee el contenido íntegro de la memoria a un archivo `.bin` |
-| ✏️ **Escritura y Flasheo** | Graba archivos `.bin` o Intel `.hex` directamente en la memoria |
+| 🔍 **Auto-detectar Chip** | Identifica automáticamente el chip insertado en el programador |
+| 📚 **Catálogo de Chips** | Selector rápido con búsqueda en tiempo real categorizado por familias de circuitos integrados |
+| ➕ **Agregar Chips Propios** | Agrega y guarda modelos de chips personalizados en la lista persistente |
+| 📖 **Lectura y Respaldo** | Lee el contenido íntegro de la memoria física y genera respaldos binarios |
+| ✏️ **Escritura y Flasheo** | Graba archivos binarios `.bin` o Intel `.hex` directamente en la memoria |
 | ✅ **Verificación** | Compara el contenido de la memoria física contra el archivo cargado |
-| 🗑️ **Borrado Seguro** | Borra completamente el contenido del chip con diálogo de confirmación |
-| 🔢 **Visor Hexadecimal** | Visualizador de archivos `.bin` e Intel `.hex` con direcciones, volcado hexadecimal y caracteres ASCII |
-| ⚖️ **Comparador de Binarios** | Herramienta de Diff side-by-side que resalta discrepancias (`02X→02X`), porcentaje y conteo de bytes distintos |
-| 🔌 **Diagramas de Pinouts** | Diagramas esquemáticos renderizados en Canvas para ZIF 40 pines, SOIC8 SPI, 24Cxx, 93Cxx, DIP32, ICSP 6 pines, AVR ISP y adaptadores PLCC32 |
-| 💾 **Exportar a Descargas / SAF** | Exporta volcados a la carpeta `Descargas/EEPROM Flasher` o a cualquier almacenamiento con Storage Access Framework |
-| 💻 **Terminal Integrada** | Consola con soporte para retornos de carro (`\r`), buffer optimizado y scroll estable (`LogScrollView`) |
-| 📋 **Portapapeles Rápido** | Copia la salida completa de la consola manteniendo presionado el log |
-| 🛡️ **Acerca de y Licencias** | Información detallada del software y licencias de código abierto con enlaces interactivos |
+| 🗑️ **Borrado Seguro** | Borra completamente la memoria del integrado con confirmación de seguridad |
+| 🔢 **Visor Hexadecimal** | Inspección de volcados con visualización de direcciones, bytes hexadecimales y ASCII |
+| ⚖️ **Comparador de Binarios** | Comparador Diff con resaltado de discrepancias, porcentaje de cambio y conteo de bytes |
+| 🔌 **Diagramas de Pinouts** | Diagramas esquemáticos renderizados en Canvas para ZIF40, SOIC8, 24Cxx, 93Cxx, DIP32, ICSP, AVR ISP y PLCC32 |
+| 💾 **Exportación Segura** | Exportación de volcados leídos del chip mediante el Storage Access Framework |
+| 💻 **Terminal Integrada** | Consola en tiempo real con soporte de secuencias de escape, buffer optimizado y scroll fluido |
+| 📋 **Portapapeles Rápido** | Copia la salida completa de la consola con pulsación prolongada |
+| 🛡️ **Acerca de y Licencias** | Información técnica y reconocimiento de licencias de código abierto |
 
 ---
 
@@ -55,23 +55,25 @@ Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado p
 | Programador | VID:PID | Estado |
 |---|---|---|
 | 🟢 **TL866II+** | `04D8:00E0` / `A466:0A53` | ✅ Soportado |
-| 🟢 **TL866A** | `04D8:00DE` | ✅ Soportado |
-| 🟢 **TL866CS** | `04D8:00DF` | ✅ Soportado |
-| 🟡 **Xgecu T48** | `2E8A:000A` | ⚠️ Experimental |
-| 🟡 **Xgecu T56** | `2E8A:0005` | ⚠️ Experimental |
-| 🟡 **Xgecu T76** | — | ⚠️ Experimental |
+| 🟢 **TL866A** | `04D8:00DE` / `04D8:E11C` | ✅ Soportado |
+| 🟢 **TL866CS** | `04D8:00DF` / `04D8:E11C` | ✅ Soportado |
+| 🟢 **XGecu T48** | `A466:0A53` / `2E8A:000A` | ✅ Soportado |
+| 🟢 **XGecu T56** | `A466:0A53` / `2E8A:0005` | ✅ Soportado |
+| 🟢 **XGecu T76** | `A466:1A86` | ✅ Soportado |
+| 🟢 **Serie CH341A / CH347** | `1A86:5512` / `1A86:5523` / `1A86:55DB` | ✅ Soportado |
+
 ---
 
 ## 📐 Diagramas de Conexión y Pinouts Incluidos
 
-1. **Socket ZIF 40 Pines**: Regla de alineación universal para TL866/T48 (alineación inferior, muesca arriba).
-2. **SPI Flash SOIC8 / SOP8 / DIP8 (25xxx)**: Pinout estándar, CS#, DO, WP#, GND, DI, CLK, HOLD#, VCC.
-3. **I2C EEPROM SOIC8 / DIP8 (24Cxx)**: A0, A1, A2, GND, SDA, SCL, WP, VCC.
-4. **Microwire EEPROM (93Cxx)**: CS, SK, DI, DO, GND, ORG (8/16 bits), NC, VCC.
-5. **Memorias Paralelas Flash / EPROM (DIP28 / DIP32)**: Buses de direcciones A0-A18, datos D0-D7, control /CE, /OE, /WE, VPP.
-6. **Puerto ICSP 6 Pines (TL866 / T48)**: VPP/MCLR, VCC, GND, PGD/MOSI, PGC/SCK, AUX/MISO para PIC/AVR in-circuit.
-7. **Conectores AVR ISP (6 y 10 Pines)**: MISO, SCK, RESET, VCC, MOSI, GND.
-8. **Adaptador PLCC32 a DIP32**: Mapeo y orientación para chips BIOS.
+1. **Socket ZIF 40 Pines**: Regla de alineación universal para programadores TL866 y T48.
+2. **SPI Flash SOIC8 / SOP8 / DIP8 serie 25xxx**: Pinout estándar, CS#, DO, WP#, GND, DI, CLK, HOLD#, VCC.
+3. **I2C EEPROM SOIC8 / DIP8 serie 24Cxx**: A0, A1, A2, GND, SDA, SCL, WP, VCC.
+4. **Microwire EEPROM serie 93Cxx**: CS, SK, DI, DO, GND, ORG en 8 y 16 bits, NC, VCC.
+5. **Memorias Paralelas Flash y EPROM DIP28 / DIP32**: Buses de direcciones A0 a A18, datos D0 a D7, control /CE, /OE, /WE, VPP.
+6. **Puerto ICSP 6 Pines**: VPP/MCLR, VCC, GND, PGD/MOSI, PGC/SCK, AUX/MISO para programación en circuito.
+7. **Conectores AVR ISP de 6 y 10 Pines**: MISO, SCK, RESET, VCC, MOSI, GND.
+8. **Adaptador PLCC32 a DIP32**: Mapeo, orientación y marcas de alineación para chips BIOS y Flash.
 
 ---
 
@@ -102,24 +104,20 @@ Utiliza el motor [minipro](https://gitlab.com/DavidGriffith/minipro) compilado p
 
 ---
 
-## 🔧 Compilación y Ejecución
+## 🔧 Compilación y Construcción
 
 ### Requisitos
 
 - Android SDK 37 (Build Tools 37.0.0)
 - NDK 30.0.14904198 rc1
 - CMake 4.1.2
-- JDK 11 o superior
+- JDK 17 o superior
 
 ### Compilación desde terminal
 
 ```bash
-# Configurar SDK (si no está disponible)
-chmod +x setup-sdk.sh
-./setup-sdk.sh
-
-# Compilar APK Debug
-./gradlew assembleDebug
+# Compilar APK Release
+./gradlew assembleRelease
 ```
 
 ---

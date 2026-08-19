@@ -1,51 +1,56 @@
 # Ficha Técnica para Google Play Store - EEPROM Flasher
 
 ## Descripción Corta (Límite: 80 caracteres)
-Programador profesional de memorias EEPROM y Flash mediante USB OTG (minipro).
+Programador de memorias EEPROM y Flash por USB OTG. Lectura y escritura rápida.
 
 ---
 
 ## Descripción Larga (Límite: 4000 caracteres)
 
-EEPROM Flasher es una herramienta técnica profesional diseñada para la interacción directa con memorias EEPROM, Flash SPI, EPROM paralelas y microcontroladores a través de dispositivos Android. Mediante una conexión USB OTG, la aplicación permite realizar operaciones de lectura, escritura, verificación y borrado sin necesidad de acceso root.
+EEPROM Flasher es una herramienta técnica profesional diseñada para la lectura, escritura, verificación y borrado de memorias EEPROM, Flash SPI, memorias paralelas y microcontroladores directamente desde dispositivos Android compatibles mediante conexión USB OTG.
 
-Esta solución está orientada a técnicos, ingenieros y entusiastas de la electrónica que requieren una interfaz móvil para programar dispositivos utilizando hardware compatible. La aplicación integra el motor nativo minipro compilado para arquitectura arm64-v8a, garantizando un rendimiento óptimo en dispositivos móviles.
+La aplicación permite a técnicos de reparación, ingenieros y desarrolladores electrónicos gestionar volcados de firmware y configuraciones de circuitos integrados con total portabilidad, sin necesidad de permisos de superusuario (root) en el teléfono o tableta.
 
-### Funcionalidades Principales
+### Características Principales
 
-* Autodetección de Chips: Identificación automática de una amplia gama de circuitos integrados.
-* Gestión de Datos: Lectura y respaldo íntegro de memorias en archivos .bin e Intel .hex.
-* Procesos de Grabación: Escritura y flasheo de firmware directamente desde el almacenamiento local.
-* Herramientas de Análisis: Visor hexadecimal integrado y comparador de binarios (Diff) con resaltado de discrepancias.
-* Soporte de Hardware: Visualización de diagramas de pinouts para diversos encapsulados (ZIF40, SOIC8, DIP32, ICSP).
-* Exportación Segura: Gestión de archivos mediante Storage Access Framework para compatibilidad con versiones recientes de Android.
+• Auto-detección de Chip: Identifica automáticamente el modelo de chip conectado en los programadores compatibles.
+• Lectura Completa: Extrae y almacena respaldos íntegros de la memoria en formato binario estándar (.bin).
+• Grabación de Firmware: Escribe archivos binarios (.bin) e Intel HEX (.hex) directamente en el integrado.
+• Verificación de Datos: Compara la memoria física contra el archivo cargado para garantizar integridad total.
+• Borrado de Memoria: Limpieza completa del circuito integrado con verificación de seguridad.
+• Visor Hexadecimal Integrado: Inspección detallada de archivos con visualización de direcciones, bytes hexadecimales y caracteres ASCII.
+• Comparador de Archivos (Diff): Análisis visual side-by-side que resalta discrepancias exactas y porcentaje de variación entre dos volcados.
+• Diagramas de Pinout: Guías gráficas esquemáticas de conexiones y zócalos para ZIF40, SOIC8, DIP32, conectores ICSP y adaptadores PLCC32.
+• Consola de Diagnóstico: Terminal en tiempo real para supervisar el estado de cada comando y transferencia.
 
-### Programadores Compatibles
+### Familias de Circuitos Integrados Compatibles
 
-La aplicación es compatible con una variedad de programadores populares, incluyendo:
-* Serie TL866 (TL866II+, TL866A, TL866CS).
-* Serie Xgecu T48, T56 y T76 (Soporte experimental).
-* Programadores basados en CH341A y CH347.
+• Memorias Flash SPI serie 25xxx (25Q, 25L, 25VF, etc.)
+• Memorias EEPROM I2C serie 24Cxx (24C01 hasta 24C1024)
+• Memorias EEPROM Microwire serie 93Cxx (93C46 hasta 93C86 en 8 y 16 bits)
+• Memorias EEPROM SPI serie 25Cxx y 95xxx
+• Memorias Flash y EPROM Paralelas serie 27C, 28C, 29F y 39SF
+• Microcontroladores Microchip PIC seleccionados
+• Microcontroladores Atmel AVR y 8051 seleccionados
 
-### Especificaciones Técnicas y Licencias
+### Programadores de Hardware Compatibles
 
-EEPROM Flasher es un proyecto de código abierto distribuido bajo la licencia GNU GPLv3. El desarrollo se fundamenta en la integración de bibliotecas de software libre reconocidas en la industria:
+La aplicación interactúa mediante USB Host con los siguientes programadores:
+• TL866II+
+• TL866A
+• TL866CS
+• T48
+• T56
+• T76
+• Programadores basados en serie CH341A y CH347
 
-* Motor de programación: Basado en minipro (GNU GPLv3) por David Griffith y colaboradores.
-* Comunicación USB: Implementada mediante libusb (GNU LGPLv2.1).
-* Controladores serie: usb-serial-for-android (MIT).
+### Requisitos del Sistema
 
-El código fuente completo, las instrucciones de compilación y la documentación técnica adicional están disponibles en el repositorio oficial del proyecto.
+• Dispositivo Android con versión 6.0 (Marshmallow) o superior.
+• Compatibilidad con USB Host / OTG en el dispositivo Android.
+• Cable o adaptador USB OTG de buena calidad para conectar el programador.
+• Programador de hardware compatible y chip soportado.
 
-Repositorio oficial: https://github.com/Danielk10/Lector-De-Memorias
+### Privacidad y Seguridad
 
-### Información de Privacidad y Seguridad
-
-Esta aplicación requiere permisos de acceso USB y almacenamiento para operar con el hardware del programador y los archivos de firmware. No se recopilan datos personales de forma directa, y la publicidad integrada se gestiona bajo las políticas de seguridad de Google AdMob.
-
----
-
-## Instrucciones para el Desarrollador
-- Asegúrese de que el enlace al repositorio sea funcional.
-- Verifique que la descripción corta no exceda los 80 caracteres en la consola de Google Play.
-- Esta ficha cumple con las normativas de Google Play al ser descriptiva, formal y evitar el uso de caracteres especiales o emoticones que puedan interferir con la legibilidad profesional.
+EEPROM Flasher procesa los archivos de volcado y datos de memoria de manera estrictamente local en su dispositivo. La aplicación integra anuncios mediante Google AdMob para sostener su desarrollo continuo y requiere únicamente los permisos necesarios para la comunicación USB, gestión de almacenamiento y conectividad de red.
