@@ -189,23 +189,6 @@
                 android:textColor="@color/btn_text_color" />
         </LinearLayout>
 
-        <!-- Botón Verificar -->
-        <Button
-            android:id="@+id/btnVerify"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
-            android:minHeight="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp"
-            android:enabled="false"
-            app:backgroundTint="@color/btn_tint_green"
-            android:textColor="@color/btn_text_color"
-            android:text="@string/str_verificar"
-            android:textSize="13sp"
-            android:layout_marginBottom="3dp" />
-
         <!-- Fila: Leer + Escribir -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -249,6 +232,23 @@
                 android:text="@string/str_escribir"
                 android:textSize="13sp" />
         </LinearLayout>
+
+        <!-- Botón Verificar -->
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:enabled="false"
+            app:backgroundTint="@color/btn_tint_green"
+            android:textColor="@color/btn_text_color"
+            android:text="@string/str_verificar"
+            android:textSize="13sp"
+            android:layout_marginBottom="3dp" />
 
         <!-- Fila: Cargar ROM + Guardar ROM -->
         <LinearLayout
