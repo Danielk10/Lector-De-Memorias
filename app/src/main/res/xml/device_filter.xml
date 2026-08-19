@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- MiniPro TL866II+ (Autoelectric) -->
+    <!-- MiniPro TL866A / TL866CS (Microchip VID/PID) -->
     <usb-device
         vendor-id="1240"
-        product-id="224" /> <!-- 0x04D8 / 0x00E0 -->
-    <!-- MiniPro TL866A -->
+        product-id="57628" /> <!-- 0x04D8 / 0xE11C -->
     <usb-device
         vendor-id="1240"
         product-id="222" /> <!-- 0x04D8 / 0x00DE -->
-    <!-- MiniPro TL866CS -->
     <usb-device
         vendor-id="1240"
         product-id="223" /> <!-- 0x04D8 / 0x00DF -->
-    <!-- XGecu T48 (Raspberry Pi Pico based) -->
+    <!-- MiniPro TL866II+ (Bootloader) -->
+    <usb-device
+        vendor-id="1240"
+        product-id="224" /> <!-- 0x04D8 / 0x00E0 -->
+
+    <!-- XGecu TL866II+, T48, T56 (Haikou Xingong) -->
+    <usb-device
+        vendor-id="42086"
+        product-id="2643" /> <!-- 0xA466 / 0x0A53 -->
+
+    <!-- XGecu T76 -->
+    <usb-device
+        vendor-id="42086"
+        product-id="6790" /> <!-- 0xA466 / 0x1A86 -->
+
+    <!-- XGecu T48 (Emulator / Dev) -->
     <usb-device
         vendor-id="11914"
         product-id="10" /> <!-- 0x2E8A / 0x000A -->
-    <!-- XGecu T56 -->
+    <!-- XGecu T56 (Emulator / Dev) -->
     <usb-device
         vendor-id="11914"
         product-id="5" /> <!-- 0x2E8A / 0x0005 -->

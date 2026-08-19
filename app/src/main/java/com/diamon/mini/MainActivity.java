@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     private final List<String> currentOutputLines = new ArrayList<>();
 
     private static final String[] SUPPORTED_DEVICES = {
-            "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76", "CH341A"
+            "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76", "Logic"
     };
 
     // Activity Result Launchers
@@ -233,10 +233,10 @@ public class MainActivity extends AppCompatActivity {
         String savedChip = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SELECTED_CHIP, "W25Q128FV");
         etChipModel.setText(savedChip);
 
-        // Setup Device Spinner
+        // Setup Device Spinner with Custom Item Layouts
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, SUPPORTED_DEVICES);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.layout.custom_spinner_item, SUPPORTED_DEVICES);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         spinnerDevices.setAdapter(adapter);
 
         // Initialize USB Controller
@@ -612,35 +612,22 @@ public class MainActivity extends AppCompatActivity {
         searchBox.setHint(R.string.str_buscar_chip_hint);
         searchBox.setHintTextColor(0xFF757575);
         searchBox.setTextColor(0xFFFFFFFF);
-        searchBox.setBackgroundResource(R.drawable.bg_spinner);
+        searchBox.setBackgroundResource(R.drawable.bg_input_field);
         searchBox.setPadding(pad, pad / 2, pad, pad / 2);
         searchBox.setTextSize(14f);
         layout.addView(searchBox);
 
-        // Fila de botones de acción rápida
-        LinearLayout btnRow = new LinearLayout(this);
-        btnRow.setOrientation(LinearLayout.HORIZONTAL);
-        btnRow.setPadding(0, pad / 2, 0, pad / 2);
-
+        // Botón Agregar Chip Manual
         Button btnAddManual = new Button(this);
         btnAddManual.setText(R.string.str_agregar_chip_manual);
-        btnAddManual.setTextSize(11f);
+        btnAddManual.setTextSize(12f);
         btnAddManual.setBackgroundColor(0xFF1565C0);
         btnAddManual.setTextColor(0xFFFFFFFF);
-        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        lp1.setMargins(0, 0, pad / 4, 0);
-        btnRow.addView(btnAddManual, lp1);
-
-        Button btnQueryDb = new Button(this);
-        btnQueryDb.setText(R.string.str_query_db_btn);
-        btnQueryDb.setTextSize(11f);
-        btnQueryDb.setBackgroundColor(0xFF37474F);
-        btnQueryDb.setTextColor(0xFFFFFFFF);
-        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        lp2.setMargins(pad / 4, 0, 0, 0);
-        btnRow.addView(btnQueryDb, lp2);
-
-        layout.addView(btnRow);
+        LinearLayout.LayoutParams lpBtn = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (int) (38 * getResources().getDisplayMetrics().density));
+        lpBtn.setMargins(0, pad / 2, 0, pad / 2);
+        layout.addView(btnAddManual, lpBtn);
 
         // Lista de chips
         ListView listView = new ListView(this);
@@ -665,6 +652,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView tv = (TextView) super.getView(position, convertView, parent);
                 tv.setTextColor(0xFFECEFF1);
                 tv.setTextSize(14f);
+                tv.setBackgroundColor(0xFF1C2234);
+                int p = (int) (10 * getResources().getDisplayMetrics().density);
+                tv.setPadding(p, p, p, p);
                 return tv;
             }
         };
@@ -719,12 +709,6 @@ public class MainActivity extends AppCompatActivity {
             showAddManualChipDialog();
         });
 
-        // Botón Consultar BD minipro
-        btnQueryDb.setOnClickListener(v -> {
-            dialog.dismiss();
-            showMiniproDbQueryDialog();
-        });
-
         dialog.show();
     }
 
@@ -733,7 +717,7 @@ public class MainActivity extends AppCompatActivity {
         input.setHint(R.string.str_chip_manual_hint);
         input.setHintTextColor(0xFF757575);
         input.setTextColor(0xFFFFFFFF);
-        input.setBackgroundResource(R.drawable.bg_spinner);
+        input.setBackgroundResource(R.drawable.bg_input_field);
         int pad = (int) (12 * getResources().getDisplayMetrics().density);
         input.setPadding(pad, pad, pad, pad);
 
@@ -747,31 +731,6 @@ public class MainActivity extends AppCompatActivity {
                         etChipModel.setText(chip);
                         saveSelectedChip(chip);
                         log(getString(R.string.str_custom_chip_added, chip));
-                    }
-                })
-                .setNegativeButton(R.string.str_cancelar, null)
-                .show();
-    }
-
-    private void showMiniproDbQueryDialog() {
-        EditText input = new EditText(this);
-        input.setHint(R.string.str_query_db_hint);
-        input.setHintTextColor(0xFF757575);
-        input.setTextColor(0xFFFFFFFF);
-        input.setBackgroundResource(R.drawable.bg_spinner);
-        int pad = (int) (12 * getResources().getDisplayMetrics().density);
-        input.setPadding(pad, pad, pad, pad);
-
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.str_query_db_title)
-                .setMessage(R.string.str_query_db_msg)
-                .setView(input)
-                .setPositiveButton(R.string.str_list, (dialog, which) -> {
-                    String query = input.getText().toString().trim();
-                    if (query.isEmpty()) {
-                        executeMinipro("-l");
-                    } else {
-                        executeCustomCommand("minipro -l | grep -i " + query);
                     }
                 })
                 .setNegativeButton(R.string.str_cancelar, null)
@@ -1099,12 +1058,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             log(getString(R.string.str_rom_imported, fileName, sizeStr));
-            hasReadData = true;
-            lastReadFile = "rom.bin";
+            hasReadData = false;
 
             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
             editor.putString("bios_source", getString(R.string.str_imported_label, fileName, sizeStr));
-            editor.putString(KEY_LAST_READ_FILE, "rom.bin");
             editor.apply();
         } catch (Exception e) {
             log(getString(R.string.str_error) + ": " + e.getMessage());
