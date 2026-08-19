@@ -125,14 +125,20 @@ Java_com_diamon_mini_core_MiniproExecutor_startNativeProcess(
         // Configurar variables de entorno
         char fdStr[16];
         snprintf(fdStr, sizeof(fdStr), "%d", usbFd);
-        setenv("ANDROID_USB_FD", fdStr, 1);
+        if (usbFd >= 0) {
+            setenv("ANDROID_USB_FD", fdStr, 1);
+        } else {
+            unsetenv("ANDROID_USB_FD");
+        }
         setenv("LD_LIBRARY_PATH", ldLibPath, 1);
         setenv("MINIPRO_DATA", miniproData, 1);
 
         // Remover O_CLOEXEC del FD de USB por si acaso
-        int flags = fcntl(usbFd, F_GETFD);
-        if (flags >= 0 && (flags & FD_CLOEXEC)) {
-            fcntl(usbFd, F_SETFD, flags & ~FD_CLOEXEC);
+        if (usbFd >= 0) {
+            int flags = fcntl(usbFd, F_GETFD);
+            if (flags >= 0 && (flags & FD_CLOEXEC)) {
+                fcntl(usbFd, F_SETFD, flags & ~FD_CLOEXEC);
+            }
         }
 
         // Ejecutar el binario
