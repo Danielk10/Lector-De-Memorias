@@ -3,13 +3,13 @@ package com.diamon.mini.core;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.BufferedReader;
+import com.diamon.mini.R;
+
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +32,7 @@ public class MiniproExecutor {
 
     public interface Callback {
         void log(String message);
+        void onProcessOutput(String chunk);
         void onProcessStarted();
         void onProcessFinished(int exitCode, String[] args);
     }
@@ -63,7 +64,7 @@ public class MiniproExecutor {
                     miniproBin = new File(filesDir, "usr/bin/minipro");
                 }
                 if (!miniproBin.exists()) {
-                    callback.log("[ERROR] No se encontró el binario minipro.");
+                    callback.log(context.getString(R.string.str_minipro_binary_not_found));
                     callback.onProcessFinished(-1, args);
                     return;
                 }
@@ -123,7 +124,7 @@ public class MiniproExecutor {
                     // Start process natively to prevent ProcessBuilder from closing the file descriptor
                     int[] processInfo = startNativeProcess(miniproBin.getAbsolutePath(), commandArgs, fdToPass, ldPath, miniproDataPath);
                     if (processInfo == null || processInfo[0] <= 0) {
-                        callback.log("[ERROR] Error al iniciar el proceso nativo.");
+                        callback.log(context.getString(R.string.str_error_starting_process));
                         callback.onProcessFinished(-1, args);
                         return;
                     }
@@ -132,18 +133,15 @@ public class MiniproExecutor {
                     readFd = processInfo[1];
                     currentPid = childPid; // Store current pid to allow aborting
 
-                    // Leer la salida del pipe nativo usando ParcelFileDescriptor
+                    // Leer la salida del pipe nativo usando ParcelFileDescriptor en tiempo real
                     try (android.os.ParcelFileDescriptor pfd = android.os.ParcelFileDescriptor.adoptFd(readFd);
                          java.io.FileInputStream fis = new java.io.FileInputStream(pfd.getFileDescriptor());
-                         BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            if (line.contains("Using overridden database file")
-                                    || line.contains("Share dir:")
-                                    || line.contains("com.diamon.mini")) {
-                                continue;
-                            }
-                            callback.log(line);
+                         InputStreamReader reader = new InputStreamReader(fis, java.nio.charset.StandardCharsets.UTF_8)) {
+                        char[] buffer = new char[512];
+                        int read;
+                        while ((read = reader.read(buffer)) != -1) {
+                            String chunk = new String(buffer, 0, read);
+                            callback.onProcessOutput(chunk);
                         }
                     }
 
@@ -160,7 +158,7 @@ public class MiniproExecutor {
 
             } catch (Exception e) {
                 Log.e(TAG, "Error ejecutando minipro: " + e.getMessage(), e);
-                callback.log("[EXCEPCIÓN] " + e.getMessage());
+                callback.log(context.getString(R.string.str_exception_log, e.getMessage()));
                 callback.onProcessFinished(-1, args);
                 currentPid = -1;
             }
@@ -175,13 +173,13 @@ public class MiniproExecutor {
         if (pid > 0) {
             try {
                 terminateNativeProcess(pid);
-                callback.log("[ABORT] Proceso nativo minipro detenido por el usuario.");
+                callback.log(context.getString(R.string.str_process_aborted_user));
             } catch (Exception e) {
-                callback.log("[ERROR] No se pudo detener el proceso nativo: " + e.getMessage());
+                callback.log(context.getString(R.string.str_error_stopping_process, e.getMessage()));
             }
             currentPid = -1;
         } else {
-            callback.log("No hay proceso activo para detener.");
+            callback.log(context.getString(R.string.str_no_active_process));
         }
     }
 

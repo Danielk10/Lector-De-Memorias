@@ -1,5 +1,6 @@
 package com.diamon.mini;
 
+import android.graphics.Typeface;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -36,7 +37,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.diamon.mini.core.MiniproExecutor;
 import com.diamon.mini.core.UsbController;
@@ -44,7 +44,6 @@ import com.diamon.mini.ui.views.LogScrollView;
 import com.diamon.mini.ui.views.PinoutView;
 import com.diamon.mini.utils.AssetHelper;
 import com.diamon.mini.utils.ChipDatabase;
-import com.diamon.mini.utils.FileManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,7 +51,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -330,8 +328,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void log(String message) {
                 MainActivity.this.log(message);
+            }
+
+            @Override
+            public void onProcessOutput(String chunk) {
+                MainActivity.this.logRaw(chunk);
                 synchronized (currentOutputLines) {
-                    currentOutputLines.add(message);
+                    currentOutputLines.add(chunk);
                 }
             }
 
@@ -551,7 +554,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnEraseChip.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle(R.string.str_confirm_erase_title)
+                    .setCustomTitle(createCustomDialogTitle(getString(R.string.str_confirm_erase_title)))
                     .setMessage(R.string.str_confirm_erase_msg)
                     .setPositiveButton(R.string.str_yes_erase, (dialog, which) -> {
                         String chip = getSelectedChip();
@@ -584,6 +587,7 @@ public class MainActivity extends AppCompatActivity {
                 cursorAtStartOfLine = false;
             }
             tvLog.setText("");
+            log(getString(R.string.str_log_terminal_reset));
         });
 
         btnAbort.setOnClickListener(v -> miniproExecutor.abort());
@@ -646,17 +650,35 @@ public class MainActivity extends AppCompatActivity {
         searchBox.setTextSize(14f);
         layout.addView(searchBox);
 
-        // Botón Agregar Chip Manual
+        // Botones de acción en diálogo (Manual + Buscar en MiniPro)
+        LinearLayout btnRow = new LinearLayout(this);
+        btnRow.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams lpRow = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lpRow.setMargins(0, pad / 2, 0, pad / 2);
+        btnRow.setLayoutParams(lpRow);
+
         Button btnAddManual = new Button(this);
         btnAddManual.setText(R.string.str_agregar_chip_manual);
-        btnAddManual.setTextSize(12f);
+        btnAddManual.setTextSize(11f);
         btnAddManual.setBackgroundColor(0xFF1565C0);
         btnAddManual.setTextColor(0xFFFFFFFF);
-        LinearLayout.LayoutParams lpBtn = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (int) (38 * getResources().getDisplayMetrics().density));
-        lpBtn.setMargins(0, pad / 2, 0, pad / 2);
-        layout.addView(btnAddManual, lpBtn);
+        LinearLayout.LayoutParams lpBtnManual = new LinearLayout.LayoutParams(
+                0, (int) (38 * getResources().getDisplayMetrics().density), 1f);
+        lpBtnManual.setMarginEnd((int) (4 * getResources().getDisplayMetrics().density));
+        btnRow.addView(btnAddManual, lpBtnManual);
+
+        Button btnSearchMinipro = new Button(this);
+        btnSearchMinipro.setText(R.string.str_buscar_minipro_oficial);
+        btnSearchMinipro.setTextSize(11f);
+        btnSearchMinipro.setBackgroundColor(0xFF00897B);
+        btnSearchMinipro.setTextColor(0xFFFFFFFF);
+        LinearLayout.LayoutParams lpBtnSearch = new LinearLayout.LayoutParams(
+                0, (int) (38 * getResources().getDisplayMetrics().density), 1f);
+        btnRow.addView(btnSearchMinipro, lpBtnSearch);
+
+        layout.addView(btnRow);
 
         // Lista de chips
         ListView listView = new ListView(this);
@@ -690,7 +712,8 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(chipAdapter);
         layout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 600));
 
-        AlertDialog dialog = builder.setTitle(R.string.str_seleccionar_chip_dialog_title)
+        AlertDialog dialog = builder
+                .setCustomTitle(createCustomDialogTitle(getString(R.string.str_seleccionar_chip_dialog_title)))
                 .setView(layout)
                 .setNegativeButton(R.string.str_cerrar, null)
                 .create();
@@ -738,6 +761,19 @@ public class MainActivity extends AppCompatActivity {
             showAddManualChipDialog();
         });
 
+        // Botón Buscar en Base de Datos Oficial de MiniPro (-L)
+        btnSearchMinipro.setOnClickListener(v -> {
+            String query = searchBox.getText() != null ? searchBox.getText().toString().trim().toUpperCase() : "";
+            dialog.dismiss();
+            if (query.isEmpty()) {
+                log(getString(R.string.str_search_minipro_db_log, "*"));
+                executeMinipro("-l");
+            } else {
+                log(getString(R.string.str_search_minipro_db_log, query));
+                executeMinipro("-L", query);
+            }
+        });
+
         dialog.show();
     }
 
@@ -751,7 +787,7 @@ public class MainActivity extends AppCompatActivity {
         input.setPadding(pad, pad, pad, pad);
 
         new AlertDialog.Builder(this)
-                .setTitle(R.string.str_chip_manual_title)
+                .setCustomTitle(createCustomDialogTitle(getString(R.string.str_chip_manual_title)))
                 .setView(input)
                 .setPositiveButton(R.string.str_guardar, (dialog, which) -> {
                     String chip = input.getText().toString().trim().toUpperCase();
@@ -776,12 +812,13 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.str_pinout_opt_mw93),
                 getString(R.string.str_pinout_opt_parallel),
                 getString(R.string.str_pinout_opt_icsp),
+                getString(R.string.str_pinout_opt_pic_icsp),
                 getString(R.string.str_pinout_opt_avrisp),
                 getString(R.string.str_pinout_opt_plcc32)
         };
 
         new AlertDialog.Builder(this)
-                .setTitle(R.string.str_pinouts_de_hard)
+                .setCustomTitle(createCustomDialogTitle(getString(R.string.str_pinouts_de_hard)))
                 .setItems(options, (dialog, which) -> {
                     ImageView iv = new ImageView(this);
                     iv.setBackgroundColor(0xFF12141D);
@@ -809,9 +846,12 @@ public class MainActivity extends AppCompatActivity {
                             PinoutView.dibujarICSP(this, iv);
                             break;
                         case 6:
-                            PinoutView.dibujarAVRISP(this, iv);
+                            PinoutView.dibujarPIC_ICSP(this, iv);
                             break;
                         case 7:
+                            PinoutView.dibujarAVRISP(this, iv);
+                            break;
+                        case 8:
                         default:
                             PinoutView.dibujarPLCC32(this, iv);
                             break;
@@ -820,7 +860,7 @@ public class MainActivity extends AppCompatActivity {
                     ScrollView scroll = new ScrollView(this);
                     scroll.addView(iv);
                     new AlertDialog.Builder(this)
-                            .setTitle(title)
+                            .setCustomTitle(createCustomDialogTitle(title))
                             .setView(scroll)
                             .setPositiveButton(R.string.str_cerrar, null)
                             .show();
@@ -855,10 +895,23 @@ public class MainActivity extends AppCompatActivity {
         scrollView.addView(aboutText);
 
         new AlertDialog.Builder(this)
-                .setTitle(R.string.str_acerca_de_titulo)
+                .setCustomTitle(createCustomDialogTitle(getString(R.string.str_acerca_de_titulo)))
                 .setView(scrollView)
                 .setPositiveButton(R.string.str_cerrar, null)
                 .show();
+    }
+
+    private View createCustomDialogTitle(String titleText) {
+        TextView tv = new TextView(this);
+        tv.setText(titleText);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f);
+        tv.setTypeface(null, Typeface.BOLD);
+        tv.setTextColor(0xFFECEFF1);
+        int padH = (int) (20 * getResources().getDisplayMetrics().density);
+        int padV = (int) (16 * getResources().getDisplayMetrics().density);
+        tv.setPadding(padH, padV, padH, padV / 2);
+        tv.setBackgroundColor(0xFF12141D);
+        return tv;
     }
 
     // ────────── Helpers ──────────────────────────────────────────────────────
@@ -884,8 +937,16 @@ public class MainActivity extends AppCompatActivity {
                 .putString(KEY_SELECTED_DEVICE, device).apply();
     }
 
+    private void logRaw(String chunk) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            appendRawLogOnUi(chunk);
+        } else {
+            runOnUiThread(() -> appendRawLogOnUi(chunk));
+        }
+    }
+
     private void log(String msg) {
-        appendRawLogOnUi(msg + "\n");
+        logRaw(msg + "\n");
     }
 
     private void appendRawLogOnUi(String text) {

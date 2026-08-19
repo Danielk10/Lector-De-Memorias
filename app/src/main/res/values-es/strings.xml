@@ -3,7 +3,6 @@
     <string name="str_estado_usb_desc">Estado: USB desconectado</string>
     <string name="str_status_usb_connected">Estado: Conectado a %1$s</string>
     <string name="str_detectar_y_cone">Detectar y Conectar Programador</string>
-    <string name="str_identificar_chi">Auto-detectar Chip</string>
     <string name="str_verificar">Verificar</string>
     <string name="str_leer_backup">Leer Chip</string>
     <string name="str_escribir">Escribir Chip</string>
@@ -28,9 +27,7 @@
     <string name="str_acerca_de_titulo">Acerca de EEPROM Flasher</string>
     <string name="str_cancelar">Cancelar</string>
     <string name="str_cerrar">Cerrar</string>
-    <string name="str_close">Cerrar</string>
     <string name="str_guardar">Guardar</string>
-    <string name="str_list">Listar</string>
     <string name="str_confirm_erase_title">Confirmar borrado</string>
     <string name="str_confirm_erase_msg">¿Estás seguro de que deseas BORRAR completamente todo el chip? Todos los datos se perderán y se llenarán con 0xFF. Esta acción es irreversible.</string>
     <string name="str_yes_erase">Sí, borrar</string>
@@ -71,8 +68,8 @@
     <string name="str_chip_manual_hint">Ingresa el nombre del chip, ej: W25Q64JV</string>
     <string name="str_seleccionar_chip_dialog_title">Seleccionar Modelo de Chip</string>
     <string name="str_buscar_chip_hint">Buscar chip por nombre...</string>
-    <string name="str_todos_los_chips">Todos</string>
-    <string name="str_recientes_personalizados">Recientes y Propios</string>
+    <string name="str_buscar_minipro_oficial">Buscar en Base Oficial MiniPro (-L)</string>
+    <string name="str_search_minipro_db_log">Buscando en catálogo oficial de MiniPro: \'%1$s\'...</string>
     <string name="str_copiado">Texto copiado al portapapeles</string>
     <string name="str_log_update_detected">Actualización detectada: versión %1$d a versión %2$d.</string>
     <string name="str_log_verifying_resources">Verificando recursos tras actualización…</string>
@@ -132,6 +129,7 @@
     <string name="str_pinout_opt_mw93">Microwire EEPROM — Serie 93Cxx</string>
     <string name="str_pinout_opt_parallel">Memorias Paralelas Flash / EPROM — DIP28 / DIP32</string>
     <string name="str_pinout_opt_icsp">Puerto ICSP 6 Pines para Programación en Circuito</string>
+    <string name="str_pinout_opt_pic_icsp">Microcontroladores PIC Microchip — Pinouts ICSP (DIP8..DIP40)</string>
     <string name="str_pinout_opt_avrisp">Conectores Estándar AVR ISP de 6 y 10 Pines</string>
     <string name="str_pinout_opt_plcc32">Adaptador PLCC32 a DIP32 para Memorias BIOS / Flash</string>
 
@@ -147,6 +145,8 @@
     <string name="str_pinout_parallel_note">⚠️ Cuidado con el voltaje VPP en EPROMs 27C: 12.5V o 21V según especificación</string>
     <string name="str_pinout_icsp_header">Header ICSP 6 Pines para Programación en Circuito</string>
     <string name="str_pinout_icsp_note">⚠️ Mantener cables ICSP cortos, menos de 15 cm. Verificar voltajes VDD y VPP</string>
+    <string name="str_pinout_pic_icsp_header">Guía Pinouts ICSP para Microchip PIC (DIP8..DIP40)</string>
+    <string name="str_pinout_pic_icsp_note">⚠️ Pin 1 VPP / MCLR recibe alto voltaje de programación (9V-13V)</string>
     <string name="str_pinout_avrisp_header">Conectores AVR ISP Estándar de 6 y 10 Pines</string>
     <string name="str_pinout_avrisp_note">⚠️ Para ATmega328P, Arduino y ATtiny: conectar MISO, MOSI, SCK, RESET, VCC, GND</string>
     <string name="str_pinout_plcc32_header">Adaptador PLCC32 a DIP32 para Memorias BIOS y Flash</string>
@@ -177,28 +177,38 @@
     <string name="str_pinout_plcc_step2">2. Inserta el adaptador DIP32 en el socket ZIF alineado al fondo inferior.</string>
     <string name="str_pinout_plcc_step3">3. En minipro selecciona el modelo con sufijo @PLCC32 si aplica.</string>
     <string name="str_pinout_top_view">Vista Superior</string>
-    <string name="str_pinout_ground">Tierra / Masa</string>
-
     <string name="str_warn_unsupported_programmer">[AVISO] Se detectó %1$s. El motor minipro NO soporta programadores CH341A / CH347. Solo es compatible con la serie TL866 / T48 / T56 / T76.</string>
+    <string name="str_error_starting_process">[ERROR] Error al iniciar el proceso nativo.</string>
+    <string name="str_process_aborted_user">[ABORT] Proceso nativo minipro detenido por el usuario.</string>
+    <string name="str_error_stopping_process">[ERROR] No se pudo detener el proceso nativo: %1$s</string>
+    <string name="str_no_active_process">No hay proceso activo para detener.</string>
+    <string name="str_exception_log">[EXCEPCIÓN] %1$s</string>
 
     <string name="str_about_html"><![CDATA[
-<h2>🔌 EEPROM Flasher</h2>
-<p>Aplicación Android avanzada para lectura, verificación, escritura y borrado de memorias EEPROM y Flash usando <b>minipro</b> nativo mediante conexión directa USB Host API.</p>
+<h2>EEPROM Flasher</h2>
+<p>Herramienta Android nativa para leer, escribir, verificar, comparar y borrar memorias EEPROM y Flash mediante programadores TL866II+, TL866A, TL866CS, T48, T56 y T76 por USB OTG sin root.</p>
 <hr/>
-<b>Programadores Compatibles:</b><br/>
-• TL866II+ / TL866A / TL866CS<br/>
-• Xgecu T48 / T56 / T76<br/>
+<b>Programadores Compatibles y Base de Datos:</b><br/>
+• TL866II+: 29,774 dispositivos (+47 personalizados)<br/>
+• TL866A / TL866CS: 14,162 dispositivos (+46 personalizados)<br/>
+• XGecu T48: 29,739 dispositivos<br/>
+• XGecu T56: 32,513 dispositivos<br/>
+• XGecu T76: 34,607 dispositivos<br/>
+• Logic IC Tester: 283 integrados (+6 personalizados)<br/>
 <br/>
-<b>Licencia del Proyecto:</b> GPLv3 / GPLv2<br/>
+<i>Nota: El motor minipro no cuenta con soporte para serie CH341A ni CH347.</i><br/>
 <br/>
-<b>Librerías y Créditos de Código Abierto:</b><br/>
-• <a href="https://gitlab.com/DavidGriffith/minipro">minipro</a> — Software libre para TL866 / T48 / T56 por David Griffith y colaboradores, GPLv3<br/>
-• <a href="https://github.com/libusb/libusb">libusb</a> — Librería multiplataforma USB, LGPL-2.1+<br/>
-• <a href="https://github.com/google/material-design-icons">Material Components</a> — Sistema de diseño UI por Google, Apache 2.0<br/>
+<b>Licencias y Atribuciones:</b><br/>
+• <b>EEPROM Flasher:</b> <a href="https://github.com/Danielk10/Lector-De-Memorias/blob/main/LICENSE">GNU GPLv3</a><br/>
+• <b>minipro:</b> <a href="https://gitlab.com/DavidGriffith/minipro">GNU GPLv3</a> — David Griffith y colaboradores<br/>
+• <b>libusb:</b> <a href="https://github.com/libusb/libusb">GNU LGPLv2.1</a> — libusb contributors<br/>
+• <b>AndroidX &amp; Material Design:</b> <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a><br/>
 <br/>
-<b>Desarrollador y Repositorios:</b><br/>
-• <a href="https://github.com/Danielk10/Lector-De-Memorias">EEPROM Flasher GitHub</a><br/>
-• <a href="https://github.com/Danielk10/Flash-EEPROM-Tool">Flash-EEPROM-Tool GitHub</a><br/>
-• <a href="https://github.com/Danielk10/PIC-k150-Programing">PIC k150 Programming</a><br/>
+<b>Desarrollador:</b><br/>
+Daniel Diamon (<a href="https://github.com/Danielk10">@Danielk10</a>)<br/>
+Tinaquillo, Cojedes, Venezuela<br/>
+<br/>
+<b>Repositorio del Proyecto:</b><br/>
+<a href="https://github.com/Danielk10/Lector-De-Memorias">GitHub: Danielk10/Lector-De-Memorias</a>
 ]]></string>
 </resources>
