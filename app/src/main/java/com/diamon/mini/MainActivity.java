@@ -1047,7 +1047,8 @@ public class MainActivity extends AppCompatActivity {
         boolean hasListFlag = false;
         boolean hasProgrammerFlag = false;
         for (String a : args) {
-            if ("-l".equals(a) || "-L".equals(a) || "--list".equals(a) || "--search".equals(a)) {
+            if ("-l".equals(a) || "-L".equals(a) || "--list".equals(a) || "--search".equals(a)
+                    || "-d".equals(a) || "--get_info".equals(a)) {
                 hasListFlag = true;
             }
             if ("-q".equals(a) || "--programmer".equals(a)) {
