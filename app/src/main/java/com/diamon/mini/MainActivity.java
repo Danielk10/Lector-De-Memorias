@@ -730,8 +730,10 @@ public class MainActivity extends AppCompatActivity {
                 if (query.isEmpty()) {
                     currentFiltered.addAll(allChips);
                 } else {
+                    String queryNormalized = query.replace('O', '0');
                     for (String chip : allChips) {
-                        if (chip.toUpperCase().contains(query)) {
+                        String upperChip = chip.toUpperCase();
+                        if (upperChip.contains(query) || upperChip.contains(queryNormalized)) {
                             currentFiltered.add(chip);
                         }
                     }
@@ -765,12 +767,13 @@ public class MainActivity extends AppCompatActivity {
         btnSearchMinipro.setOnClickListener(v -> {
             String query = searchBox.getText() != null ? searchBox.getText().toString().trim().toUpperCase() : "";
             dialog.dismiss();
+            String prog = getMiniproProgrammerFlag();
             if (query.isEmpty()) {
-                log(getString(R.string.str_search_minipro_db_log, "*"));
-                executeMinipro("-l");
+                log(getString(R.string.str_search_minipro_db_log, "* [" + prog + "]"));
+                executeMinipro("-q", prog, "-l");
             } else {
-                log(getString(R.string.str_search_minipro_db_log, query));
-                executeMinipro("-L", query);
+                log(getString(R.string.str_search_minipro_db_log, query + " [" + prog + "]"));
+                executeMinipro("-q", prog, "-L", query);
             }
         });
 
@@ -992,6 +995,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String getMiniproProgrammerFlag() {
+        String dev = getSelectedDevice();
+        if (dev == null) return "TL866II";
+        String d = dev.trim().toUpperCase();
+        if (d.contains("II")) return "TL866II";
+        if (d.contains("TL866A") || d.contains("TL866CS") || d.contains("CS") || d.contains("866A")) return "TL866A";
+        if (d.contains("T48")) return "T48";
+        if (d.contains("T56")) return "T56";
+        if (d.contains("T76")) return "T76";
+        return "TL866II";
+    }
+
     private void executeMinipro(String... args) {
         miniproExecutor.executeCommand(args, usbController.getCurrentFd());
     }
@@ -1026,6 +1041,22 @@ public class MainActivity extends AppCompatActivity {
         }
         if (current.length() > 0) {
             args.add(current.toString());
+        }
+
+        // Si es una consulta de listado o búsqueda sin programador conectado y sin -q explícito, inyectar -q
+        boolean hasListFlag = false;
+        boolean hasProgrammerFlag = false;
+        for (String a : args) {
+            if ("-l".equals(a) || "-L".equals(a) || "--list".equals(a) || "--search".equals(a)) {
+                hasListFlag = true;
+            }
+            if ("-q".equals(a) || "--programmer".equals(a)) {
+                hasProgrammerFlag = true;
+            }
+        }
+        if (hasListFlag && !hasProgrammerFlag && usbController.getCurrentFd() < 0) {
+            args.add(0, "-q");
+            args.add(1, getMiniproProgrammerFlag());
         }
 
         miniproExecutor.executeCommand(args.toArray(new String[0]), usbController.getCurrentFd());
