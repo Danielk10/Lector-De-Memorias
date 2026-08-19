@@ -61,7 +61,7 @@
     <string name="str_seleccionar_dispositivo">Programador:</string>
     <string name="str_seleccionar_chip">Chip:</string>
     <string name="str_hint_chip">Ej: W25Q128FV</string>
-    <string name="str_buscar_chip">CATÁLOGO</string>
+    <string name="str_buscar_chip">CATALOGO</string>
     <string name="str_autodetectar_chip">Auto-detectar</string>
     <string name="str_agregar_chip_manual">Agregar chip manual</string>
     <string name="str_chip_manual_title">Agregar Modelo de Chip Personalizado</string>
