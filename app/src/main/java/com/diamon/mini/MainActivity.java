@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private LogScrollView scrollLog;
     private TextView tvStatus, tvLog, tvLoadingText, tvOperationStatus;
     private Spinner spinnerDevices;
-    private Button btnConnect, btnProbe, btnRead, btnWrite, btnImport, btnExport;
+    private Button btnConnect, btnRead, btnWrite, btnImport, btnExport;
     private Button btnRunCustomCommand, btnClearLogs, btnQuickClear, btnEraseChip, btnAbort, btnVerify;
     private Button btnSearchChip, btnAutodetectChip;
     private EditText etCustomCommand, etChipModel;
@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
         btnSearchChip = findViewById(R.id.btnSearchChip);
         btnAutodetectChip = findViewById(R.id.btnAutodetectChip);
         btnConnect = findViewById(R.id.btnConnect);
-        btnProbe = findViewById(R.id.btnProbe);
         btnVerify = findViewById(R.id.btnVerify);
         btnRead = findViewById(R.id.btnRead);
         btnWrite = findViewById(R.id.btnWrite);
@@ -271,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.log("════════════════════════════════════════");
                     }
 
-                    btnProbe.setEnabled(true);
                     btnVerify.setEnabled(true);
                     btnRead.setEnabled(true);
                     btnWrite.setEnabled(true);
@@ -289,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     tvStatus.setText(getString(R.string.str_estado_usb_desc));
                     clearUsbFd();
-                    btnProbe.setEnabled(false);
                     btnVerify.setEnabled(false);
                     btnRead.setEnabled(false);
                     btnWrite.setEnabled(false);
@@ -460,15 +457,6 @@ public class MainActivity extends AppCompatActivity {
             executeMinipro("-a", "8");
         });
 
-        btnProbe.setOnClickListener(v -> {
-            String chip = getSelectedChip();
-            if (chip.isEmpty()) {
-                executeMinipro("-a", "8");
-            } else {
-                executeMinipro("-p", chip);
-            }
-        });
-
         btnVerify.setOnClickListener(v -> {
             String chip = getSelectedChip();
             if (chip.isEmpty()) {
@@ -591,12 +579,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_pinouts) {
             showPinoutsDialog();
-            return true;
-        } else if (id == R.id.action_chip_selector) {
-            showChipSelectorDialog();
-            return true;
-        } else if (id == R.id.action_export_downloads) {
-            exportToDownloadsFolder();
             return true;
         } else if (id == R.id.action_select_dir) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
@@ -862,18 +844,15 @@ public class MainActivity extends AppCompatActivity {
     // ────────── About & Licenses Dialog ──────────────────────────────────────
 
     private void showAboutDialog() {
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setBackgroundColor(0xFF12141D);
         TextView aboutText = new TextView(this);
-        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        int padding = (int) (18 * getResources().getDisplayMetrics().density);
         aboutText.setPadding(padding, padding, padding, padding / 2);
         aboutText.setMovementMethod(LinkMovementMethod.getInstance());
-
-        // Usar colores del tema para asegurar visibilidad en cualquier fondo
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
-        aboutText.setTextColor(typedValue.data);
-
-        getTheme().resolveAttribute(androidx.appcompat.R.attr.colorAccent, typedValue, true);
-        aboutText.setLinkTextColor(typedValue.data);
+        aboutText.setTextColor(0xFFECEFF1);
+        aboutText.setLinkTextColor(0xFF00BFA5);
+        aboutText.setTextSize(14f);
 
         String aboutHtml = getString(R.string.str_about_html);
 
@@ -885,9 +864,11 @@ public class MainActivity extends AppCompatActivity {
             aboutText.setText(text);
         }
 
+        scrollView.addView(aboutText);
+
         new AlertDialog.Builder(this)
                 .setTitle(R.string.str_acerca_de_titulo)
-                .setView(aboutText)
+                .setView(scrollView)
                 .setPositiveButton(R.string.str_cerrar, null)
                 .show();
     }

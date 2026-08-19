@@ -104,26 +104,29 @@
                 android:popupBackground="@color/surface_dark" />
         </LinearLayout>
 
-        <!-- Fila Modelo de Chip + Botones Catálogo & Auto -->
+        <!-- Botón Conectar Programador -->
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            app:backgroundTint="@color/btn_tint_blue"
+            android:textColor="@color/btn_text_color"
+            android:text="@string/str_detectar_y_cone"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Fila Modelo de Chip + Botones Auto-detectar & Catálogo -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="4dp">
-
-            <Button
-                android:id="@+id/btnAutodetectChip"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:minWidth="0dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:layout_marginEnd="4dp"
-                android:text="@string/str_autodetectar_chip"
-                android:textSize="12sp"
-                app:backgroundTint="@color/btn_tint_orange"
-                android:textColor="@color/btn_text_color" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -150,9 +153,32 @@
                 android:maxLines="1" />
 
             <Button
+                android:id="@+id/btnAutodetectChip"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:minWidth="0dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/str_autodetectar_chip"
+                android:textSize="12sp"
+                app:backgroundTint="@color/btn_tint_orange"
+                android:textColor="@color/btn_text_color" />
+
+            <Button
                 android:id="@+id/btnSearchChip"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
                 android:minWidth="0dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
@@ -163,9 +189,9 @@
                 android:textColor="@color/btn_text_color" />
         </LinearLayout>
 
-        <!-- Botón Conectar USB -->
+        <!-- Botón Verificar -->
         <Button
-            android:id="@+id/btnConnect"
+            android:id="@+id/btnVerify"
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:minHeight="0dp"
@@ -173,55 +199,12 @@
             android:insetBottom="0dp"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
-            app:backgroundTint="@color/btn_tint_blue"
+            android:enabled="false"
+            app:backgroundTint="@color/btn_tint_green"
             android:textColor="@color/btn_text_color"
-            android:text="@string/str_detectar_y_cone"
+            android:text="@string/str_verificar"
             android:textSize="13sp"
             android:layout_marginBottom="3dp" />
-
-        <!-- Fila: Identificar + Verificar -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="3dp">
-
-            <Button
-                android:id="@+id/btnProbe"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_weight="1"
-                android:minHeight="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
-                android:enabled="false"
-                app:backgroundTint="@color/btn_tint_blue"
-                android:textColor="@color/btn_text_color"
-                android:text="@string/str_identificar_chi"
-                android:textSize="13sp" />
-
-            <Space
-                android:layout_width="6dp"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnVerify"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_weight="1"
-                android:minHeight="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
-                android:enabled="false"
-                app:backgroundTint="@color/btn_tint_green"
-                android:textColor="@color/btn_text_color"
-                android:text="@string/str_verificar"
-                android:textSize="13sp" />
-        </LinearLayout>
 
         <!-- Fila: Leer + Escribir -->
         <LinearLayout
@@ -381,6 +364,11 @@
                 android:id="@+id/btnRunCustomCommand"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
+                android:minHeight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
                 android:minWidth="0dp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"

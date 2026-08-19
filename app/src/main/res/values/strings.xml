@@ -2,7 +2,7 @@
     <string name="app_name">EEPROM Flasher</string>
     <string name="str_estado_usb_desc">USB Status: Disconnected</string>
     <string name="str_status_usb_connected">Status: Connected to %1$s</string>
-    <string name="str_detectar_y_cone">Detect and Connect USB</string>
+    <string name="str_detectar_y_cone">Detect and Connect Programmer</string>
     <string name="str_identificar_chi">Autodetect Chip</string>
     <string name="str_verificar">Verify</string>
     <string name="str_leer_backup">Read Chip</string>
@@ -14,7 +14,7 @@
     <string name="str_terminal_salida">Terminal</string>
     <string name="str_limpiar">Clear</string>
     <string name="str_detener">Stop</string>
-    <string name="str_hint_comando">E.g.: minipro --version or minipro -p W25Q128FV -r rom.bin</string>
+    <string name="str_hint_comando">E.g.: minipro -p W25Q128FV -w rom.bin</string>
     <string name="str_ejecutar_instru">EJECUTAR</string>
     <string name="str_log_">$ log\n</string>
     <string name="str_preparando_depe">Preparing dependencies…</string>
@@ -63,7 +63,7 @@
     <string name="str_str">................</string>
     <string name="str_seleccionar_dispositivo">Programmer:</string>
     <string name="str_seleccionar_chip">Chip:</string>
-    <string name="str_hint_chip">E.g.: W25Q128FV, AT24C02C, 27C512</string>
+    <string name="str_hint_chip">E.g.: W25Q128FV</string>
     <string name="str_buscar_chip">Catalog</string>
     <string name="str_autodetectar_chip">Autodetect</string>
     <string name="str_agregar_chip_manual">Add Custom Chip</string>
