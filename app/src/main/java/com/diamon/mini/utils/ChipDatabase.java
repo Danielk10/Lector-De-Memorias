@@ -23,9 +23,8 @@ public class ChipDatabase {
 
     public static final Map<String, List<String>> CHIP_CATEGORIES = new LinkedHashMap<>();
 
-    static {
-        // 1. SPI Flash (25xxx)
-        CHIP_CATEGORIES.put("SPI Flash (25xxx)", Arrays.asList(
+    static {        // 1. SPI Flash 25xxx
+        CHIP_CATEGORIES.put("SPI Flash 25xxx", Arrays.asList(
                 "W25Q128FV", "W25Q128JV", "W25Q64FV", "W25Q64JV", "W25Q32BV", "W25Q32JV",
                 "W25Q16BV", "W25Q16JV", "W25Q80BV", "W25Q40BV", "W25X40", "W25X80",
                 "MX25L6405D", "MX25L6406E", "MX25L6436E", "MX25L3205D", "MX25L3206E",
@@ -37,8 +36,8 @@ public class ChipDatabase {
                 "AT25DF041A", "AT25DF081A", "AT25DF161", "AT25DF321", "AT25DF641"
         ));
 
-        // 2. I2C EEPROM (24xxx)
-        CHIP_CATEGORIES.put("I2C EEPROM (24xxx)", Arrays.asList(
+        // 2. I2C EEPROM 24xxx
+        CHIP_CATEGORIES.put("I2C EEPROM 24xxx", Arrays.asList(
                 "AT24C01", "AT24C02", "AT24C04", "AT24C08", "AT24C16", "AT24C32",
                 "AT24C64", "AT24C128", "AT24C256", "AT24C512", "AT24C1024",
                 "24LC01B", "24LC02B", "24LC04B", "24LC08B", "24LC16B", "24LC32A",
@@ -47,18 +46,18 @@ public class ChipDatabase {
                 "M24C64", "M24C128", "M24C256", "M24C512"
         ));
 
-        // 3. Microwire EEPROM (93xxx)
-        CHIP_CATEGORIES.put("Microwire (93xxx)", Arrays.asList(
-                "93C46 (8-bit)", "93C46 (16-bit)", "93C56 (8-bit)", "93C56 (16-bit)",
-                "93C66 (8-bit)", "93C66 (16-bit)", "93C76 (8-bit)", "93C76 (16-bit)",
-                "93C86 (8-bit)", "93C86 (16-bit)",
+        // 3. Microwire EEPROM 93xxx
+        CHIP_CATEGORIES.put("Microwire 93xxx", Arrays.asList(
+                "93C46 8-bit", "93C46 16-bit", "93C56 8-bit", "93C56 16-bit",
+                "93C66 8-bit", "93C66 16-bit", "93C76 8-bit", "93C76 16-bit",
+                "93C86 8-bit", "93C86 16-bit",
                 "93LC46B", "93LC56B", "93LC66B", "93LC76B", "93LC86B",
                 "AT93C46", "AT93C56", "AT93C66", "AT93C86",
                 "CAT93C46", "CAT93C56", "CAT93C66"
         ));
 
-        // 4. SPI EEPROM (25Cxx / 95xxx)
-        CHIP_CATEGORIES.put("SPI EEPROM (25Cxx/95xxx)", Arrays.asList(
+        // 4. SPI EEPROM 25Cxx y 95xxx
+        CHIP_CATEGORIES.put("SPI EEPROM 25Cxx y 95xxx", Arrays.asList(
                 "25LC010A", "25LC020A", "25LC040A", "25LC080A", "25LC160A",
                 "25LC320A", "25LC640A", "25LC128", "25LC256", "25LC512", "25LC1024",
                 "M95010", "M95020", "M95040", "M95080", "M95160",
@@ -66,8 +65,8 @@ public class ChipDatabase {
                 "AT25010", "AT25020", "AT25040", "AT25080", "AT25160", "AT25320", "AT25640"
         ));
 
-        // 5. Parallel Flash / EPROM (27C/28C/29C/39SF/49F)
-        CHIP_CATEGORIES.put("Paralelo (27/28/29/39/49)", Arrays.asList(
+        // 5. Parallel Flash y EPROM 27C 28C 29C 39SF 49F
+        CHIP_CATEGORIES.put("Paralelo 27 / 28 / 29 / 39 / 49", Arrays.asList(
                 "27C64", "27C128", "27C256", "27C512", "27C010", "27C020", "27C040", "27C080",
                 "AT28C16", "AT28C64", "AT28C256",
                 "AT29C256", "AT29C512", "AT29C010A", "AT29C020", "AT29C040A",

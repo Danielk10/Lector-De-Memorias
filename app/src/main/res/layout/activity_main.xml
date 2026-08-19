@@ -167,6 +167,7 @@
                 android:layout_marginStart="4dp"
                 android:text="@string/str_autodetectar_chip"
                 android:textSize="12sp"
+                android:enabled="false"
                 app:backgroundTint="@color/btn_tint_orange"
                 android:textColor="@color/btn_text_color" />
 

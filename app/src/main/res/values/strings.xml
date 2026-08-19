@@ -23,7 +23,7 @@
     <string name="str_comparar_hex">Compare HEX Files</string>
     <string name="str_pinouts_de_hard">Hardware Pinouts</string>
     <string name="str_cargando_archiv">Loading file…</string>
-    <string name="str_seleccionar_dir">Storage Directory</string>
+    <string name="str_seleccionar_dir">Save and Load Directory</string>
     <string name="str_acerca_de">About &amp; Licenses</string>
     <string name="str_acerca_de_titulo">About EEPROM Flasher</string>
     <string name="str_cancelar">Cancel</string>
@@ -32,7 +32,7 @@
     <string name="str_guardar">Save</string>
     <string name="str_list">List</string>
     <string name="str_confirm_erase_title">Confirm Chip Erase</string>
-    <string name="str_confirm_erase_msg">Are you sure you want to completely ERASE this chip? All data will be lost (set to 0xFF). This operation cannot be undone.</string>
+    <string name="str_confirm_erase_msg">Are you sure you want to completely ERASE this chip? All data will be lost and set to 0xFF. This action cannot be undone.</string>
     <string name="str_yes_erase">Yes, Erase</string>
     <string name="str_extracting_libs">Extracting libraries…</string>
     <string name="str_verifying_dependencies">Verifying dependencies…</string>
@@ -54,7 +54,7 @@
     <string name="str_source_label">\nSource: %1$s</string>
     <string name="str_hex_detected">Intel HEX detected | Range: 0x%1$08X - 0x%2$08X</string>
     <string name="str_err_hex_no_records">No data records found in HEX file.</string>
-    <string name="str_err_hex_too_large">HEX file is too large to visualize (%1$s MB).</string>
+    <string name="str_err_hex_too_large">HEX file is too large to visualize: %1$s MB.</string>
     <string name="str_err_parse_hex">Error parsing Intel HEX: %1$s</string>
     <string name="str_00000000">00000000</string>
     <string name="str___"> | </string>
@@ -68,13 +68,13 @@
     <string name="str_autodetectar_chip">Autodetect</string>
     <string name="str_agregar_chip_manual">Add Custom Chip</string>
     <string name="str_chip_manual_title">Add Custom Chip Model</string>
-    <string name="str_chip_manual_hint">Enter chip model name (e.g. W25Q64JV)</string>
+    <string name="str_chip_manual_hint">Enter chip model name, e.g. W25Q64JV</string>
     <string name="str_seleccionar_chip_dialog_title">Select Chip Model</string>
     <string name="str_buscar_chip_hint">Filter chip name...</string>
     <string name="str_todos_los_chips">All</string>
-    <string name="str_recientes_personalizados">Recent / Custom</string>
+    <string name="str_recientes_personalizados">Recent and Custom</string>
     <string name="str_copiado">Text copied to clipboard</string>
-    <string name="str_log_update_detected">Update detected (v%1$d → v%2$d).</string>
+    <string name="str_log_update_detected">Update detected: version %1$d to version %2$d.</string>
     <string name="str_log_verifying_resources">Verifying resources after update…</string>
     <string name="str_archivo_a">File A</string>
     <string name="str_archivo_b">File B</string>
@@ -83,109 +83,101 @@
     <string name="str_selecciona_dos_">Select two files to compare</string>
     <string name="str_load_both_files">Load both files to compare.</string>
     <string name="str_files_identical">✅ Identical files — 0 differences.</string>
-    <string name="str_files_different">⚠ %1$d differing bytes (%2$.1f%%) out of %3$d total bytes.</string>
-    <string name="str_compare_summary">A: %1$s (%2$d bytes) vs B: %3$s (%4$d bytes)</string>
+    <string name="str_files_different">⚠ %1$d differing bytes, %2$.1f%% of %3$d total bytes.</string>
+    <string name="str_compare_summary">A: %1$s with %2$d bytes vs B: %3$s with %4$d bytes</string>
     <string name="str_err_load_file_a">Error loading File A: %1$s</string>
     <string name="str_err_load_file_b">Error loading File B: %1$s</string>
-    <string name="str_export_downloads">Export to Downloads</string>
-    <string name="str_export_downloads_success">Dump exported to Downloads/EEPROM Flasher folder.</string>
-    <string name="str_export_downloads_error">Error exporting to Downloads folder.</string>
 
     <!-- Additional Localized Strings -->
     <string name="str_app_started">--- Application Started ---</string>
-    <string name="str_system_ready">MiniPro system and chip database ready.</string>
+    <string name="str_system_ready">MiniPro system and chip catalog ready.</string>
     <string name="str_usb_permission_granted">Permission granted! USB FD Token: %1$d</string>
     <string name="str_connected_usb_vid_pid">Connected to USB VID:PID %1$s</string>
     <string name="str_device_recognized">[OK] Device recognized: %1$s</string>
     <string name="str_warn_unrecognized_usb">[NOTICE] Device not identified in auto USB map.\nYou can select the programmer model from the top selector.</string>
     <string name="str_usb_disconnected">USB device disconnected.</string>
-    <string name="str_read_from_chip">Read from chip (%1$s)</string>
+    <string name="str_read_from_chip">Read from chip %1$s</string>
     <string name="str_chip_detected_configured">[AUTO] Detected and configured chip: %1$s</string>
     <string name="str_starting_autodetect">Starting chip autodetection with MiniPro...</string>
-    <string name="str_err_specify_chip">Error: Specify a chip model (e.g. W25Q128FV).</string>
+    <string name="str_err_specify_chip">Error: Specify a chip model, e.g. W25Q128FV.</string>
     <string name="str_err_no_rom_loaded">Error: No rom.bin file loaded. Use \'Load ROM\' or \'Read Chip\' first.</string>
     <string name="str_err_no_data_read">Error: No chip data read yet.</string>
     <string name="str_use_read_chip_first">Use \'Read Chip\' first to read contents.</string>
     <string name="str_file_not_found">Error: The file \'%1$s\' does not exist.</string>
     <string name="str_export_dir_saved">Export directory configured and saved.</string>
-    <string name="str_export_dir_no_persist">Directory configured (no extended persistence).</string>
-    <string name="str_query_db_btn">Query DB</string>
-    <string name="str_query_db_title">Query MiniPro Database</string>
-    <string name="str_query_db_msg">Enter search term to list supported chips:</string>
-    <string name="str_query_db_hint">E.g.: 25Q, PIC16, 24C, ATmega...</string>
+    <string name="str_export_dir_no_persist">Directory configured without extended persistence.</string>
     <string name="str_chip_configured">Chip configured: %1$s</string>
     <string name="str_custom_chip_added">Custom chip added and selected: %1$s</string>
-    <string name="str_rom_deleted">Data file (rom.bin) deleted.</string>
+    <string name="str_rom_deleted">Data file rom.bin deleted.</string>
     <string name="str_rom_delete_error">Error attempting to delete data file.</string>
     <string name="str_no_file_deleted">No file deleted because there was no data.</string>
-    <string name="str_rom_imported">ROM imported: \'%1$s\' (%2$s)\nFile saved as \'rom.bin\' — ready to Flash or Verify.</string>
-    <string name="str_imported_label">Imported: %1$s (%2$s)</string>
+    <string name="str_rom_imported">ROM imported: \'%1$s\' size %2$s\nFile saved as \'rom.bin\' — ready to Flash or Verify.</string>
+    <string name="str_imported_label">Imported: %1$s, %2$s</string>
     <string name="str_file_empty">Error: The selected file is empty.</string>
-    <string name="str_file_too_large">Error: File is too large (%1$d MB). Maximum: 128 MB.</string>
+    <string name="str_file_too_large">Error: File is too large: %1$d MB. Maximum allowed: 128 MB.</string>
     <string name="str_export_success">Success: \'%1$s\' exported successfully.</string>
     <string name="str_current_memory">Current memory</string>
     <string name="str_usb_device_detected">Device detected: %1$s | Requesting permission...</string>
     <string name="str_usb_auto_detected">Automatic detection: %1$s recognized as %2$s</string>
     <string name="str_usb_not_recognized">[NOTICE] Device not automatically recognized in database.\nYou can attempt to link it manually.</string>
-    <string name="str_usb_connection_failed">%1$s failed to attach to the app (null openDevice).</string>
+    <string name="str_usb_connection_failed">%1$s failed to attach to the application due to null USB descriptor.</string>
     <string name="str_usb_no_device_detected">Error: No USB device detected.</string>
     <string name="str_usb_permission_denied">Error: USB permission denied.</string>
     <string name="str_minipro_binary_not_found">[ERROR] minipro binary not found.</string>
 
     <!-- Pinouts Options -->
-    <string name="str_pinout_opt_zif40">ZIF 40-Pin Socket — Universal Alignment Rule (TL866/T48)</string>
-    <string name="str_pinout_opt_spi25">SPI Flash SOIC8 / SOP8 / DIP8 (25xxx Series)</string>
-    <string name="str_pinout_opt_i2c24">I2C EEPROM SOIC8 / DIP8 (24Cxx Series)</string>
-    <string name="str_pinout_opt_mw93">Microwire EEPROM (93Cxx Series)</string>
-    <string name="str_pinout_opt_parallel">Parallel Flash / EPROM (DIP28 / DIP32 - 27C/28C/29F/39SF)</string>
-    <string name="str_pinout_opt_icsp">ICSP 6-Pin Port (TL866 / T48 / PIC / AVR In-Circuit)</string>
-    <string name="str_pinout_opt_avrisp">Standard AVR ISP Headers (6-Pin &amp; 10-Pin)</string>
-    <string name="str_pinout_opt_plcc32">PLCC32 to DIP32 Adapter (BIOS Flash Chips)</string>
+    <string name="str_pinout_opt_zif40">ZIF 40-Pin Socket — Universal Alignment Rule</string>
+    <string name="str_pinout_opt_spi25">SPI Flash SOIC8 / SOP8 / DIP8 — 25xxx Series</string>
+    <string name="str_pinout_opt_i2c24">I2C EEPROM SOIC8 / DIP8 — 24Cxx Series</string>
+    <string name="str_pinout_opt_mw93">Microwire EEPROM — 93Cxx Series</string>
+    <string name="str_pinout_opt_parallel">Parallel Flash / EPROM — DIP28 / DIP32</string>
+    <string name="str_pinout_opt_icsp">6-Pin ICSP Port for In-Circuit Programming</string>
+    <string name="str_pinout_opt_avrisp">Standard AVR ISP Headers for 6 and 10 Pins</string>
+    <string name="str_pinout_opt_plcc32">PLCC32 to DIP32 Adapter for BIOS / Flash Memories</string>
 
-    <string name="str_pinout_zif40_header">Universal 40-Pin ZIF Socket (TL866 / T48 / T56)</string>
+    <string name="str_pinout_zif40_header">Universal 40-Pin ZIF Socket</string>
     <string name="str_pinout_zif40_note">⚠️ ALWAYS align DIP chips to the BOTTOM of the ZIF socket with NOTCH UP</string>
-    <string name="str_pinout_spi25_header">SPI Flash 25xxx (SOIC8 / DIP8) — MiniPro Connection</string>
-    <string name="str_pinout_spi25_note">⚠️ WP# and HOLD# must be HIGH (VCC 3.3V) when unused</string>
+    <string name="str_pinout_spi25_header">SPI Flash 25xxx Series — MiniPro Connection</string>
+    <string name="str_pinout_spi25_note">⚠️ WP# and HOLD# pins must be HIGH at 3.3V when unused</string>
     <string name="str_pinout_i2c24_header">I2C EEPROM 24Cxx — Pinout and MiniPro Connection</string>
-    <string name="str_pinout_i2c24_note">⚠️ Pin 7 WP to GND to enable writing. A0/A1/A2 define I2C address</string>
-    <string name="str_pinout_mw93_header">Microwire 93Cxx — Pinout and Organization (8/16 bits)</string>
-    <string name="str_pinout_mw93_note">⚠️ Pin 6 ORG to VCC = 16-bit word mode, to GND = 8-bit byte mode</string>
-    <string name="str_pinout_parallel_header">Parallel EPROM / Flash DIP32 (27C, 28C, 29F, 39SF)</string>
-    <string name="str_pinout_parallel_note">⚠️ Be cautious with VPP voltage on 27C EPROMs (12.5V or 21V per datasheet)</string>
-    <string name="str_pinout_icsp_header">6-Pin ICSP Header (In-Circuit Programming TL866 / T48)</string>
-    <string name="str_pinout_icsp_note">⚠️ Keep ICSP wires short (&lt;15 cm). Verify VDD/VPP voltages</string>
-    <string name="str_pinout_avrisp_header">Standard AVR ISP Headers (6-Pin and 10-Pin)</string>
-    <string name="str_pinout_avrisp_note">⚠️ For ATmega328P / Arduino / ATtiny — connect MISO, MOSI, SCK, RESET, VCC, GND</string>
-    <string name="str_pinout_plcc32_header">PLCC32 to DIP32 Adapter (BIOS / Flash Chips)</string>
-    <string name="str_pinout_plcc32_note">⚠️ Match Pin 1 chamfer/notch on the PLCC32 adapter socket</string>
+    <string name="str_pinout_i2c24_note">⚠️ Pin 7 WP to GND to enable writing. A0, A1 and A2 define I2C address</string>
+    <string name="str_pinout_mw93_header">Microwire 93Cxx — Pinout and 8 or 16 bit Organization</string>
+    <string name="str_pinout_mw93_note">⚠️ Pin 6 ORG to VCC for 16-bit Word mode, to GND for 8-bit Byte mode</string>
+    <string name="str_pinout_parallel_header">Parallel EPROM / Flash DIP32 — 27C, 28C, 29F, 39SF Series</string>
+    <string name="str_pinout_parallel_note">⚠️ Be cautious with VPP voltage on 27C EPROMs: 12.5V or 21V per datasheet</string>
+    <string name="str_pinout_icsp_header">6-Pin ICSP Header for In-Circuit Programming</string>
+    <string name="str_pinout_icsp_note">⚠️ Keep ICSP wires short, under 15 cm. Verify VDD and VPP voltages</string>
+    <string name="str_pinout_avrisp_header">Standard AVR ISP Headers for 6 and 10 Pins</string>
+    <string name="str_pinout_avrisp_note">⚠️ For ATmega328P, Arduino and ATtiny: connect MISO, MOSI, SCK, RESET, VCC, GND</string>
+    <string name="str_pinout_plcc32_header">PLCC32 to DIP32 Adapter for BIOS and Flash Chips</string>
+    <string name="str_pinout_plcc32_note">⚠️ Match Pin 1 chamfer and notch on the PLCC32 adapter socket</string>
 
     <!-- PinoutView strings -->
-    <string name="str_pinout_universal_alignment">📌 UNIVERSAL ALIGNMENT RULE (TL866/T48)</string>
+    <string name="str_pinout_universal_alignment">📌 UNIVERSAL ALIGNMENT RULE</string>
     <string name="str_pinout_dip_notch_up">All DIP chips are placed with the NOTCH UP</string>
     <string name="str_pinout_dip_align_bottom">and ALIGNED TO THE BOTTOM of the ZIF socket:</string>
     <string name="str_pinout_pin1_corner">✓ Chip Pin 1 always stays in the top-left corner of the inserted chip.</string>
     <string name="str_pinout_lock_lever">✓ Lock the lever by lowering it completely before operating.</string>
-    <string name="str_pinout_parallel_title">PARALLEL DIP32 MEMORIES (27C512, 28C256, 29F010, 39SF040)</string>
-    <string name="str_pinout_left_pins">LEFT PINS (1 to 16)</string>
-    <string name="str_pinout_right_pins">RIGHT PINS (17 to 32)</string>
-    <string name="str_pinout_icsp_in_circuit">IN-CIRCUIT PROGRAMMING CONNECTION (ICSP)</string>
+    <string name="str_pinout_parallel_title">PARALLEL DIP32 MEMORIES: 27C512, 28C256, 29F010, 39SF040</string>
+    <string name="str_pinout_left_pins">LEFT PINS: 1 to 16</string>
+    <string name="str_pinout_right_pins">RIGHT PINS: 17 to 32</string>
+    <string name="str_pinout_icsp_in_circuit">IN-CIRCUIT PROGRAMMING CONNECTION ICSP</string>
     <string name="str_pinout_icsp_precautions">⚠️ ICSP PRECAUTIONS:</string>
     <string name="str_pinout_icsp_warn_mclr">• Isolate the MCLR/RESET line from large capacitors on the board.</string>
-    <string name="str_pinout_icsp_warn_vcc">• Power from programmer ONLY if circuit consumption &lt; 100mA.</string>
-    <string name="str_pinout_icsp_warn_external">• If circuit has own power, disconnect Pin 2 (VCC) or turn off external supply.</string>
+    <string name="str_pinout_icsp_warn_vcc">• Power from programmer ONLY if circuit consumption under 100mA.</string>
+    <string name="str_pinout_icsp_warn_external">• If circuit has own power, disconnect Pin 2 VCC or turn off external supply.</string>
     <string name="str_pinout_icsp_warn_length">• Keep ICSP cables shorter than 15 cm to avoid noise on PGC/PGD.</string>
-    <string name="str_pinout_avr_standard">STANDARD AVR ISP PINOUT (6 PINS vs 10 PINES)</string>
-    <string name="str_pinout_avr_compatible">Compatible with ATmega328P, ATmega8, ATmega16, ATmega32, ATtiny85, etc.</string>
-    <string name="str_pinout_avr_use_icsp">Use the TL866 ICSP port by connecting the corresponding lines.</string>
+    <string name="str_pinout_avr_standard">STANDARD AVR ISP PINOUT: 6 PINS AND 10 PINS</string>
+    <string name="str_pinout_avr_compatible">Compatible with ATmega328P, ATmega8, ATmega16, ATmega32, ATtiny85 and similar.</string>
+    <string name="str_pinout_avr_use_icsp">Use the ICSP port by connecting the corresponding lines.</string>
     <string name="str_pinout_plcc_adapter">PLCC32 → DIP32 ADAPTER</string>
-    <string name="str_pinout_plcc_used_for">Used for programming BIOS / Firmware memories:</string>
+    <string name="str_pinout_plcc_used_for">Used for programming BIOS and Firmware memories:</string>
     <string name="str_pinout_plcc_orientation">Orientation:</string>
-    <string name="str_pinout_plcc_step1">1. Insert chip into PLCC socket with chamfer/dot matching adapter mark.</string>
-    <string name="str_pinout_plcc_step2">2. Insert DIP32 adapter into TL866 ZIF socket aligned to bottom.</string>
+    <string name="str_pinout_plcc_step1">1. Insert chip into PLCC socket with chamfer or dot matching adapter mark.</string>
+    <string name="str_pinout_plcc_step2">2. Insert DIP32 adapter into ZIF socket aligned to bottom.</string>
     <string name="str_pinout_plcc_step3">3. In minipro select model with @PLCC32 suffix if applicable.</string>
     <string name="str_pinout_top_view">Top View</string>
     <string name="str_pinout_ground">Ground</string>
-
 
     <string name="str_about_html"><![CDATA[
 <h2>🔌 EEPROM Flasher</h2>
@@ -199,10 +191,10 @@
 <b>Project License:</b> GPLv3 / GPLv2<br/>
 <br/>
 <b>Open Source Libraries &amp; Credits:</b><br/>
-• <a href="https://gitlab.com/DavidGriffith/minipro">minipro</a> — Open source program for TL866 / T48 / T56 by David Griffith &amp; contributors (GPLv3)<br/>
-• <a href="https://github.com/libusb/libusb">libusb</a> — Multiplatform USB library (LGPL-2.1+)<br/>
-• <a href="https://github.com/mik3y/usb-serial-for-android">usb-serial-for-android</a> — USB serial driver for Android (MIT)<br/>
-• <a href="https://github.com/google/material-design-icons">Material Components</a> — UI design system by Google (Apache 2.0)<br/>
+• <a href="https://gitlab.com/DavidGriffith/minipro">minipro</a> — Open source program for TL866 / T48 / T56 by David Griffith &amp; contributors, GPLv3<br/>
+• <a href="https://github.com/libusb/libusb">libusb</a> — Multiplatform USB library, LGPL-2.1+<br/>
+• <a href="https://github.com/mik3y/usb-serial-for-android">usb-serial-for-android</a> — USB serial driver for Android, MIT<br/>
+• <a href="https://github.com/google/material-design-icons">Material Components</a> — UI design system by Google, Apache 2.0<br/>
 <br/>
 <b>Developer &amp; Repository:</b><br/>
 • <a href="https://github.com/Danielk10/Lector-De-Memorias">EEPROM Flasher GitHub</a><br/>

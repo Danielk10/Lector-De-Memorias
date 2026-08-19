@@ -12,16 +12,6 @@
     <color name="bg_terminal">#0A0D14</color>
     <color name="text_terminal">#00E676</color>
 
-    <!-- Action Button Tints -->
-    <color name="btn_tint_blue">#1565C0</color>
-    <color name="btn_tint_green">#2E7D32</color>
-    <color name="btn_tint_red">#C62828</color>
-    <color name="btn_tint_darkred">#B71C1C</color>
-    <color name="btn_tint_grey">#37474F</color>
-    <color name="btn_tint_orange">#E65100</color>
-    <color name="btn_tint_purple">#6A1B9A</color>
-    <color name="btn_text_color">#FFFFFFFF</color>
-
     <!-- Text Colors -->
     <color name="text_primary">#ECEFF1</color>
     <color name="text_secondary">#B0BEC5</color>

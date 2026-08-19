@@ -27,17 +27,6 @@ public class HexViewerActivity extends AppCompatActivity {
     private RecyclerView recyclerHex;
     private HexAdapter hexAdapter;
 
-    private final ActivityResultLauncher<Intent> fileOpenLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Uri uri = result.getData().getData();
-                    if (uri != null) {
-                        loadFromUri(uri);
-                    }
-                }
-            });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,28 +42,6 @@ public class HexViewerActivity extends AppCompatActivity {
         recyclerHex.setLayoutManager(new LinearLayoutManager(this));
 
         loadDataFromIntent();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.hex_viewer_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_open_hex_file) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            fileOpenLauncher.launch(intent);
-            return true;
-        } else if (id == R.id.action_compare_hex) {
-            startActivity(new Intent(this, HexDiffActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void loadDataFromIntent() {

@@ -97,7 +97,7 @@ public class HexDiffActivity extends AppCompatActivity {
         if (romFile.exists()) {
             try {
                 dataA = java.nio.file.Files.readAllBytes(romFile.toPath());
-                nameA = romFile.getName() + " (Memoria actual)";
+                nameA = romFile.getName() + " — " + getString(R.string.str_current_memory);
                 btnLoadFile1.setText(getString(R.string.str_file_a, nameA));
             } catch (Exception ignored) {}
         }
@@ -164,7 +164,7 @@ public class HexDiffActivity extends AppCompatActivity {
                     long size = cursor.getLong(sizeIdx);
                     if (size > 16 * 1024 * 1024) {
                         cursor.close();
-                        throw new IllegalArgumentException("El archivo es demasiado grande (>16MB). Imposible comparar en memoria.");
+                        throw new IllegalArgumentException(getString(R.string.str_file_too_large, 16));
                     }
                 }
                 cursor.close();
@@ -177,7 +177,7 @@ public class HexDiffActivity extends AppCompatActivity {
             while ((nRead = is.read(buf)) != -1) {
                 totalRead += nRead;
                 if (totalRead > 16 * 1024 * 1024) {
-                    throw new IllegalArgumentException("El archivo excede el límite de 16MB. Imposible comparar en memoria.");
+                    throw new IllegalArgumentException(getString(R.string.str_file_too_large, 16));
                 }
                 buffer.write(buf, 0, nRead);
             }

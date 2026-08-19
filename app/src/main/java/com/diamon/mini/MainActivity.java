@@ -270,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.log("════════════════════════════════════════");
                     }
 
+                    btnAutodetectChip.setEnabled(true);
                     btnVerify.setEnabled(true);
                     btnRead.setEnabled(true);
                     btnWrite.setEnabled(true);
@@ -287,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     tvStatus.setText(getString(R.string.str_estado_usb_desc));
                     clearUsbFd();
+                    btnAutodetectChip.setEnabled(false);
                     btnVerify.setEnabled(false);
                     btnRead.setEnabled(false);
                     btnWrite.setEnabled(false);
@@ -328,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                             hasReadData = true;
                             lastReadFile = args[i + 1];
                             SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
-                            editor.putString("bios_source", "Leído del chip (" + getSelectedChip() + ")");
+                            editor.putString("bios_source", getString(R.string.str_read_from_chip, getSelectedChip()));
                             editor.putString(KEY_LAST_READ_FILE, lastReadFile);
                             editor.apply();
                             break;
@@ -929,19 +931,7 @@ public class MainActivity extends AppCompatActivity {
         miniproExecutor.executeCommand(args.toArray(new String[0]), usbController.getCurrentFd());
     }
 
-    private void exportToDownloadsFolder() {
-        if (!hasReadData) {
-            log(getString(R.string.str_err_no_data_read));
-            return;
-        }
-        boolean success = FileManager.exportToDownloads(this, lastReadFile);
-        if (success) {
-            log(getString(R.string.str_export_downloads_success));
-            Toast.makeText(this, R.string.str_export_downloads_success, Toast.LENGTH_LONG).show();
-        } else {
-            log(getString(R.string.str_export_downloads_error));
-        }
-    }
+
 
     private void clearTransientRomState(boolean notify) {
         hasReadData = false;
@@ -987,10 +977,10 @@ public class MainActivity extends AppCompatActivity {
 
         File nativeLibDir = new File(getApplicationInfo().nativeLibraryDir);
         File miniproBin = new File(nativeLibDir, "libminipro_bin.so");
-        log("minipro binary: " + (miniproBin.exists() ? "OK (" + miniproBin.length() / 1024 + " KB)" : "NOT FOUND"));
+        log("minipro binary: " + (miniproBin.exists() ? "OK - " + miniproBin.length() / 1024 + " KB" : "NOT FOUND"));
 
         File libusb = new File(nativeLibDir, "libusb_1_0.so");
-        log("patched libusb: " + (libusb.exists() ? "OK (" + libusb.length() / 1024 + " KB)" : "NOT FOUND"));
+        log("patched libusb: " + (libusb.exists() ? "OK - " + libusb.length() / 1024 + " KB" : "NOT FOUND"));
 
         log("Native JNI Bridge: " + stringFromJNI());
     }

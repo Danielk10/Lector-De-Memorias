@@ -95,12 +95,12 @@ public class PinoutView {
 
         // Tabla de colocación
         float tby = ty + 105;
-        dibujarFilaInfo(canvas, tx + 14, tby, "DIP8  (24xx, 25xx, 93xx):", "Pines 17-20 (Izq) y 21-24 (Der)", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, tby + 35, "DIP16 (28xx, GAL16V8):", "Pines 13-20 (Izq) y 21-28 (Der)", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, tby + 70, "DIP24 (27C64, GAL20V8):", "Pines 9-20 (Izq) y 21-32 (Der)", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, tby + 105, "DIP28 (27C256, 28C256):", "Pines 7-20 (Izq) y 21-34 (Der)", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, tby + 140, "DIP32 (27C512, 29F010):", "Pines 5-20 (Izq) y 21-36 (Der)", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, tby + 175, "DIP40 (PIC, AVR, 27C400):", "Pines 1-20 (Izq) y 21-40 (Der - Completo)", COL_ACCENT);
+        dibujarFilaInfo(canvas, tx + 14, tby, "DIP8 — Series 24xx, 25xx, 93xx:", "Pines 17-20 Izq y 21-24 Der", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, tby + 35, "DIP16 — Series 28xx, GAL16V8:", "Pines 13-20 Izq y 21-28 Der", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, tby + 70, "DIP24 — Series 27C64, GAL20V8:", "Pines 9-20 Izq y 21-32 Der", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, tby + 105, "DIP28 — Series 27C256, 28C256:", "Pines 7-20 Izq y 21-34 Der", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, tby + 140, "DIP32 — Series 27C512, 29F010:", "Pines 5-20 Izq y 21-36 Der", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, tby + 175, "DIP40 — Series PIC, AVR, 27C400:", "Pines 1-20 Izq y 21-40 Der Completo", COL_ACCENT);
 
         configurarTexto(10f, true);
         dibujarTexto(canvas, ctx.getString(R.string.str_pinout_pin1_corner), tx + 14, ty + 335, COL_PIN_NUM);
@@ -110,7 +110,7 @@ public class PinoutView {
         aplicar(bmp, target);
     }
 
-    // ────────── 2. SPI Flash SOIC8 / SOP8 / DIP8 (25xxx) ─────────────────────
+    // ────────── 2. SPI Flash SOIC8 / SOP8 / DIP8 25xxx ───────────────────────
 
     public static void dibujarSPI25(Context ctx, ImageView target) {
         Bitmap bmp = crearBitmap();
@@ -124,15 +124,15 @@ public class PinoutView {
         dibujarFlecha(canvas, 275, 155);
         dibujarTablaConexion(canvas, 315, 60,
                 "Flash 25xxx", "Función / MiniPro", "Pin",
-                new String[] { "1 - CS#", "2 - DO (SO)", "3 - WP# / IO2", "4 - GND", "5 - DI (SI)", "6 - CLK", "7 - HOLD# / IO3", "8 - VCC" },
-                new String[] { "Chip Select (Bajo activo)", "Data Out / MISO", "Write Protect (a VCC)", "Tierra / Masa (0V)", "Data In / MOSI", "Clock / Reloj SPI", "Hold / Reset (a VCC)", "Alimentación 3.3V" });
+                new String[] { "1 - CS#", "2 - DO SO", "3 - WP# / IO2", "4 - GND", "5 - DI SI", "6 - CLK", "7 - HOLD# / IO3", "8 - VCC" },
+                new String[] { "Chip Select activo bajo", "Data Out / MISO", "Write Protect a VCC", "Tierra / Masa 0V", "Data In / MOSI", "Clock / Reloj SPI", "Hold / Reset a VCC", "Alimentación 3.3V" });
         canvas.restore();
 
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_spi25_note));
         aplicar(bmp, target);
     }
 
-    // ────────── 3. I2C EEPROM 24Cxx (24C01 - 24C1024) ────────────────────────
+    // ────────── 3. I2C EEPROM 24Cxx ──────────────────────────────────────────
 
     public static void dibujarI2C24(Context ctx, ImageView target) {
         Bitmap bmp = crearBitmap();
@@ -147,14 +147,14 @@ public class PinoutView {
         dibujarTablaConexion(canvas, 315, 60,
                 "EEPROM 24Cxx", "Función / Conexión", "Pin",
                 new String[] { "1 - A0", "2 - A1", "3 - A2", "4 - GND", "5 - SDA", "6 - SCL", "7 - WP", "8 - VCC" },
-                new String[] { "Dirección Chip Bit 0", "Dirección Chip Bit 1", "Dirección Chip Bit 2", "Tierra / Masa (0V)", "Línea de Datos Serie", "Reloj I2C Serie", "Write Protect (GND=Escribir)", "Alimentación 1.8V / 3.3V / 5V" });
+                new String[] { "Dirección Chip Bit 0", "Dirección Chip Bit 1", "Dirección Chip Bit 2", "Tierra / Masa 0V", "Línea de Datos Serie", "Reloj I2C Serie", "Write Protect GND=Escribir", "Alimentación 1.8V / 3.3V / 5V" });
         canvas.restore();
 
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_i2c24_note));
         aplicar(bmp, target);
     }
 
-    // ────────── 4. Microwire EEPROM 93Cxx (93C46 - 93C86) ───────────────────
+    // ────────── 4. Microwire EEPROM 93Cxx ────────────────────────────────────
 
     public static void dibujarMicrowire93(Context ctx, ImageView target) {
         Bitmap bmp = crearBitmap();
@@ -169,7 +169,7 @@ public class PinoutView {
         dibujarTablaConexion(canvas, 315, 60,
                 "EEPROM 93Cxx", "Función / Microwire", "Pin",
                 new String[] { "1 - CS", "2 - SK", "3 - DI", "4 - DO", "5 - GND", "6 - ORG", "7 - NC / PE", "8 - VCC" },
-                new String[] { "Chip Select (Alto activo)", "Serial Clock / Reloj", "Serial Data Input", "Serial Data Output", "Tierra (0V)", "Organización (VCC=x16, GND=x8)", "Sin Conexión / Program Enable", "Alimentación 5V / 3.3V" });
+                new String[] { "Chip Select activo alto", "Serial Clock / Reloj", "Serial Data Input", "Serial Data Output", "Tierra 0V", "Organización VCC=x16 GND=x8", "Sin Conexión / Program Enable", "Alimentación 5V / 3.3V" });
         canvas.restore();
 
         dibujarNota(canvas, ctx.getString(R.string.str_pinout_mw93_note));
@@ -200,41 +200,41 @@ public class PinoutView {
         dibujarTexto(canvas, ctx.getString(R.string.str_pinout_right_pins), x + 368, y + 56, COL_TITULO);
 
         String[] leftPins = {
-                "1: VPP / A18 (Voltaje Prog. / Dir)",
-                "2: A16 (Dirección 16)",
-                "3: A15 (Dirección 15)",
-                "4: A12 (Dirección 12)",
-                "5: A7 (Dirección 7)",
-                "6: A6 (Dirección 6)",
-                "7: A5 (Dirección 5)",
-                "8: A4 (Dirección 4)",
-                "9: A3 (Dirección 3)",
-                "10: A2 (Dirección 2)",
-                "11: A1 (Dirección 1)",
-                "12: A0 (Dirección 0)",
-                "13: D0 (Bus de Datos 0)",
-                "14: D1 (Bus de Datos 1)",
-                "15: D2 (Bus de Datos 2)",
-                "16: GND (Tierra / Masa)"
+                "1: VPP / A18 Voltaje Prog. / Dir",
+                "2: A16 Dirección 16",
+                "3: A15 Dirección 15",
+                "4: A12 Dirección 12",
+                "5: A7 Dirección 7",
+                "6: A6 Dirección 6",
+                "7: A5 Dirección 5",
+                "8: A4 Dirección 4",
+                "9: A3 Dirección 3",
+                "10: A2 Dirección 2",
+                "11: A1 Dirección 1",
+                "12: A0 Dirección 0",
+                "13: D0 Bus de Datos 0",
+                "14: D1 Bus de Datos 1",
+                "15: D2 Bus de Datos 2",
+                "16: GND Tierra / Masa"
         };
 
         String[] rightPins = {
-                "32: VCC (Alimentación 5V)",
-                "31: /WE / A17 (Write Enable / Dir)",
-                "30: NC / A17 (No Connect / Dir)",
-                "29: A14 (Dirección 14)",
-                "28: A13 (Dirección 13)",
-                "27: A8 (Dirección 8)",
-                "26: A9 (Dirección 9 - VPP en 27C)",
-                "25: A11 (Dirección 11)",
-                "24: /OE / VPP (Output Enable)",
-                "23: A10 (Dirección 10)",
-                "22: /CE (Chip Enable)",
-                "21: D7 (Bus de Datos 7)",
-                "20: D6 (Bus de Datos 6)",
-                "19: D5 (Bus de Datos 5)",
-                "18: D4 (Bus de Datos 4)",
-                "17: D3 (Bus de Datos 3)"
+                "32: VCC Alimentación 5V",
+                "31: /WE / A17 Write Enable / Dir",
+                "30: NC / A17 No Connect / Dir",
+                "29: A14 Dirección 14",
+                "28: A13 Dirección 13",
+                "27: A8 Dirección 8",
+                "26: A9 Dirección 9 — VPP en 27C",
+                "25: A11 Dirección 11",
+                "24: /OE / VPP Output Enable",
+                "23: A10 Dirección 10",
+                "22: /CE Chip Enable",
+                "21: D7 Bus de Datos 7",
+                "20: D6 Bus de Datos 6",
+                "19: D5 Bus de Datos 5",
+                "18: D4 Bus de Datos 4",
+                "17: D3 Bus de Datos 3"
         };
 
         for (int i = 0; i < 16; i++) {
@@ -252,7 +252,7 @@ public class PinoutView {
         aplicar(bmp, target);
     }
 
-    // ────────── 6. Header ICSP TL866 / T48 (6 Pines) ─────────────────────────
+    // ────────── 6. Header ICSP TL866 / T48 6 Pines ───────────────────────────
 
     public static void dibujarICSP(Context ctx, ImageView target) {
         Bitmap bmp = crearBitmap();
@@ -267,10 +267,10 @@ public class PinoutView {
         configurarTexto(12f, true);
         dibujarTexto(canvas, "PUERTO ICSP", hx + 25, hy + 26, COL_TITULO);
         configurarTexto(10f, false);
-        dibujarTexto(canvas, "(TL866 / T48)", hx + 35, hy + 42, COL_LABEL);
+        dibujarTexto(canvas, "TL866 / T48", hx + 35, hy + 42, COL_LABEL);
 
         // 6 Pines en hilera vertical
-        String[] icspPins = { "1 - VPP / MCLR", "2 - VCC (3.3V/5V)", "3 - GND (Tierra)", "4 - PGD / MOSI / SDI", "5 - PGC / SCK / CLK", "6 - AUX / MISO / SDO" };
+        String[] icspPins = { "1 - VPP / MCLR", "2 - VCC 3.3V/5V", "3 - GND Tierra", "4 - PGD / MOSI / SDI", "5 - PGC / SCK / CLK", "6 - AUX / MISO / SDO" };
         for (int i = 0; i < 6; i++) {
             float py = hy + 60 + i * 28;
             dibujarRectangulo(canvas, hx + 20, py, 24, 18, COL_PANEL);
@@ -290,9 +290,9 @@ public class PinoutView {
         dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_in_circuit), tx + 14, ty + 26, COL_YELLOW);
 
         configurarTexto(10f, false);
-        dibujarFilaInfo(canvas, tx + 14, ty + 50, "Microchip PIC (ej. 16F, 18F):", "Pin 1→MCLR(VPP), 2→VDD, 3→VSS, 4→PGD, 5→PGC", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, ty + 95, "Atmel / AVR (ej. ATmega, ATtiny):", "Pin 1→RESET, 2→VCC, 3→GND, 4→MOSI, 5→SCK, 6→MISO", COL_SIGNAL);
-        dibujarFilaInfo(canvas, tx + 14, ty + 140, "SPI Flash en placa (25xxx):", "Pin 1→CS#, 2→VCC, 3→GND, 4→DI(MOSI), 5→CLK, 6→DO(MISO)", COL_ACCENT);
+        dibujarFilaInfo(canvas, tx + 14, ty + 50, "Microchip PIC ej. 16F, 18F:", "Pin 1→MCLR VPP, 2→VDD, 3→VSS, 4→PGD, 5→PGC", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, ty + 95, "Atmel / AVR ej. ATmega, ATtiny:", "Pin 1→RESET, 2→VCC, 3→GND, 4→MOSI, 5→SCK, 6→MISO", COL_SIGNAL);
+        dibujarFilaInfo(canvas, tx + 14, ty + 140, "SPI Flash en placa Serie 25xxx:", "Pin 1→CS#, 2→VCC, 3→GND, 4→DI MOSI, 5→CLK, 6→DO MISO", COL_ACCENT);
 
         configurarTexto(10f, true);
         dibujarTexto(canvas, ctx.getString(R.string.str_pinout_icsp_precautions), tx + 14, ty + 205, COL_AVISO);
@@ -325,9 +325,9 @@ public class PinoutView {
         dibujarRectangulo(canvas, b1x, b1y, b1w, b1h, COL_CHIP_BODY);
         bordes(canvas, b1x, b1y, b1w, b1h, COL_BORDE);
         configurarTexto(11f, true);
-        dibujarTexto(canvas, "AVR ISP 6-PIN (2x3 Header)", b1x + 14, b1y + 22, COL_TITULO);
+        dibujarTexto(canvas, "AVR ISP 6-PIN — 2x3 Header", b1x + 14, b1y + 22, COL_TITULO);
 
-        String[] p6 = { "1: MISO", "2: VCC (VTG)", "3: SCK", "4: MOSI", "5: RESET", "6: GND" };
+        String[] p6 = { "1: MISO", "2: VCC VTG", "3: SCK", "4: MOSI", "5: RESET", "6: GND" };
         for (int i = 0; i < 6; i++) {
             float py = b1y + 40 + i * 30;
             configurarTexto(10f, false);
@@ -339,10 +339,10 @@ public class PinoutView {
         dibujarRectangulo(canvas, b2x, b2y, b2w, b2h, COL_CHIP_BODY);
         bordes(canvas, b2x, b2y, b2w, b2h, COL_BORDE);
         configurarTexto(11f, true);
-        dibujarTexto(canvas, "AVR ISP 10-PIN (2x5 IDC Header)", b2x + 14, b2y + 22, COL_TITULO);
+        dibujarTexto(canvas, "AVR ISP 10-PIN — 2x5 IDC Header", b2x + 14, b2y + 22, COL_TITULO);
 
         String[] p10 = {
-                "1: MOSI", "2: VCC (VTG)",
+                "1: MOSI", "2: VCC VTG",
                 "3: NC / LED", "4: GND",
                 "5: /RESET", "6: GND",
                 "7: SCK", "8: GND",
@@ -377,7 +377,7 @@ public class PinoutView {
         dibujarRectangulo(canvas, px, py, pw, ph, COL_CHIP_BODY);
         bordes(canvas, px, py, pw, ph, COL_BORDE);
 
-        // Chaflán de Pin 1 (Esquina superior centro-derecha o bisel)
+        // Chaflán de Pin 1
         dibujarLinea(canvas, px + 8, py, px, py + 8, COL_AVISO);
         canvas.drawCircle(px + 20, py + 20, 4, paint);
 
@@ -396,9 +396,9 @@ public class PinoutView {
 
         configurarTexto(10f, false);
         dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_used_for), tx + 14, ty + 55, COL_TITULO);
-        dibujarTexto(canvas, "• SST39SF010A / 020A / 040 (PLCC32)", tx + 14, ty + 78, COL_SIGNAL);
-        dibujarTexto(canvas, "• W29EE011 / W49F002 (PLCC32)", tx + 14, ty + 100, COL_SIGNAL);
-        dibujarTexto(canvas, "• 27C256 / 27C512 / 29C010 (PLCC32)", tx + 14, ty + 122, COL_SIGNAL);
+        dibujarTexto(canvas, "• SST39SF010A / 020A / 040 en PLCC32", tx + 14, ty + 78, COL_SIGNAL);
+        dibujarTexto(canvas, "• W29EE011 / W49F002 en PLCC32", tx + 14, ty + 100, COL_SIGNAL);
+        dibujarTexto(canvas, "• 27C256 / 27C512 / 29C010 en PLCC32", tx + 14, ty + 122, COL_SIGNAL);
 
         configurarTexto(10f, true);
         dibujarTexto(canvas, ctx.getString(R.string.str_pinout_plcc_orientation), tx + 14, ty + 160, COL_ACCENT);

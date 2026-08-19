@@ -182,7 +182,7 @@ public class UsbController {
         if (manufacturer == null || manufacturer.trim().isEmpty()) {
             manufacturer = activity.getString(R.string.str_unknown_manufacturer);
         }
-        return productName + " (" + manufacturer + ")\nVID:PID "
+        return productName + " — " + manufacturer + "\nVID:PID "
                 + String.format(Locale.US, "%04x:%04x", device.getVendorId(), device.getProductId());
     }
 
