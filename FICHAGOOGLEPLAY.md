@@ -1,57 +1,67 @@
 # Ficha Técnica para Google Play Store - EEPROM Flasher
 
-## Descripción Corta (Límite: 80 caracteres)
-Programador de memorias EEPROM y Flash por USB OTG. Lectura y escritura rápida.
+## Información General
+
+* **Nombre de la aplicación:** EEPROM Flasher
+* **Versión:** 1.0.0
+* **Categoría:** Herramientas / Productividad
+* **Clasificación de contenido:** Para todos (PEGI 3 / Everyone)
+* **Idiomas:** Español, Inglés (Soporte multilingüe general)
 
 ---
 
-## Descripción Larga (Límite: 4000 caracteres)
+## Descripción Corta
 
-EEPROM Flasher es una herramienta técnica profesional diseñada para la lectura, escritura, verificación y borrado de memorias EEPROM, Flash SPI, memorias paralelas y microcontroladores directamente desde dispositivos Android compatibles mediante conexión USB OTG.
+Programador USB OTG para memorias EEPROM, Flash SPI y microcontroladores.
 
-La aplicación permite a técnicos de reparación, ingenieros y desarrolladores electrónicos gestionar volcados de firmware y configuraciones de circuitos integrados con total portabilidad, sin necesidad de permisos de superusuario (root) en el teléfono o tableta.
+---
 
-### Características Principales
+## Descripción Larga
 
-• Auto-detección de Chip: Identifica automáticamente el modelo de chip conectado en los programadores compatibles.
-• Lectura Completa: Extrae y almacena respaldos íntegros de la memoria en formato binario estándar (.bin).
-• Grabación de Firmware: Escribe archivos binarios (.bin) e Intel HEX (.hex) directamente en el integrado.
-• Verificación de Datos: Compara la memoria física contra el archivo cargado para garantizar integridad total.
-• Borrado de Memoria: Limpieza completa del circuito integrado con verificación de seguridad.
-• Visor Hexadecimal Integrado: Inspección detallada de archivos con visualización de direcciones, bytes hexadecimales y caracteres ASCII.
-• Comparador de Archivos (Diff): Análisis visual side-by-side que resalta discrepancias exactas y porcentaje de variación entre dos volcados.
-• Diagramas de Pinout: Guías gráficas esquemáticas de conexiones y zócalos para ZIF40, SOIC8, DIP32, conectores ICSP y adaptadores PLCC32.
-• Consola de Diagnóstico: Terminal en tiempo real para supervisar el estado de cada comando y transferencia.
+EEPROM Flasher es una herramienta de código abierto (open source) diseñada para la lectura, escritura, verificación y borrado de memorias EEPROM, Flash SPI y microcontroladores directamente desde dispositivos Android compatibles mediante conexión USB OTG.
 
-### Familias de Circuitos Integrados Compatibles
+Esta aplicación permite a profesionales y aficionados de la electrónica interactuar con integrados de memoria sin necesidad de permisos de superusuario (root) en el dispositivo, operando de manera completamente portátil.
 
-• Memorias Flash SPI serie 25xxx (25Q, 25L, 25VF, etc.)
-• Memorias EEPROM I2C serie 24Cxx (24C01 hasta 24C1024)
-• Memorias EEPROM Microwire serie 93Cxx (93C46 hasta 93C86 en 8 y 16 bits)
-• Memorias EEPROM SPI serie 25Cxx y 95xxx
-• Memorias Flash y EPROM Paralelas serie 27C, 28C, 29F y 39SF
-• Microcontroladores Microchip PIC seleccionados
-• Microcontroladores Atmel AVR y 8051 seleccionados
+### Funciones Principales
 
-### Programadores de Hardware Compatibles
+* **Detección Automática:** Identificación del chip conectado, en aquellos programadores compatibles que lo soportan.
+* **Lectura y Escritura:** Extracción de datos en formato binario (.bin) y grabación a partir de archivos .bin o .hex.
+* **Verificación:** Comprobación de que los datos de la memoria coinciden exactamente con el archivo.
+* **Comparador de Binarios:** Herramienta de análisis visual que resalta discrepancias y porcentaje de variación entre dos volcados.
+* **Visor Hexadecimal:** Inspección detallada de archivos con visualización de direcciones, bytes hexadecimales y caracteres ASCII.
+* **Consulta de Dispositivos:** Base de datos de componentes soportados accesible rápidamente a través del botón CATALOGO.
+* **Consola de Operaciones:** Registro de la comunicación en tiempo real para supervisar el progreso de cada transferencia.
 
-La aplicación interactúa mediante USB Host con los siguientes programadores soportados por el motor minipro:
-• TL866II+ (29,774 dispositivos + 47 personalizados)
-• TL866A / TL866CS (14,162 dispositivos + 46 personalizados)
-• XGecu T48 (29,739 dispositivos)
-• XGecu T56 (32,513 dispositivos)
-• XGecu T76 (34,607 dispositivos)
-• Probador de circuitos lógicos Logic IC (283 modelos de integrados lógicos)
+### Familias de Integrados Compatibles (Resumen)
 
-*(Nota importante: El motor minipro no es compatible con la serie CH341A ni CH347)*
+* Memorias Flash SPI (Serie 25)
+* Memorias EEPROM I2C (Serie 24)
+* Memorias EEPROM Microwire (Serie 93)
+* Memorias EEPROM SPI (Serie 95)
+* Memorias Paralelas (Series 27, 28, 29, 39)
+* Selecciones de Microchip PIC, Atmel AVR y 8051
+
+*(Consulte la lista completa dentro de la aplicación en la sección CATALOGO para confirmar el soporte exacto de su integrado).*
+
+### Hardware Programador Compatible
+
+La aplicación requiere la conexión a través de USB OTG de uno de los siguientes programadores de hardware soportados (basado en la compatibilidad de minipro):
+
+* TL866II+
+* TL866A / TL866CS
+* XGecu T48
+* XGecu T56
+* XGecu T76
+
+*Nota: Los programadores genéricos basados en chips CH341A o CH347 no son compatibles actualmente.*
 
 ### Requisitos del Sistema
 
-• Dispositivo Android con versión 6.0 (Marshmallow) o superior.
-• Compatibilidad con USB Host / OTG en el dispositivo Android.
-• Cable o adaptador USB OTG de buena calidad para conectar el programador.
-• Programador de hardware compatible y chip soportado.
+* Dispositivo Android versión 6.0 (Marshmallow) o superior.
+* Soporte nativo para USB Host (OTG) en el teléfono o tableta.
+* Adaptador o cable USB OTG para conectar el programador.
+* Hardware programador compatible de la lista anterior.
 
 ### Privacidad y Seguridad
 
-EEPROM Flasher procesa los archivos de volcado y datos de memoria de manera estrictamente local en su dispositivo. La aplicación integra anuncios mediante Google AdMob para sostener su desarrollo continuo y requiere únicamente los permisos necesarios para la comunicación USB, gestión de almacenamiento y conectividad de red.
+EEPROM Flasher procesa los archivos de volcado y los datos de memoria de manera estrictamente local en su dispositivo. Al ser un proyecto de código abierto, la aplicación no contiene anuncios, no recolecta información personal ni transmite datos de telemetría a servidores de terceros. Únicamente requiere los permisos técnicos necesarios para la gestión local de archivos y la comunicación directa por puerto USB con su programador de hardware.

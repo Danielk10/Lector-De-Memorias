@@ -55,10 +55,6 @@ public class AssetHelper {
         return ok;
     }
 
-    public static String getResolvedRuntimeRoot(Context context) {
-        return resolveAssetRuntimeRoot(context);
-    }
-
     private static String resolveAssetRuntimeRoot(Context context) {
         if (cachedAssetRuntimeRoot != null) {
             return cachedAssetRuntimeRoot;

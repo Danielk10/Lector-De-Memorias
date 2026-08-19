@@ -29,12 +29,19 @@ El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/m
 
 ---
 
+## 📥 Descarga
+
+- **Última versión:** [v1.0.0-pre](https://github.com/Danielk10/Lector-De-Memorias/releases/tag/v1.0.0-pre)
+- **Compilaciones disponibles:** `app-release.apk` (Producción firmada) y `app-debug.apk` (Depuración)
+
+---
+
 ## ✨ Características Principales
 
 | Característica | Descripción |
 |---|---|
 | 🔍 **Auto-detectar Chip** | Identifica automáticamente el chip insertado en el programador |
-| 📚 **Catálogo de Chips** | Selector rápido con búsqueda en tiempo real categorizado por familias de circuitos integrados |
+| 📚 **Catálogo de Chips (CATALOGO)** | Selector rápido con búsqueda en tiempo real categorizado por familias de circuitos integrados |
 | ➕ **Agregar Chips Propios** | Agrega y guarda modelos de chips personalizados en la lista persistente |
 | 📖 **Lectura y Respaldo** | Lee el contenido íntegro de la memoria física y genera respaldos binarios |
 | ✏️ **Escritura y Flasheo** | Graba archivos binarios `.bin` o Intel `.hex` directamente en la memoria |

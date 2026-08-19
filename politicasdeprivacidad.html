@@ -26,92 +26,58 @@
     <h1>Política de Privacidad de EEPROM Flasher</h1>
     <p><strong>Última actualización:</strong> 19 de agosto de 2026</p>
 
-    <p>Daniel Diamon, desarrollador de <strong>EEPROM Flasher</strong>, se compromete a respetar y proteger la privacidad y los datos de cada usuario. Esta Política de Privacidad describe el tratamiento de la información técnica, los permisos requeridos en el sistema operativo Android y la integración de servicios de análisis y publicidad mediante <strong>Google AdMob</strong> y servicios asociados de Google Play.</p>
+    <p>Daniel Diamon, desarrollador de <strong>EEPROM Flasher</strong>, se compromete a respetar y proteger la privacidad y los datos de cada usuario. Esta Política de Privacidad describe el tratamiento de la información técnica y los permisos requeridos en el sistema operativo Android. <strong>La aplicación no recopila, no almacena ni transmite ningún tipo de dato personal, analítico o de seguimiento.</strong></p>
 
-    <h2>1. Naturaleza del Servicio</h2>
-    <p>EEPROM Flasher es una herramienta de ingeniería y diagnóstico para lectura, verificación, escritura y borrado de circuitos integrados mediante comunicación directa USB Host con programadores compatibles de la familia Autoelectric / XGecu (TL866II+, TL866A, TL866CS, T48, T56, T76) y probadores de circuitos lógicos. La aplicación procesa los archivos de firmware y volcados de memoria de forma estrictamente local en el dispositivo.</p>
+    <h2>1. Naturaleza del Servicio y Procesamiento Local</h2>
+    <p>EEPROM Flasher es una herramienta de ingeniería y diagnóstico para lectura, verificación, escritura y borrado de circuitos integrados mediante comunicación directa USB Host con programadores compatibles de la familia Autoelectric / XGecu (TL866II+, TL866A, TL866CS, T48, T56, T76) y probadores de circuitos lógicos. <strong>La aplicación procesa todos los archivos de firmware y volcados de memoria de forma estricta y exclusivamente local en su dispositivo. No existe procesamiento en la nube ni transferencia de datos a servidores externos.</strong></p>
 
-    <h2>2. Permisos Requeridos y Servicios de Publicidad (Google AdMob)</h2>
-    <p>Para financiar el desarrollo y permitir la entrega de anuncios digitales, la aplicación utiliza los permisos estándar implementados por el SDK de Google Mobile Ads (AdMob) y la plataforma Android:</p>
+    <h2>2. Permisos Requeridos</h2>
+    <p>Para su correcto funcionamiento, la aplicación utiliza exclusivamente los siguientes permisos del sistema:</p>
 
     <table class="table-perm">
         <thead>
             <tr>
-                <th>Permiso del Sistema</th>
+                <th>Permiso / Característica</th>
                 <th>Finalidad y Uso en la Aplicación</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><span class="perm-tag">com.google.android.gms.permission.AD_ID</span></td>
-                <td>Permite a Google AdMob acceder al identificador de publicidad anónimo del dispositivo para servir anuncios personalizados, gestionar la frecuencia de visualización de anuncios y prevenir el fraude publicitario, conforme a las directrices de Android 13 y versiones superiores.</td>
+                <td><span class="perm-tag">android.permission.WAKE_LOCK</span></td>
+                <td>Mantiene la CPU activa durante procesos continuos de flasheo y lectura de memoria, evitando cortes por suspensión del sistema que podrían interrumpir la programación.</td>
             </tr>
             <tr>
                 <td><span class="perm-tag">android.permission.INTERNET</span></td>
-                <td>Requerido para la solicitud, descarga y visualización de creatividades publicitarias de Google AdMob (banners, anuncios intersticiales y recompensados) y la comunicación con servidores de red seguros.</td>
+                <td>Utilizado para la visualización interna de las políticas de privacidad y documentación técnica. La aplicación de flasheo funciona 100% fuera de línea (offline).</td>
             </tr>
             <tr>
                 <td><span class="perm-tag">android.permission.ACCESS_NETWORK_STATE</span></td>
-                <td>Permite al SDK de AdMob comprobar si existe una conexión a Internet activa (datos móviles o Wi-Fi) antes de solicitar anuncios, evitando consumo innecesario de batería y datos móviles.</td>
-            </tr>
-            <tr>
-                <td><span class="perm-tag">android.permission.ACCESS_WIFI_STATE</span></td>
-                <td>Permite optimizar la descarga de formatos multimedia de alta calidad cuando el dispositivo se encuentra conectado a una red Wi-Fi de alta velocidad.</td>
-            </tr>
-            <tr>
-                <td><span class="perm-tag">android.permission.WAKE_LOCK</span></td>
-                <td>Mantiene la CPU y pantalla activas durante la reproducción de vídeos publicitarios o durante procesos continuos de flasheo y lectura de memoria, evitando cortes por suspensión del sistema.</td>
-            </tr>
-            <tr>
-                <td><span class="perm-tag">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</span></td>
-                <td>Utilizado por la API de Google Play Install Referrer para medir la efectividad y procedencia de campañas de instalación de manera agregada y anónima.</td>
-            </tr>
-            <tr>
-                <td><span class="perm-tag">com.google.android.gms.permission.AD_SERVICES_CONFIG</span></td>
-                <td>Permite la interoperabilidad con las tecnologías de Privacy Sandbox de Google en Android (Topics API y Attribution Reporting API) orientadas a la entrega de anuncios sin depender de identificadores permanentes.</td>
-            </tr>
-            <tr>
-                <td><span class="perm-tag">android.permission.USB_PERMISSION</span></td>
-                <td>Permiso de hardware para la comunicación de bajo nivel con el programador USB OTG conectado.</td>
+                <td>Permite comprobar el estado de la conexión de red para la carga de documentación en línea.</td>
             </tr>
             <tr>
                 <td><span class="perm-tag">android.permission.READ_EXTERNAL_STORAGE</span></td>
-                <td>Carga de archivos binarios .bin y archivos Intel HEX seleccionados manualmente por el usuario.</td>
+                <td>Utilizado para la carga de archivos binarios (.bin) y archivos Intel HEX seleccionados manualmente por el usuario desde el almacenamiento del dispositivo en versiones anteriores de Android (limitado a maxSdkVersion=32).</td>
+            </tr>
+            <tr>
+                <td><span class="perm-tag">android.hardware.usb.host</span></td>
+                <td>Característica de hardware requerida para la comunicación directa USB OTG con los programadores compatibles.</td>
             </tr>
         </tbody>
     </table>
 
-    <h2>3. Datos Recopilados por Proveedores de Publicidad y Análisis</h2>
-    <p>Al utilizar la aplicación con servicios de publicidad activos, Google AdMob y Google Play Services pueden recopilar de forma automatizada información no identificable personalmente, incluyendo:</p>
-    <ul>
-        <li><strong>Identificadores de Dispositivo:</strong> Identificador de publicidad de Android (Advertising ID o ID de Privacy Sandbox) para propósitos de atribución y personalización publicitaria.</li>
-        <li><strong>Información Técnica del Dispositivo:</strong> Fabricante, modelo, versión de sistema operativo, operador de telefonía y resolución de pantalla.</li>
-        <li><strong>Ubicación Aproximada:</strong> Determinada a nivel de país o ciudad a través de la dirección IP para mostrar anuncios relevantes por región geográfica.</li>
-        <li><strong>Métricas de Interacción:</strong> Frecuencia de visualización de anuncios, clics e interacciones con formatos publicitarios.</li>
-    </ul>
+    <h2>3. Recopilación de Datos y Rastreo (Cero Recopilación)</h2>
+    <p><strong>EEPROM Flasher NO recopila ninguna información.</strong> No utilizamos herramientas de análisis de uso (analytics), no registramos su ubicación, no capturamos identificadores de dispositivo, ni realizamos ningún tipo de seguimiento (tracking). La aplicación no incluye ningún SDK de publicidad ni rastreadores de terceros.</p>
 
-    <h2>4. Control y Gestión de Preferencias del Usuario</h2>
-    <p>El usuario tiene el control total sobre la personalización de anuncios en su dispositivo Android:</p>
-    <ul>
-        <li>Puede restablecer o eliminar su Identificador de Publicidad en cualquier momento desde <strong>Ajustes del Dispositivo &gt; Google &gt; Anuncios</strong>.</li>
-        <li>Puede habilitar o deshabilitar las funciones de Privacy Sandbox en Android en <strong>Ajustes &gt; Privacidad &gt; Privacidad de anuncios</strong>.</li>
-    </ul>
+    <h2>4. Licencia y Código Abierto</h2>
+    <p>EEPROM Flasher se distribuye bajo los términos de la Licencia Pública General de GNU (GPLv3). Al ser un software de código abierto, su código fuente es completamente auditable por cualquier usuario, garantizando transparencia total sobre las operaciones que realiza la aplicación en su dispositivo.</p>
 
-    <h2>5. Manejo de Archivos y Volcados de Memoria</h2>
-    <p>Los datos procesados por EEPROM Flasher (firmware, copias de seguridad de memorias EEPROM, memorias Flash y archivos .hex) se tratan exclusivamente dentro del dispositivo. Dichos archivos nunca se transmiten a servidores externos ni forman parte de ninguna base de datos publicitaria.</p>
-
-    <h2>6. Enlaces a Políticas de Terceros</h2>
-    <p>Para obtener más información sobre el tratamiento de datos por parte de los servicios de Google integrados:</p>
+    <h2>5. Enlaces a Políticas de Terceros</h2>
+    <p>Aunque nuestra aplicación no recopila datos, se distribuye a través de Google Play, cuyos servicios aplican sus propias políticas de privacidad sobre la interacción con la tienda de aplicaciones:</p>
     <ul>
         <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de Privacidad de Google</a></li>
-        <li><a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Cómo utiliza Google los datos de aplicaciones asociadas</a></li>
-        <li><a href="https://support.google.com/admob/answer/6128543" target="_blank" rel="noopener">Prácticas de Privacidad de Google AdMob</a></li>
     </ul>
 
-    <h2>7. Seguridad y Retención</h2>
-    <p>Se aplican estándares de comunicación cifrada mediante protocolo HTTPS para todas las solicitudes generadas por las bibliotecas de anuncios. No almacenamos información personal directa en servidores externos propios.</p>
-
-    <h2>8. Contacto</h2>
+    <h2>6. Contacto</h2>
     <div class="box">
         <strong>Desarrollador:</strong> Daniel Diamon<br>
         <strong>Ubicación:</strong> Tinaquillo, Cojedes, Venezuela<br>
@@ -119,7 +85,7 @@
     </div>
 
     <div class="footer">
-        <p>Copyright © 2026 Daniel Diamon. Todos los derechos reservados.</p>
+        <p>Copyright © 2026 Daniel Diamon. Todos los derechos reservados bajo licencia GPLv3.</p>
     </div>
 
 </body>
