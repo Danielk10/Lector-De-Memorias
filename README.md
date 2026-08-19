@@ -68,11 +68,6 @@ El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/m
 | 🟢 **XGecu T56** | `A466:0A53` / `2E8A:0005` | 32,513 dispositivos | ✅ Soportado |
 | 🟢 **XGecu T76** | `A466:1A86` | 34,607 dispositivos | ✅ Soportado |
 | 🟢 **Logic IC Tester** | Modo de prueba lógica | 283 circuitos integrados (+6 custom) | ✅ Soportado |
-| 🔴 **Serie CH341A / CH347** | `1A86:5512` / `1A86:5523` / `1A86:55DB` | — | ❌ No soportado por minipro |
-
-> [!NOTE]
-> El motor **minipro** está diseñado exclusivamente para la familia de programadores Autoelectric / XGecu (TL866II+, TL866A, TL866CS, T48, T56, T76) y el probador de circuitos lógicos. **No cuenta con soporte** para hardware de la serie CH341A ni CH347.
-
 ---
 
 ## 📐 Diagramas de Conexión y Pinouts Incluidos
