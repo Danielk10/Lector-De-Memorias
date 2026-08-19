@@ -50,17 +50,21 @@ El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/m
 
 ---
 
-## 🎯 Programadores Compatibles
+## 🎯 Programadores Compatibles y Base de Datos
 
-| Programador | VID:PID | Estado |
-|---|---|---|
-| 🟢 **TL866II+** | `04D8:00E0` / `A466:0A53` | ✅ Soportado |
-| 🟢 **TL866A** | `04D8:00DE` / `04D8:E11C` | ✅ Soportado |
-| 🟢 **TL866CS** | `04D8:00DF` / `04D8:E11C` | ✅ Soportado |
-| 🟢 **XGecu T48** | `A466:0A53` / `2E8A:000A` | ✅ Soportado |
-| 🟢 **XGecu T56** | `A466:0A53` / `2E8A:0005` | ✅ Soportado |
-| 🟢 **XGecu T76** | `A466:1A86` | ✅ Soportado |
-| 🟢 **Serie CH341A / CH347** | `1A86:5512` / `1A86:5523` / `1A86:55DB` | ✅ Soportado |
+| Programador | VID:PID | Dispositivos Soportados | Estado |
+|---|---|---|---|
+| 🟢 **TL866II+** | `04D8:00E0` / `A466:0A53` | 29,774 dispositivos (+47 custom) | ✅ Soportado |
+| 🟢 **TL866A** | `04D8:00DE` / `04D8:E11C` | 14,162 dispositivos (+46 custom) | ✅ Soportado |
+| 🟢 **TL866CS** | `04D8:00DF` / `04D8:E11C` | 14,162 dispositivos (+46 custom) | ✅ Soportado |
+| 🟢 **XGecu T48** | `A466:0A53` / `2E8A:000A` | 29,739 dispositivos | ✅ Soportado |
+| 🟢 **XGecu T56** | `A466:0A53` / `2E8A:0005` | 32,513 dispositivos | ✅ Soportado |
+| 🟢 **XGecu T76** | `A466:1A86` | 34,607 dispositivos | ✅ Soportado |
+| 🟢 **Logic IC Tester** | Modo de prueba lógica | 283 circuitos integrados (+6 custom) | ✅ Soportado |
+| 🔴 **Serie CH341A / CH347** | `1A86:5512` / `1A86:5523` / `1A86:55DB` | — | ❌ No soportado por minipro |
+
+> [!NOTE]
+> El motor **minipro** está diseñado exclusivamente para la familia de programadores Autoelectric / XGecu (TL866II+, TL866A, TL866CS, T48, T56, T76) y el probador de circuitos lógicos. **No cuenta con soporte** para hardware de la serie CH341A ni CH347.
 
 ---
 

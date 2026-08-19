@@ -41,6 +41,10 @@ public class UsbController {
         put("a466:1a86", "T76");
         put("2e8a:000a", "T48");
         put("2e8a:0005", "T56");
+    }};
+
+    // Dispositivos no soportados por el motor minipro
+    public static final Map<String, String> UNSUPPORTED_USB_MAP = new HashMap<String, String>() {{
         put("1a86:5512", "CH341A");
         put("1a86:5523", "CH341A");
         put("1a86:55db", "CH347");

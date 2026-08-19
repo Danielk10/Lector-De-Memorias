@@ -179,6 +179,8 @@
     <string name="str_pinout_top_view">Vista Superior</string>
     <string name="str_pinout_ground">Tierra / Masa</string>
 
+    <string name="str_warn_unsupported_programmer">[AVISO] Se detectó %1$s. El motor minipro NO soporta programadores CH341A / CH347. Solo es compatible con la serie TL866 / T48 / T56 / T76.</string>
+
     <string name="str_about_html"><![CDATA[
 <h2>🔌 EEPROM Flasher</h2>
 <p>Aplicación Android avanzada para lectura, verificación, escritura y borrado de memorias EEPROM y Flash usando <b>minipro</b> nativo mediante conexión directa USB Host API.</p>
@@ -186,14 +188,12 @@
 <b>Programadores Compatibles:</b><br/>
 • TL866II+ / TL866A / TL866CS<br/>
 • Xgecu T48 / T56 / T76<br/>
-• Programador CH341A / CH347<br/>
 <br/>
 <b>Licencia del Proyecto:</b> GPLv3 / GPLv2<br/>
 <br/>
 <b>Librerías y Créditos de Código Abierto:</b><br/>
 • <a href="https://gitlab.com/DavidGriffith/minipro">minipro</a> — Software libre para TL866 / T48 / T56 por David Griffith y colaboradores, GPLv3<br/>
 • <a href="https://github.com/libusb/libusb">libusb</a> — Librería multiplataforma USB, LGPL-2.1+<br/>
-• <a href="https://github.com/mik3y/usb-serial-for-android">usb-serial-for-android</a> — Driver USB serial para Android, MIT<br/>
 • <a href="https://github.com/google/material-design-icons">Material Components</a> — Sistema de diseño UI por Google, Apache 2.0<br/>
 <br/>
 <b>Desarrollador y Repositorios:</b><br/>

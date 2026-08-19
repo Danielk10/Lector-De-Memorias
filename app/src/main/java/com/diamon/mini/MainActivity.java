@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_LAST_READ_FILE = "last_read_file";
     private static final String KEY_LAST_VERSION = "last_version_code";
     private static final String KEY_SELECTED_CHIP = "selected_chip_model";
+    private static final String KEY_SELECTED_DEVICE = "selected_device_model";
 
     // Used to load the 'mini' native library on application startup.
     static {
@@ -239,6 +240,27 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         spinnerDevices.setAdapter(adapter);
 
+        // Restore saved programmer model
+        String savedDevice = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SELECTED_DEVICE, SUPPORTED_DEVICES[0]);
+        for (int i = 0; i < SUPPORTED_DEVICES.length; i++) {
+            if (SUPPORTED_DEVICES[i].equalsIgnoreCase(savedDevice)) {
+                spinnerDevices.setSelection(i);
+                break;
+            }
+        }
+
+        spinnerDevices.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0 && position < SUPPORTED_DEVICES.length) {
+                    saveSelectedDevice(SUPPORTED_DEVICES[position]);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+
         // Initialize USB Controller
         usbController = new UsbController(this, new UsbController.Callback() {
             @Override
@@ -261,12 +283,17 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < SUPPORTED_DEVICES.length; i++) {
                             if (SUPPORTED_DEVICES[i].equalsIgnoreCase(autoProgrammer)) {
                                 spinnerDevices.setSelection(i);
+                                saveSelectedDevice(SUPPORTED_DEVICES[i]);
                                 break;
                             }
                         }
                     } else {
                         MainActivity.this.log("════════════════════════════════════════");
-                        MainActivity.this.log(getString(R.string.str_warn_unrecognized_usb));
+                        if (UsbController.UNSUPPORTED_USB_MAP.containsKey(vidPid)) {
+                            MainActivity.this.log(getString(R.string.str_warn_unsupported_programmer, UsbController.UNSUPPORTED_USB_MAP.get(vidPid)));
+                        } else {
+                            MainActivity.this.log(getString(R.string.str_warn_unrecognized_usb));
+                        }
                         MainActivity.this.log("════════════════════════════════════════");
                     }
 
@@ -843,6 +870,18 @@ public class MainActivity extends AppCompatActivity {
     private void saveSelectedChip(String chip) {
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putString(KEY_SELECTED_CHIP, chip).apply();
+    }
+
+    private String getSelectedDevice() {
+        if (spinnerDevices != null && spinnerDevices.getSelectedItem() != null) {
+            return spinnerDevices.getSelectedItem().toString();
+        }
+        return SUPPORTED_DEVICES[0];
+    }
+
+    private void saveSelectedDevice(String device) {
+        getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                .putString(KEY_SELECTED_DEVICE, device).apply();
     }
 
     private void log(String msg) {

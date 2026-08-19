@@ -11,7 +11,7 @@ import com.diamon.mini.R;
 
 /**
  * PinoutView: Dibuja diagramas de conexión y pinouts de hardware para
- * programadores MiniPro (TL866II+, TL866A/CS, T48, T56, CH341A) y chips soportados.
+ * programadores MiniPro (TL866II+, TL866A/CS, T48, T56, T76) y chips soportados.
  */
 public class PinoutView {
 

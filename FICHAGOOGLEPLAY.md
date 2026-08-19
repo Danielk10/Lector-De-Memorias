@@ -35,14 +35,15 @@ La aplicación permite a técnicos de reparación, ingenieros y desarrolladores 
 
 ### Programadores de Hardware Compatibles
 
-La aplicación interactúa mediante USB Host con los siguientes programadores:
-• TL866II+
-• TL866A
-• TL866CS
-• T48
-• T56
-• T76
-• Programadores basados en serie CH341A y CH347
+La aplicación interactúa mediante USB Host con los siguientes programadores soportados por el motor minipro:
+• TL866II+ (29,774 dispositivos + 47 personalizados)
+• TL866A / TL866CS (14,162 dispositivos + 46 personalizados)
+• XGecu T48 (29,739 dispositivos)
+• XGecu T56 (32,513 dispositivos)
+• XGecu T76 (34,607 dispositivos)
+• Probador de circuitos lógicos Logic IC (283 modelos de integrados lógicos)
+
+*(Nota importante: El motor minipro no es compatible con la serie CH341A ni CH347)*
 
 ### Requisitos del Sistema
 
