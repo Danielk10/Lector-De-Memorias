@@ -19,7 +19,7 @@
     <string name="str_preparando_depe">Preparing dependencies…</string>
     <string name="str_polticas_de_pri">Privacy Policy</string>
     <string name="str_visor_hexadecim">Hexadecimal Viewer</string>
-    <string name="str_comparar_hex">Compare HEX Files</string>
+    <string name="str_comparar_hex">Compare Binaries</string>
     <string name="str_pinouts_de_hard">Hardware Pinouts</string>
     <string name="str_cargando_archiv">Loading file…</string>
     <string name="str_seleccionar_dir">Save and Load Directory</string>
