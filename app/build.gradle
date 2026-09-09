@@ -92,6 +92,7 @@ dependencies {
     implementation libs.material
     implementation libs.documentfile
     implementation(libs.usb.serial.for1.android)
+    implementation libs.play.services.ads
     testImplementation libs.junit
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.ext.junit

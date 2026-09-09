@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
 
@@ -17,6 +19,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EEPROMFlasher">
+
+        <!-- Google AdMob -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5141499161332805~2853757954" />
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION"
+            android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
+            android:value="true" />
 
         <activity
             android:name=".MainActivity"

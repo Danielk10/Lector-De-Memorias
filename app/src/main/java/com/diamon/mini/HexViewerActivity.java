@@ -16,11 +16,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 
+import android.util.Log;
+import android.view.MenuItem;
+import androidx.activity.OnBackPressedCallback;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
 public class HexViewerActivity extends AppCompatActivity {
+
+    private static final String TAG = "HexViewerActivity";
+    private static final String INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-5141499161332805/6545581216";
 
     private TextView tvHexSummary;
     private RecyclerView recyclerHex;
     private HexAdapter hexAdapter;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +51,73 @@ public class HexViewerActivity extends AppCompatActivity {
         recyclerHex = findViewById(R.id.recyclerHex);
         recyclerHex.setLayoutManager(new LinearLayoutManager(this));
 
+        initInterstitialAd();
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleExit();
+            }
+        });
+
         loadDataFromIntent();
+    }
+
+    private void initInterstitialAd() {
+        MobileAds.initialize(this, initializationStatus -> {
+            runOnUiThread(this::loadInterstitialAd);
+        });
+    }
+
+    private void loadInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(
+                this,
+                INTERSTITIAL_AD_UNIT_ID,
+                adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        Log.d(TAG, "Anuncio Intersticial cargado exitosamente.");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                        Log.e(TAG, "Fallo al cargar anuncio intersticial: " + loadAdError.getMessage());
+                    }
+                });
+    }
+
+    private void handleExit() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    mInterstitialAd = null;
+                    finish();
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    mInterstitialAd = null;
+                    finish();
+                }
+            });
+            mInterstitialAd.show(this);
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            handleExit();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadDataFromIntent() {

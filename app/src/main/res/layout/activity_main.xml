@@ -44,7 +44,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bannerContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -453,5 +453,16 @@
         </com.diamon.mini.ui.views.LogScrollView>
 
     </LinearLayout>
+
+    <!-- Banner AdMob Inferior -->
+    <FrameLayout
+        android:id="@+id/bannerContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:background="@color/bg_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

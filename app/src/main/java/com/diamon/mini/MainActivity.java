@@ -17,6 +17,16 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -82,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnConnect, btnRead, btnWrite, btnImport, btnExport;
     private Button btnRunCustomCommand, btnClearLogs, btnQuickClear, btnEraseChip, btnAbort, btnVerify;
     private Button btnSearchChip, btnAutodetectChip;
+    private FrameLayout bannerContainer;
+    private AdView adViewBanner;
     private EditText etCustomCommand, etChipModel;
 
     // Terminal Log Buffering with Carriage Return (\r) Overwrite Handling
@@ -227,6 +239,9 @@ public class MainActivity extends AppCompatActivity {
         btnAbort = findViewById(R.id.btnAbort);
         etCustomCommand = findViewById(R.id.etCustomCommand);
         etChipModel = findViewById(R.id.etChipModel);
+        bannerContainer = findViewById(R.id.bannerContainer);
+
+        initAds();
 
         // Restore saved chip model
         String savedChip = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SELECTED_CHIP, "");
@@ -1248,8 +1263,82 @@ public class MainActivity extends AppCompatActivity {
         file.delete();
     }
 
+    // =========================================================================
+    // PUBLICIDAD GOOGLE ADMOB (BANNER)
+    // =========================================================================
+
+    private void initAds() {
+        MobileAds.initialize(this, initializationStatus -> {
+            runOnUiThread(this::loadBannerAd);
+        });
+    }
+
+    private void loadBannerAd() {
+        if (bannerContainer == null) return;
+        try {
+            if (adViewBanner != null) {
+                adViewBanner.destroy();
+                bannerContainer.removeAllViews();
+            }
+
+            adViewBanner = new AdView(this);
+            adViewBanner.setAdUnitId("ca-app-pub-5141499161332805/6470549278");
+            adViewBanner.setAdSize(AdSize.BANNER);
+
+            adViewBanner.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    Log.d("MainActivity", "Banner AdMob cargado exitosamente.");
+                    bannerContainer.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError adError) {
+                    super.onAdFailedToLoad(adError);
+                    Log.e("MainActivity", "Banner AdMob fallo al cargar: Código=" + adError.getCode()
+                            + ", Mensaje=" + adError.getMessage());
+                }
+            });
+
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+            );
+            lp.gravity = Gravity.CENTER;
+            bannerContainer.addView(adViewBanner, lp);
+
+            AdRequest bannerRequest = new AdRequest.Builder().build();
+            adViewBanner.loadAd(bannerRequest);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error inicializando banner: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adViewBanner != null) {
+            adViewBanner.resume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (adViewBanner != null) {
+            adViewBanner.pause();
+        }
+        super.onPause();
+    }
+
     @Override
     protected void onDestroy() {
+        if (adViewBanner != null) {
+            adViewBanner.destroy();
+        }
+        if (bannerContainer != null) {
+            bannerContainer.removeAllViews();
+        }
         super.onDestroy();
         usbController.unregisterReceiver();
         executor.shutdownNow();
