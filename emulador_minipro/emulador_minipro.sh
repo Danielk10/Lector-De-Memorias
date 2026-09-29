@@ -34,7 +34,7 @@ rm -rf minipro_native
 git clone https://gitlab.com/DavidGriffith/minipro.git minipro_native --depth 1
 cd minipro_native
 export PKG_CONFIG_PATH="$NATIVE_PREFIX/lib/pkgconfig"
-make -j"$(nproc)" PREFIX="$NATIVE_PREFIX"
+make -j"$(nproc)" PREFIX="$NATIVE_PREFIX" LDFLAGS="-Wl,-rpath,$NATIVE_PREFIX/lib"
 # Ignoramos error en make install (udev) porque no somos root localmente
 make install PREFIX="$NATIVE_PREFIX" || true
 
