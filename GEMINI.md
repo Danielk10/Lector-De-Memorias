@@ -40,3 +40,15 @@ Para mantener limpio el árbol de trabajo del proyecto y no saturar el almacenam
 ## 4. Notas de Versión para Google Play (Bilingüe Obligatorio)
 
 Siempre que se prepare un lanzamiento o se suba una actualización a **Google Play**, es obligatorio generar y proporcionar al usuario las notas de versión estructuradas tanto en **Inglés** (`en-US`) como en **Español** (`es-419` / `es-ES`), usando viñetas concisas (`- Elemento`) compatibles con el límite de caracteres de Google Play Console para validar la nota antes de su publicación.
+
+## 5. Publicación Automática en Google Play
+
+El proyecto incluye el script `upload_play_store.py` para automatizar la subida y publicación del Android App Bundle (`.aab`) a la pista de producción (o pruebas) de Google Play Store utilizando la Service Account oficial:
+
+```bash
+python3 upload_play_store.py \
+  --track production \
+  --release_notes "<Notas en español (- Viñetas)>" \
+  --release_notes_en "<Notas en inglés (- Bullets)>"
+```
+
