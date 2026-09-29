@@ -47,14 +47,21 @@ chmod +x emulador_minipro.sh
 
 ### Comandos manuales:
 
-Puedes ejecutar el emulador de forma aislada para cargar y salvar memorias simuladas en archivos `.bin`:
+Gracias a la inyección de `RPATH` durante la compilación, no se requiere configurar `LD_LIBRARY_PATH`. Puedes ejecutar el emulador de forma aislada para cargar, leer y escribir memorias simuladas en archivos `.bin`:
 
 ```bash
-# Rellenar memoria simulada, cargar un mock, correr minipro y guardar el estado final
+# 1. Rellenar memoria simulada, cargar un mock, correr minipro y guardar el volcado
 ./emulador_minipro --fill pattern --flash mock_eeprom.bin minipro -p "AT24C02C" -r read_eeprom.bin
+
+# 2. Escritura y verificación automática (Verification OK) en EEPROM
+./emulador_minipro --save memory_final.bin minipro -p "AT24C02C" -w file_to_write.bin
+
+# 3. Lectura de SPI Flash (1MB)
+./emulador_minipro --flash mock_spi.bin minipro -p "W25Q80BV" -r read_spi.bin
 ```
 
 Opciones admitidas:
 * `--flash ARCHIVO.bin`: Inicializa la memoria del chip simulado desde un archivo.
 * `--save ARCHIVO.bin`: Guarda los datos finales del chip simulado tras correr las operaciones.
 * `--fill empty|count|random`: Rellena la memoria inicial con `0xFF`, contadores secuenciales o valores aleatorios.
+

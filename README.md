@@ -126,6 +126,10 @@ El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/m
 ./gradlew assembleRelease
 ```
 
+### Emulador Local y Pruebas en PC
+
+Para probar `minipro` y la interacción con chips (EEPROM y SPI Flash) en un entorno Linux x86_64 sin necesidad de hardware físico ni dispositivo Android, consulta la guía del [Emulador Local TL866II+](EMULADOR_LOCAL.md).
+
 ---
 
 ## 📄 Licencias y Atribuciones

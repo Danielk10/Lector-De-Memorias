@@ -52,3 +52,34 @@ python3 upload_play_store.py \
   --release_notes_en "<Notas en inglés (- Bullets)>"
 ```
 
+## 6. Emulador Local de PC y Pruebas de Hardware Virtual (TL866II+)
+
+El proyecto cuenta con un entorno de simulación dinámico sobre `socketpair` que permite compilar y probar **minipro (v0.7.4)** y **libusb** directamente en una PC Linux x86_64 sin necesidad de conectar hardware físico ni requerir un dispositivo Android real.
+
+### A. Ejecución del ciclo automatizado completo
+El script [`emulador_minipro.sh`](emulador_minipro/emulador_minipro.sh) compila libusb con el parche de sockets, compila minipro con `RPATH` incrustado, compila el emulador en C++ y ejecuta pruebas de lectura de EEPROM y SPI Flash:
+
+```bash
+cd ~/emulador_minipro
+./emulador_minipro.sh
+```
+
+### B. Ejecución directa de pruebas individuales
+Gracias a que el binario de minipro en [`~/native_test_root/bin/minipro`](file:///home/danielpdiamon/native_test_root/bin/minipro) está enlazado con `RPATH` hacia [`~/native_test_root/lib`](file:///home/danielpdiamon/native_test_root/lib), **no se requiere configurar `LD_LIBRARY_PATH`**.
+
+* **Lectura de chip EEPROM (`AT24C02C`):**
+  ```bash
+  ~/native_test_root/bin/emulador_minipro --fill count ~/native_test_root/bin/minipro -p "AT24C02C" -r read_eeprom.bin
+  ```
+
+* **Escritura y verificación de EEPROM (`Verification OK`):**
+  ```bash
+  ~/native_test_root/bin/emulador_minipro --save memory_out.bin ~/native_test_root/bin/minipro -p "AT24C02C" -w file_to_write.bin
+  ```
+
+* **Lectura de chip SPI Flash (`W25Q80BV` - 1MB):**
+  ```bash
+  ~/native_test_root/bin/emulador_minipro --flash mock_spi.bin ~/native_test_root/bin/minipro -p "W25Q80BV" -r read_spi.bin
+  ```
+
+
