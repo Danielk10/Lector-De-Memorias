@@ -130,6 +130,14 @@ void handle_minipro_client(int fd) {
                         ep3_read_block = addr / 128;
                         ep2_write_block = addr / 128;
                         ep3_write_block = addr / 128;
+
+                        if ((cmd == 0x0C || cmd == 0x11) && packet_len > 8) {
+                            uint16_t data_len = buf[2] | (buf[3] << 8);
+                            size_t copy_len = std::min((size_t)data_len, (size_t)(packet_len - 8));
+                            if (addr + copy_len <= virtual_memory.size()) {
+                                memcpy(virtual_memory.data() + addr, buf.data() + 8, copy_len);
+                            }
+                        }
                     }
                 }
             } else if (endpoint == 0x02) {
