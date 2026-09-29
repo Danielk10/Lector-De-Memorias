@@ -1,17 +1,11 @@
 # Reporte Actualizado de Dependencias
 
-### minipro
+### libminipro_bin.so
 | Dep | Class | InFolder |
 |---|---|---|
 | liblog.so | Sistema | No |
 | libusb-1.0.so | Externa | Sí |
 | libz.so.1 | Sistema | Sí |
-| libdl.so | Sistema | No |
-| libc.so | Sistema | No |
-
-### libusb-1.0.so
-| Dep | Class | InFolder |
-|---|---|---|
 | libdl.so | Sistema | No |
 | libc.so | Sistema | No |
 
@@ -21,7 +15,7 @@
 | libdl.so | Sistema | No |
 | libc.so | Sistema | No |
 
-### libz.so.1
+### libz_1.so
 | Dep | Class | InFolder |
 |---|---|---|
 | libc.so | Sistema | No |

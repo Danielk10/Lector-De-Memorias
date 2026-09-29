@@ -10,6 +10,15 @@ if not os.path.exists(jni_dir):
 
 files = set(os.listdir(jni_dir))
 
+# Mapeo de nombres exigidos por Google Play / Android
+name_mapping = {
+    'libusb-1.0.so': 'libusb_1_0.so',
+    'libz.so.1': 'libz_1.so'
+}
+
+def is_in_folder(dep):
+    return dep in files or name_mapping.get(dep) in files
+
 # Generar Reporte
 with open('REPORTE_ANALISIS_DEPENDENCIAS.md', 'w') as r:
     r.write('# Reporte Actualizado de Dependencias\n\n')
@@ -22,7 +31,7 @@ with open('REPORTE_ANALISIS_DEPENDENCIAS.md', 'w') as r:
                     d = line.split('[')[1].split(']')[0]
                     es_sistema = d in ['libc.so', 'libm.so', 'libdl.so', 'liblog.so', 'libz.so', 'libz.so.1', 'libstdc++.so', 'libgcc.so', 'libc++_shared.so']
                     c = 'Sistema' if es_sistema else 'Externa'
-                    r.write(f'| {d} | {c} | {('Sí' if d in files else 'No')} |\n')
+                    r.write(f'| {d} | {c} | {('Sí' if is_in_folder(d) else 'No')} |\n')
         except: pass
         r.write('\n')
 
@@ -34,7 +43,7 @@ for f in files:
         for line in out.splitlines():
             if '(NEEDED)' in line:
                 d = line.split('[')[1].split(']')[0]
-                if d not in files and d not in ['libc.so', 'libm.so', 'libdl.so', 'liblog.so', 'libz.so', 'libz.so.1', 'libstdc++.so', 'libgcc.so', 'libc++_shared.so']:
+                if not is_in_folder(d) and d not in ['libc.so', 'libm.so', 'libdl.so', 'liblog.so', 'libz.so', 'libz.so.1', 'libstdc++.so', 'libgcc.so', 'libc++_shared.so']:
                     missing_deps.add(d)
     except: pass
 
@@ -42,3 +51,4 @@ if missing_deps:
     print('Error: Dependencias faltantes:', missing_deps)
 else:
     print('Verificación exitosa: Todas las dependencias externas están presentes.')
+
