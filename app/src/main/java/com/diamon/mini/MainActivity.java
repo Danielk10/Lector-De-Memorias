@@ -1222,15 +1222,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void exportFileToUri(Uri uri) {
         File sourceFile = new File(getFilesDir(), lastReadFile);
-        try (InputStream in = new java.io.FileInputStream(sourceFile);
+        if (!sourceFile.exists()) {
+            log(getString(R.string.str_error) + ": " + getString(R.string.str_err_no_data_visualize));
+            return;
+        }
+        try (java.io.FileInputStream fis = new java.io.FileInputStream(sourceFile);
+             java.nio.channels.FileChannel inChannel = fis.getChannel();
              OutputStream out = getContentResolver().openOutputStream(uri)) {
 
             if (out == null) throw new Exception(getString(R.string.str_err_open_file));
 
-            byte[] buffer = new byte[8192];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
+            if (out instanceof java.io.FileOutputStream) {
+                java.nio.channels.FileChannel outChannel = ((java.io.FileOutputStream) out).getChannel();
+                long size = inChannel.size();
+                long transferred = 0;
+                while (transferred < size) {
+                    long n = inChannel.transferTo(transferred, size - transferred, outChannel);
+                    if (n <= 0) break;
+                    transferred += n;
+                }
+            } else {
+                byte[] buffer = new byte[32768];
+                int read;
+                while ((read = fis.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
             }
             log(getString(R.string.str_export_success, lastReadFile));
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.diamon.mini.core;
 
 import android.content.Context;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.diamon.mini.R;
@@ -54,6 +55,14 @@ public class MiniproExecutor {
      */
     public void executeCommand(String[] args, int usbFd) {
         executor.execute(() -> {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            PowerManager.WakeLock wakeLock = null;
+            if (pm != null) {
+                try {
+                    wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MiniproExecutor:FlashingWakeLock");
+                    wakeLock.acquire(15 * 60 * 1000L);
+                } catch (Exception ignored) {}
+            }
             try {
                 File nativeLibDir = new File(context.getApplicationInfo().nativeLibraryDir);
                 File filesDir = context.getFilesDir();
@@ -161,6 +170,12 @@ public class MiniproExecutor {
                 callback.log(context.getString(R.string.str_exception_log, e.getMessage()));
                 callback.onProcessFinished(-1, args);
                 currentPid = -1;
+            } finally {
+                if (wakeLock != null && wakeLock.isHeld()) {
+                    try {
+                        wakeLock.release();
+                    } catch (Exception ignored) {}
+                }
             }
         });
     }
