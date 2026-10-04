@@ -15,7 +15,7 @@ bash setup-sdk.sh
 
 ## 2. Compilación y Firma
 
-El proyecto utiliza Gradle para compilar tanto versiones de depuración como de producción (firmadas mediante `keystore.properties` o variables de entorno con `firma_lector_de_memorias.jks`):
+El proyecto utiliza Gradle para compilar tanto versiones de depuración como de producción (firmadas mediante `keystore.properties` o variables de entorno con `firma_eeprom_flasher.jks`):
 
 * **Compilar APK de Depuración:**
   ```bash
