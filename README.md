@@ -11,6 +11,7 @@
 [![CMake](https://img.shields.io/badge/CMake-4.1.2-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
 [![USB](https://img.shields.io/badge/USB-Host%20API-FF4081?logo=usb&logoColor=white)](https://developer.android.com/guide/topics/connectivity/usb/host)
 [![minipro](https://img.shields.io/badge/Motor-minipro-orange?logo=gnubash&logoColor=white)](https://gitlab.com/DavidGriffith/minipro)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/danielpdiai)
 
 ---
 
@@ -139,6 +140,14 @@ Para probar `minipro` y la interacción con chips (EEPROM y SPI Flash) en un ent
 - **libusb**: [GNU LGPLv2.1](https://github.com/libusb/libusb) — libusb contributors
 - **usb-serial-for-android**: [MIT](https://github.com/mik3y/usb-serial-for-android) — mik3y
 - **AndroidX & Material Design**: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+---
+
+## ☕ Apoyo y Donaciones
+
+Si este proyecto te ha sido de utilidad y deseas apoyar el desarrollo continuo:
+
+[![Buy Me A Coffee](https://img.buymeacoffee.com/button-api/?text=Cómprame%20un%20café&emoji=☕&slug=danielpdiai&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff)](https://buymeacoffee.com/danielpdiai)
 
 ---
 
