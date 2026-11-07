@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">EEPROM Flasher</string>
+    <string name="menu_privacy_options">Opciones de privacidad</string>
+    <string name="privacy_options_error">No se pudieron abrir las opciones de privacidad. Inténtalo de nuevo.</string>
     <string name="str_estado_usb_desc">Estado: USB desconectado</string>
     <string name="str_status_usb_connected">Estado: Conectado a %1$s</string>
     <string name="str_detectar_y_cone">Detectar y Conectar Programador</string>

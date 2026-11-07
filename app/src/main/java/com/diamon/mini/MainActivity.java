@@ -632,6 +632,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem privacyItem = menu.findItem(R.id.action_privacy_options);
+        if (privacyItem != null) {
+            privacyItem.setVisible(ConsentManager.isPrivacyOptionsRequired());
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_hex_viewer) {
@@ -652,6 +661,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_policy) {
             startActivity(new Intent(this, PolicyActivity.class));
+            return true;
+        } else if (id == R.id.action_privacy_options) {
+            ConsentManager.showPrivacyOptionsForm(
+                    this,
+                    error -> {
+                        if (error != null) {
+                            Toast.makeText(
+                                            this,
+                                            getString(R.string.privacy_options_error),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                        onConsentChanged();
+                    });
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1284,9 +1307,42 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================================
 
     private void initAds() {
-        MobileAds.initialize(this, initializationStatus -> {
-            runOnUiThread(this::loadBannerAd);
+        ConsentManager.requestConsent(this, canRequestAds -> {
+            if (isFinishing() || isDestroyed()) {
+                return;
+            }
+            invalidateOptionsMenu();
+            applyConsentState(canRequestAds);
         });
+    }
+
+    /** Inicializa o retira los anuncios según la decisión de privacidad. */
+    private void applyConsentState(boolean canRequestAds) {
+        if (canRequestAds) {
+            MobileAds.initialize(this, initializationStatus -> runOnUiThread(this::loadBannerAd));
+        } else {
+            destroyBanner();
+        }
+    }
+
+    /** Reaplica el estado tras cambiar las opciones de privacidad. */
+    public void onConsentChanged() {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        invalidateOptionsMenu();
+        applyConsentState(ConsentManager.canRequestAds());
+    }
+
+    private void destroyBanner() {
+        if (adViewBanner != null) {
+            adViewBanner.destroy();
+            adViewBanner = null;
+        }
+        if (bannerContainer != null) {
+            bannerContainer.removeAllViews();
+            bannerContainer.setVisibility(View.GONE);
+        }
     }
 
     private void loadBannerAd() {

@@ -145,12 +145,18 @@ public class HexViewerActivity extends AppCompatActivity {
     }
 
     private void initInterstitialAd() {
-        MobileAds.initialize(this, initializationStatus -> {
-            runOnUiThread(this::loadInterstitialAd);
+        ConsentManager.requestConsent(this, canRequestAds -> {
+            if (isFinishing() || isDestroyed() || !canRequestAds) {
+                return;
+            }
+            MobileAds.initialize(this, initializationStatus -> runOnUiThread(this::loadInterstitialAd));
         });
     }
 
     private void loadInterstitialAd() {
+        if (!ConsentManager.canRequestAds()) {
+            return;
+        }
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(
                 this,
@@ -172,7 +178,7 @@ public class HexViewerActivity extends AppCompatActivity {
     }
 
     private void handleExit() {
-        if (mInterstitialAd != null) {
+        if (mInterstitialAd != null && ConsentManager.canRequestAds()) {
             mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override
                 public void onAdDismissedFullScreenContent() {
