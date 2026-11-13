@@ -71,7 +71,7 @@ public class ProAccessDialog {
             return;
         }
 
-        // With a temporary pass the dialog still offers "watch another video";
+        // With a temporary pass the dialog still offers the rewarded video;
         // only the permanent purchase hides the rewarded option.
         boolean passActive = proPassManager.hasActiveProPass();
 
@@ -188,9 +188,7 @@ public class ProAccessDialog {
         final boolean[] rewarded = {false};
 
         Button btnRewarded = new Button(activity);
-        btnRewarded.setText(activity.getString(passActive
-                ? R.string.pro_btn_watch_another_video
-                : R.string.pro_btn_watch_rewarded_video));
+        btnRewarded.setText(activity.getString(R.string.pro_btn_watch_rewarded_video));
         btnRewarded.setTextSize(14);
         btnRewarded.setTypeface(null, Typeface.BOLD);
         btnRewarded.setTextColor(Color.WHITE);
@@ -234,10 +232,7 @@ public class ProAccessDialog {
                 public void onDismissed() {
                     if (rewarded[0]) return;
                     btnRewarded.setEnabled(true);
-                    btnRewarded.setText(activity.getString(
-                            proPassManager.hasActiveProPass()
-                                    ? R.string.pro_btn_watch_another_video
-                                    : R.string.pro_btn_watch_rewarded_video));
+                    btnRewarded.setText(activity.getString(R.string.pro_btn_watch_rewarded_video));
                 }
             });
         });

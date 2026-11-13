@@ -204,7 +204,6 @@
     <string name="pro_feature_technical_report">Informe técnico con hashes, histograma y comprobación de blanco</string>
     <string name="pro_feature_zero_ads">Sin anuncios de banner ni intersticiales</string>
     <string name="pro_btn_watch_rewarded_video">🎬 Ver video — Pase gratis de 15 minutos</string>
-    <string name="pro_btn_watch_another_video">🎬 Ver otro video — reiniciar el pase de 15 minutos</string>
     <string name="pro_open_tools">🛠️ Abrir herramientas Pro</string>
     <string name="pro_loading_rewarded_video">🎬 Cargando video…</string>
     <string name="pro_pass_activated_toast">⭐ ¡%1$s Pro activado por 15 minutos!</string>

@@ -66,7 +66,7 @@ public class ProToolsDialog {
 
         if (!permanent) {
             root.addView(createButton(activity, density,
-                    activity.getString(R.string.pro_btn_watch_another_video),
+                    activity.getString(R.string.pro_btn_watch_rewarded_video),
                     "", 0xFF00B0FF, () -> {
                         dialog.dismiss();
                         ProAccessDialog.show(activity, billingManager, proPassManager, () -> {

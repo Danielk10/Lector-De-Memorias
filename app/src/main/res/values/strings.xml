@@ -204,7 +204,6 @@
     <string name="pro_feature_technical_report">Technical report with hashes, histogram and blank check</string>
     <string name="pro_feature_zero_ads">No banner or interstitial ads</string>
     <string name="pro_btn_watch_rewarded_video">🎬 Watch video — 15-minute free pass</string>
-    <string name="pro_btn_watch_another_video">🎬 Watch another video — restart the 15-minute pass</string>
     <string name="pro_open_tools">🛠️ Open Pro tools</string>
     <string name="pro_loading_rewarded_video">🎬 Loading video…</string>
     <string name="pro_pass_activated_toast">⭐ %1$s Pro activated for 15 minutes!</string>
