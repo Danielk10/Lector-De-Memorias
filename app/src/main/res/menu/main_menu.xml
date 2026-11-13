@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_pro_mode"
+        android:title="@string/menu_pro_mode"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_hex_viewer"
         android:title="@string/str_visor_hexadecim"
         app:showAsAction="never" />

@@ -54,7 +54,24 @@ public class MiniproExecutor {
      * @param usbFd file descriptor del dispositivo USB, o -1 si no hay USB
      */
     public void executeCommand(String[] args, int usbFd) {
+        executeCommand(args, usbFd, null);
+    }
+
+    /**
+     * Executes minipro after running an optional pre-flight action on the same
+     * background thread. Used by the Antibrick Vault to snapshot the previous
+     * rom.bin before a read overwrites it.
+     */
+    public void executeCommand(String[] args, int usbFd, Runnable beforeStart) {
         executor.execute(() -> {
+            if (beforeStart != null) {
+                try {
+                    beforeStart.run();
+                } catch (Exception e) {
+                    Log.e(TAG, "Pre-flight action failed", e);
+                    callback.log(context.getString(R.string.str_exception_log, e.getMessage()));
+                }
+            }
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wakeLock = null;
             if (pm != null) {

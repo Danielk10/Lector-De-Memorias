@@ -50,17 +50,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.diamon.mini.core.MiniproExecutor;
 import com.diamon.mini.core.UsbController;
+import com.diamon.mini.billing.BillingManager;
+import com.diamon.mini.pro.ProAccessDialog;
+import com.diamon.mini.pro.ProPassManager;
+import com.diamon.mini.pro.ProToolsDialog;
+import com.diamon.mini.report.TechnicalReport;
+import com.diamon.mini.ui.IntegrityDialog;
+import com.diamon.mini.ui.ReportDialog;
 import com.diamon.mini.ui.views.LogScrollView;
 import com.diamon.mini.ui.views.PinoutView;
 import com.diamon.mini.utils.AssetHelper;
 import com.diamon.mini.utils.ChipDatabase;
+import com.diamon.mini.vault.SafetyVaultManager;
+import com.diamon.mini.vault.VaultDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -155,6 +166,32 @@ public class MainActivity extends AppCompatActivity {
     private volatile String lastReadFile = "rom.bin";
     private final List<String> currentOutputLines = new ArrayList<>();
 
+    // Pro / billing
+    private BillingManager billingManager;
+    private ProPassManager proPassManager;
+    private final Handler proHandler = new Handler(Looper.getMainLooper());
+    private String pendingReportText;
+    private boolean wasProActive = false;
+
+    private final Runnable proTicker = new Runnable() {
+        @Override
+        public void run() {
+            if (isFinishing() || isDestroyed()) return;
+            invalidateOptionsMenu();
+            if (proPassManager != null && proPassManager.hasActiveProPass()) {
+                proHandler.postDelayed(this, 1000L);
+            } else {
+                applyProState();
+            }
+        }
+    };
+
+    private final ActivityResultLauncher<String> reportSaveLauncher = registerForActivityResult(
+            new ActivityResultContracts.CreateDocument("text/plain"),
+            uri -> {
+                if (uri != null) savePendingReport(uri);
+            });
+
     private static final String[] SUPPORTED_DEVICES = {
             "TL866II+", "TL866A", "TL866CS", "T48", "T56", "T76", "Logic"
     };
@@ -240,6 +277,8 @@ public class MainActivity extends AppCompatActivity {
         etCustomCommand = findViewById(R.id.etCustomCommand);
         etChipModel = findViewById(R.id.etChipModel);
         bannerContainer = findViewById(R.id.bannerContainer);
+
+        initPro();
 
         initAds();
 
@@ -623,6 +662,250 @@ public class MainActivity extends AppCompatActivity {
         btnAbort.setOnClickListener(v -> miniproExecutor.abort());
     }
 
+    // ────────── Pro / Billing / Vault ───────────────────────────────────────
+
+    private void initPro() {
+        proPassManager = new ProPassManager(this);
+        proPassManager.setOnPassRestoredListener(expire -> runOnUiThread(this::applyProState));
+
+        billingManager = new BillingManager(this, new BillingManager.BillingListener() {
+            @Override
+            public void onProStatusChanged(boolean isProPurchased) {
+                runOnUiThread(MainActivity.this::applyProState);
+            }
+
+            @Override
+            public void onPurchaseSuccess(String productId) {
+                runOnUiThread(() -> {
+                    applyProState();
+                    log(getString(R.string.pro_activated_log));
+                });
+            }
+
+            @Override
+            public void onBillingError(String errorMessage) {
+                log("[BILLING] " + errorMessage);
+            }
+        });
+
+        wasProActive = isProActive();
+        applyProState();
+    }
+
+    private boolean isProActive() {
+        return proPassManager != null && proPassManager.isProActive(billingManager);
+    }
+
+    private void applyProState() {
+        if (isFinishing() || isDestroyed()) return;
+
+        boolean pro = isProActive();
+        if (pro) {
+            destroyBanner();
+        } else if (billingManager != null && !billingManager.isProPurchased()
+                && ConsentManager.canRequestAds()) {
+            loadBannerAd();
+        }
+
+        invalidateOptionsMenu();
+        proHandler.removeCallbacks(proTicker);
+        if (proPassManager != null && proPassManager.hasActiveProPass()) {
+            proHandler.postDelayed(proTicker, 1000L);
+        }
+
+        if (pro != wasProActive) {
+            log(getString(pro ? R.string.pro_activated_log : R.string.pro_expired_log));
+            wasProActive = pro;
+        }
+    }
+
+    private void showProDialog() {
+        if (isProActive()) {
+            showProTools();
+            return;
+        }
+        ProAccessDialog.show(this, billingManager, proPassManager, () -> {
+            applyProState();
+            log(getString(R.string.pro_activated_log));
+        });
+    }
+
+    private void showProTools() {
+        ProToolsDialog.show(this, billingManager, proPassManager, new ProToolsDialog.Actions() {
+            @Override
+            public void onOpenVault() {
+                showVaultDialog();
+            }
+
+            @Override
+            public void onOpenIntegrity() {
+                showCurrentIntegrity();
+            }
+
+            @Override
+            public void onOpenReport() {
+                showTechnicalReport();
+            }
+        });
+    }
+
+    private File getCurrentDumpFile() {
+        String name = getSharedPreferences(PREFS, MODE_PRIVATE)
+                .getString(KEY_LAST_READ_FILE, "rom.bin");
+        File file = new File(getFilesDir(), name != null ? name : "rom.bin");
+        if (!file.exists()) {
+            file = new File(getFilesDir(), "rom.bin");
+        }
+        return file;
+    }
+
+    private void showVaultDialog() {
+        if (!isProActive()) {
+            showProDialog();
+            return;
+        }
+        String chip = getSelectedChip();
+        VaultDialog.show(this,
+                SafetyVaultManager.getInstance(this),
+                new File(getFilesDir(), "rom.bin"),
+                chip.isEmpty() ? "EEPROM" : chip,
+                new VaultDialog.Listener() {
+                    @Override
+                    public void onRomRestored(@NonNull SafetyVaultManager.VaultBackup backup) {
+                        hasReadData = true;
+                        lastReadFile = "rom.bin";
+                        getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                                .putString(KEY_LAST_READ_FILE, "rom.bin")
+                                .putString("bios_source", getString(
+                                        R.string.vault_restored, backup.getFile().getName()))
+                                .apply();
+                        log(getString(R.string.vault_restored_to_rom,
+                                backup.getFile().getName()));
+                    }
+
+                    @Override
+                    public void onSnapshotCreated(@NonNull SafetyVaultManager.VaultBackup backup) {
+                        log(getString(R.string.vault_created, backup.getFile().getName()));
+                    }
+                });
+    }
+
+    private void showCurrentIntegrity() {
+        if (!isProActive()) {
+            showProDialog();
+            return;
+        }
+        File file = getCurrentDumpFile();
+        if (!file.exists() || file.length() == 0L) {
+            Toast.makeText(this, getString(R.string.str_err_no_data_visualize),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        IntegrityDialog.show(this, file.getName(), file);
+    }
+
+    private void showTechnicalReport() {
+        if (!isProActive()) {
+            showProDialog();
+            return;
+        }
+        final File file = getCurrentDumpFile();
+        if (!file.exists() || file.length() == 0L) {
+            Toast.makeText(this, getString(R.string.str_err_no_data_visualize),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Toast.makeText(this, getString(R.string.report_preparing), Toast.LENGTH_SHORT).show();
+        final String chip = getSelectedChip();
+        final String source = getSharedPreferences(PREFS, MODE_PRIVATE)
+                .getString("bios_source", "");
+        final android.content.Context appContext = getApplicationContext();
+
+        new Thread(() -> {
+            String report = null;
+            String error = null;
+            try {
+                report = TechnicalReport.generate(appContext, file, chip, source);
+            } catch (Exception e) {
+                error = e.getMessage();
+            }
+            final String body = report;
+            final String failure = error;
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                if (body == null) {
+                    Toast.makeText(this,
+                            getString(R.string.report_save_error, failure),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                final String suggested = buildReportFileName(chip);
+                ReportDialog.show(this, getString(R.string.report_title_technical), body,
+                        () -> {
+                            pendingReportText = body;
+                            reportSaveLauncher.launch(suggested);
+                        });
+            });
+        }, "TechnicalReport").start();
+    }
+
+    private String buildReportFileName(String chip) {
+        String safeChip = chip == null ? "" : chip.replaceAll("[^a-zA-Z0-9_.-]", "_");
+        if (safeChip.isEmpty()) safeChip = "dump";
+        String date = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        return "eeprom_report_" + safeChip + "_" + date + ".txt";
+    }
+
+    private void savePendingReport(Uri uri) {
+        if (pendingReportText == null) return;
+        try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+            if (out == null) throw new IllegalStateException(getString(R.string.str_err_open_file));
+            out.write(pendingReportText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            out.flush();
+            Toast.makeText(this,
+                    getString(R.string.report_saved, uri.getLastPathSegment()),
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.report_save_error, e.getMessage()),
+                    Toast.LENGTH_LONG).show();
+        } finally {
+            pendingReportText = null;
+        }
+    }
+
+    private String detectVaultOperation(String[] args) {
+        boolean read = false;
+        boolean write = false;
+        boolean erase = false;
+        for (String arg : args) {
+            if ("-r".equals(arg) || "--read".equals(arg)) read = true;
+            else if ("-w".equals(arg) || "--write".equals(arg)) write = true;
+            else if ("-E".equals(arg) || "--erase".equals(arg)) erase = true;
+        }
+        if (write) return "write";
+        if (erase) return "erase";
+        if (read) return "read";
+        return null;
+    }
+
+    private void autoSnapshot(String operation, String chip) {
+        try {
+            File rom = new File(getFilesDir(), "rom.bin");
+            if (!rom.exists() || rom.length() == 0L) return;
+
+            String name = chip == null || chip.isEmpty() ? "EEPROM" : chip;
+            SafetyVaultManager.VaultBackup backup =
+                    SafetyVaultManager.getInstance(getApplicationContext())
+                            .createSnapshotIfChanged(rom, name + "_" + operation);
+            if (backup != null) {
+                log(getString(R.string.vault_snapshot_auto_log, backup.getFile().getName()));
+            }
+        } catch (Exception e) {
+            log(getString(R.string.vault_snapshot_failed_log, e.getMessage()));
+        }
+    }
+
     // ────────── Menu ─────────────────────────────────────────────────────────
 
     @Override
@@ -637,13 +920,28 @@ public class MainActivity extends AppCompatActivity {
         if (privacyItem != null) {
             privacyItem.setVisible(ConsentManager.isPrivacyOptionsRequired());
         }
+
+        MenuItem proItem = menu.findItem(R.id.action_pro_mode);
+        if (proItem != null) {
+            if (billingManager != null && billingManager.isProPurchased()) {
+                proItem.setTitle(R.string.menu_pro_permanent);
+            } else if (proPassManager != null && proPassManager.hasActiveProPass()) {
+                proItem.setTitle(getString(R.string.menu_pro_timer,
+                        proPassManager.getTiempoRestanteFormateado()));
+            } else {
+                proItem.setTitle(R.string.menu_pro_mode);
+            }
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_hex_viewer) {
+        if (id == R.id.action_pro_mode) {
+            showProDialog();
+            return true;
+        } else if (id == R.id.action_hex_viewer) {
             startActivity(new Intent(this, HexViewerActivity.class));
             return true;
         } else if (id == R.id.action_hex_diff) {
@@ -1061,7 +1359,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void executeMinipro(String... args) {
-        miniproExecutor.executeCommand(args, usbController.getCurrentFd());
+        Runnable snapshot = null;
+        String operation = detectVaultOperation(args);
+        if (operation != null && isProActive()) {
+            final String operationName = operation;
+            final String chip = getSelectedChip();
+            snapshot = () -> autoSnapshot(operationName, chip);
+        }
+        miniproExecutor.executeCommand(args, usbController.getCurrentFd(), snapshot);
     }
 
     private void executeCustomCommand(String raw) {
@@ -1113,9 +1418,8 @@ public class MainActivity extends AppCompatActivity {
             args.add(1, getMiniproProgrammerFlag());
         }
 
-        miniproExecutor.executeCommand(args.toArray(new String[0]), usbController.getCurrentFd());
+        executeMinipro(args.toArray(new String[0]));
     }
-
 
 
     private void clearTransientRomState(boolean notify) {
@@ -1318,7 +1622,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** Inicializa o retira los anuncios según la decisión de privacidad. */
     private void applyConsentState(boolean canRequestAds) {
-        if (canRequestAds) {
+        if (canRequestAds && !isProActive()) {
             MobileAds.initialize(this, initializationStatus -> runOnUiThread(this::loadBannerAd));
         } else {
             destroyBanner();
@@ -1347,12 +1651,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadBannerAd() {
         if (bannerContainer == null) return;
+        if (!ConsentManager.canRequestAds() || isProActive()) {
+            destroyBanner();
+            return;
+        }
+        if (adViewBanner != null) return;
         try {
-            if (adViewBanner != null) {
-                adViewBanner.destroy();
-                bannerContainer.removeAllViews();
-            }
-
             adViewBanner = new AdView(this);
             adViewBanner.setAdUnitId("ca-app-pub-5141499161332805/6470549278");
             adViewBanner.setAdSize(AdSize.BANNER);
@@ -1393,6 +1697,16 @@ public class MainActivity extends AppCompatActivity {
         if (adViewBanner != null) {
             adViewBanner.resume();
         }
+
+        String tracked = getSharedPreferences(PREFS, MODE_PRIVATE)
+                .getString(KEY_LAST_READ_FILE, "rom.bin");
+        if (tracked != null && !tracked.isEmpty()) {
+            lastReadFile = tracked;
+        }
+        File current = new File(getFilesDir(), lastReadFile);
+        hasReadData = current.exists() && current.length() > 0;
+
+        applyProState();
     }
 
     @Override
@@ -1405,6 +1719,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        proHandler.removeCallbacksAndMessages(null);
+        if (billingManager != null) {
+            billingManager.destroy();
+        }
         if (adViewBanner != null) {
             adViewBanner.destroy();
         }

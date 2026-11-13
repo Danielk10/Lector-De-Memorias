@@ -186,6 +186,169 @@
     <string name="str_no_active_process">No hay proceso activo para detener.</string>
     <string name="str_exception_log">[EXCEPCIÓN] %1$s</string>
 
+    <!-- Google Play Billing -->
+    <string name="str_billing_connecting">Conectando con Google Play… Inténtalo de nuevo en unos segundos.</string>
+    <string name="str_billing_not_ready">El producto Pro aún no está listo o Google Play todavía lo está procesando.</string>
+    <string name="str_billing_not_play_install">Las compras solo están disponibles en la versión instalada desde Google Play. Instala o actualiza la app desde Play Store para comprar Pro.</string>
+
+    <!-- Pro access and status -->
+    <string name="menu_pro_mode">⭐ Modo Pro</string>
+    <string name="menu_pro_permanent">👑 Pro Permanente</string>
+    <string name="menu_pro_timer">⭐ Pro %1$s</string>
+    <string name="pro_access_title">⭐ %1$s Pro</string>
+    <string name="pro_access_subtitle">Desbloquea la suite técnica avanzada de %1$s</string>
+    <string name="pro_feature_antibrick_vault">Bóveda Antibrick con copias automáticas antes de cada operación</string>
+    <string name="pro_feature_crypto_checker">Verificador criptográfico de integridad: MD5, SHA-1, SHA-256 y CRC32</string>
+    <string name="pro_feature_live_hex_editor">Editor HEX con escritura, deshacer/rehacer y aplicación a la ROM</string>
+    <string name="pro_feature_advanced_diff">Diff avanzado con análisis de sectores de 4 KB e informe exportable</string>
+    <string name="pro_feature_technical_report">Informe técnico con hashes, histograma y comprobación de blanco</string>
+    <string name="pro_feature_zero_ads">Sin anuncios de banner ni intersticiales</string>
+    <string name="pro_btn_watch_rewarded_video">🎬 Ver video — Pase gratis de 15 minutos</string>
+    <string name="pro_loading_rewarded_video">🎬 Cargando video…</string>
+    <string name="pro_pass_activated_toast">⭐ ¡%1$s Pro activado por 15 minutos!</string>
+    <string name="pro_ads_consent_required">Los videos recompensados requieren consentimiento de anuncios. Actívalo en Opciones de privacidad o compra Pro permanente.</string>
+    <string name="pro_btn_buy_permanent">👑 Desbloquea %1$s Pro para siempre%2$s</string>
+    <string name="pro_billing_not_available">Google Play Billing no está disponible en este momento.</string>
+    <string name="pro_permanent_active_title">EEPROM Flasher Pro Permanente</string>
+    <string name="pro_permanent_active_desc">Tienes EEPROM Flasher Pro de forma permanente. Todas las herramientas avanzadas están desbloqueadas y los anuncios están desactivados.</string>
+    <string name="pro_pass_active_title">Pase EEPROM Flasher Pro</string>
+    <string name="pro_pass_active_desc">El pase temporal Pro está activo. Tiempo restante: %1$s.</string>
+    <string name="pro_restore_note">Las compras permanentes se restauran automáticamente con la misma cuenta de Google.</string>
+    <string name="pro_pass_expired">00:00</string>
+    <string name="pro_tools_status_permanent">👑 Pro permanente activo</string>
+    <string name="pro_tools_status_pass">⭐ Pase Pro activo — quedan %1$s</string>
+    <string name="pro_tools_vault">Bóveda Antibrick y copias de seguridad</string>
+    <string name="pro_tools_integrity">Verificar integridad del volcado</string>
+    <string name="pro_tools_report">Generar informe técnico</string>
+    <string name="pro_tools_hex_hint">El editor HEX con escritura está disponible tocando cualquier byte en el Visor Hexadecimal. El diff avanzado está en Comparar Binarios → menú.</string>
+
+    <!-- Antibrick Vault -->
+    <string name="vault_title">🛡️ Bóveda Antibrick</string>
+    <string name="vault_empty">Aún no hay copias. Mientras Pro esté activo, se crea automáticamente una copia de rom.bin antes de leer, escribir o borrar.</string>
+    <string name="vault_summary">%1$d copia(s) · %2$s usados</string>
+    <string name="vault_create_now">Crear copia ahora</string>
+    <string name="vault_creating">Creando copia…</string>
+    <string name="vault_no_dump">No hay un volcado rom.bin que respaldar. Lee un chip o importa un archivo primero.</string>
+    <string name="vault_create_failed">No se pudo crear la copia: %1$s</string>
+    <string name="vault_no_changes">El volcado actual ya está archivado; no se creó una copia nueva.</string>
+    <string name="vault_created">Copia creada: %1$s</string>
+    <string name="vault_details">Fecha: %1$s\nTamaño: %2$s\nSHA-256: %3$s</string>
+    <string name="vault_restore">Restaurar</string>
+    <string name="vault_delete">Eliminar</string>
+    <string name="vault_restore_confirm_title">Restaurar copia</string>
+    <string name="vault_restore_confirm_msg">¿Reemplazar rom.bin con %1$s?\n\nEl volcado actual se archivará primero. Esto no escribe en el chip; usa Escribir Chip después.</string>
+    <string name="vault_restored">Copia restaurada en rom.bin: %1$s</string>
+    <string name="vault_restore_failed">No se pudo restaurar la copia.</string>
+    <string name="vault_delete_confirm_title">Eliminar copia</string>
+    <string name="vault_delete_confirm_msg">¿Eliminar %1$s de forma permanente?</string>
+    <string name="vault_deleted">Copia eliminada.</string>
+    <string name="vault_delete_failed">No se pudo eliminar la copia.</string>
+    <string name="vault_snapshot_auto_log">[BÓVEDA] Copia previa a la operación guardada: %1$s</string>
+    <string name="vault_snapshot_failed_log">[BÓVEDA] No se pudo crear la copia automática: %1$s</string>
+    <string name="vault_restored_to_rom">[BÓVEDA] Copia restaurada en rom.bin: %1$s</string>
+
+    <!-- Integrity checker -->
+    <string name="integrity_title">🔐 Verificador de Integridad</string>
+    <string name="integrity_error">No se pudieron calcular los hashes: %1$s</string>
+    <string name="integrity_file">Archivo: %1$s</string>
+    <string name="integrity_size">Tamaño: %1$d bytes</string>
+    <string name="integrity_hashes">HASHES CRIPTOGRÁFICOS</string>
+    <string name="integrity_clipboard_match">✔ El hash del portapapeles coincide con %1$s.</string>
+    <string name="integrity_clipboard_mismatch">⚠ El portapapeles contiene un hash %1$s que NO coincide.</string>
+    <string name="integrity_clipboard_none">El portapapeles no contiene un hash conocido (SHA-256, SHA-1, MD5 o CRC32).</string>
+    <string name="integrity_copy">Copiar</string>
+    <string name="integrity_copied">Informe de integridad copiado.</string>
+
+    <!-- Report viewer -->
+    <string name="report_close">Cerrar</string>
+    <string name="report_copy">Copiar</string>
+    <string name="report_copied">Informe copiado al portapapeles.</string>
+    <string name="report_save">Guardar .txt</string>
+    <string name="report_title_technical">📄 Informe Técnico</string>
+    <string name="report_preparing">Generando informe técnico…</string>
+    <string name="report_saved">Informe guardado: %1$s</string>
+    <string name="report_save_error">No se pudo guardar el informe: %1$s</string>
+
+    <!-- Technical report body -->
+    <string name="report_header">EEPROM FLASHER — INFORME TÉCNICO</string>
+    <string name="report_generated">Generado: %1$s</string>
+    <string name="report_file">Archivo: %1$s</string>
+    <string name="report_size">Tamaño: %1$d bytes (%2$s)</string>
+    <string name="report_chip">Chip: %1$s</string>
+    <string name="report_source">Origen: %1$s</string>
+    <string name="report_hashes">HASHES CRIPTOGRÁFICOS</string>
+    <string name="report_integrity">ANÁLISIS DE INTEGRIDAD</string>
+    <string name="report_blank">Comprobación de blanco (todo 0xFF): %1$s</string>
+    <string name="report_yes">SÍ</string>
+    <string name="report_no">NO</string>
+    <string name="report_non_ff">Bytes distintos de 0xFF: %1$d (%2$.2f%%)</string>
+    <string name="report_first_last">Primer offset distinto de 0xFF: %1$s | Último: %2$s</string>
+    <string name="report_sectors">Sectores de %3$d KB no vacíos: %1$d de %2$d</string>
+    <string name="report_histogram">HISTOGRAMA DE BYTES (valores más frecuentes)</string>
+    <string name="report_histogram_line">0x%1$s: %2$d bytes (%3$.2f%%)</string>
+    <string name="report_footer">Generado por EEPROM Flasher. Verifica el SHA-256 antes de grabar.</string>
+
+    <!-- Advanced diff -->
+    <string name="diff_menu_analysis">⭐ Análisis por sectores (Pro)</string>
+    <string name="diff_menu_report">⭐ Exportar informe (Pro)</string>
+    <string name="diff_analysis_title">⭐ Análisis de Diferencias</string>
+    <string name="diff_analysis_no_data">Carga ambos archivos antes de ejecutar el análisis.</string>
+    <string name="diff_analysis_header">COMPARACIÓN BINARIA — ANÁLISIS AVANZADO</string>
+    <string name="diff_analysis_identical">Los archivos son idénticos; no hay sectores diferentes.</string>
+    <string name="diff_analysis_first_last">Primera diferencia: %1$s | Última diferencia: %2$s</string>
+    <string name="diff_analysis_stats">Bytes diferentes: %1$d de %2$d (%3$.4f%%)</string>
+    <string name="diff_analysis_sectors_header">SECTORES DE %1$d KB MODIFICADOS: %2$d de %3$d</string>
+    <string name="diff_analysis_sector_line">Sector %1$d — %2$s..%3$s — %4$d bytes (%5$.2f%%)</string>
+    <string name="diff_analysis_truncated">… y %1$d sectores más (consulta el informe exportado).</string>
+    <string name="diff_report_save_title">Guardar informe de comparación</string>
+    <string name="diff_report_preparing">Creando informe de comparación…</string>
+    <string name="diff_report_saved">Informe guardado: %1$s</string>
+    <string name="diff_report_save_error">No se pudo guardar el informe: %1$s</string>
+    <string name="diff_report_header">EEPROM FLASHER — INFORME DE COMPARACIÓN BINARIA</string>
+    <string name="diff_report_generated">Generado: %1$s</string>
+    <string name="diff_report_file">Archivo %1$s: %2$s (%3$d bytes)</string>
+    <string name="diff_report_sha">SHA-256: %1$s</string>
+    <string name="diff_report_identical">Resultado: los archivos son idénticos (0 diferencias).</string>
+    <string name="diff_report_stats">Resultado: %1$d bytes diferentes (%2$.4f%% de %3$d bytes).</string>
+    <string name="diff_report_first_last">Primera diferencia: %1$s | Última diferencia: %2$s</string>
+    <string name="diff_report_sectors">Sectores de %3$d KB modificados: %1$d de %2$d</string>
+    <string name="diff_report_sector_line">Sector %1$d — %2$s..%3$s — %4$d bytes (%5$.2f%%)</string>
+    <string name="diff_report_truncated">… y %1$d sectores modificados más.</string>
+    <string name="diff_report_offsets_header">PRIMEROS OFFSETS DIFERENTES (A → B)</string>
+    <string name="diff_report_offset_line">%1$s: %2$s → %3$s</string>
+    <string name="diff_report_truncated_offsets">… y %1$d bytes diferentes más.</string>
+    <string name="diff_report_footer">Generado por EEPROM Flasher. Las huellas SHA-256 identifican cada imagen comparada.</string>
+
+    <!-- Writable HEX editor -->
+    <string name="hex_edit_title">Editar byte @ 0x%1$08X</string>
+    <string name="hex_edit_current">Original: 0x%1$02X (%2$d) · Actual: 0x%3$02X</string>
+    <string name="hex_edit_hint">Nuevo valor (hex 00–FF)</string>
+    <string name="hex_edit_invalid">Introduce un byte hexadecimal válido entre 00 y FF.</string>
+    <string name="hex_edit_changed">Byte 0x%1$08X cambiado a 0x%2$02X.</string>
+    <string name="hex_menu_undo">Deshacer</string>
+    <string name="hex_menu_redo">Rehacer</string>
+    <string name="hex_menu_save">Guardar copia</string>
+    <string name="hex_menu_save_count">Guardar copia (%1$d cambios)</string>
+    <string name="hex_menu_apply_rom">Aplicar a rom.bin</string>
+    <string name="hex_menu_integrity">⭐ Verificar integridad</string>
+    <string name="hex_saved">Volcado editado guardado: %1$s</string>
+    <string name="hex_save_error">No se pudo guardar el volcado: %1$s</string>
+    <string name="hex_apply_confirm_title">Aplicar cambios a rom.bin</string>
+    <string name="hex_apply_confirm_msg">¿Reemplazar rom.bin con el volcado editado (%1$d bytes modificados)?\n\nEl rom.bin actual se archivará en la Bóveda Antibrick. No se escribirá en el chip hasta que pulses Escribir Chip.</string>
+    <string name="hex_applied">Cambios aplicados a rom.bin. Listo para escribir en el chip.</string>
+    <string name="hex_no_changes">No hay cambios para aplicar.</string>
+    <string name="hex_source_edited">Editor HEX (editado)</string>
+    <string name="hex_apply_error">No se pudieron aplicar los cambios: %1$s</string>
+    <string name="hex_too_large">Este volcado es demasiado grande para editarlo (máximo 64 MB).</string>
+    <string name="hex_undo_done">Último cambio deshecho.</string>
+    <string name="hex_redo_done">Cambio restaurado.</string>
+    <string name="hex_nothing_to_undo">No hay nada que deshacer.</string>
+    <string name="hex_nothing_to_redo">No hay nada que rehacer.</string>
+
+    <!-- Pro status logs -->
+    <string name="pro_activated_log">[PRO] Acceso Pro activo. Anuncios desactivados.</string>
+    <string name="pro_expired_log">[PRO] El pase temporal expiró. Se reanudan los anuncios de banner.</string>
+
     <string name="str_about_html"><![CDATA[
 <h2>EEPROM Flasher</h2>
 <p>Herramienta Android nativa para leer, escribir, verificar, comparar y borrar memorias EEPROM y Flash mediante programadores TL866II+, TL866A, TL866CS, T48, T56 y T76 por USB OTG sin root.</p>

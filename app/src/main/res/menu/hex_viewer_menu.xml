@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_hex_undo"
+        android:title="@string/hex_menu_undo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_hex_redo"
+        android:title="@string/hex_menu_redo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_hex_save"
+        android:title="@string/hex_menu_save"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_hex_apply_rom"
+        android:title="@string/hex_menu_apply_rom"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_hex_integrity"
+        android:title="@string/hex_menu_integrity"
+        app:showAsAction="never" />
+
+</menu>

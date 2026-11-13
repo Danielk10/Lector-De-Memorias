@@ -186,6 +186,169 @@
     <string name="str_no_active_process">No active process to stop.</string>
     <string name="str_exception_log">[EXCEPTION] %1$s</string>
 
+    <!-- Google Play Billing -->
+    <string name="str_billing_connecting">Connecting to Google Play… Please try again in a few seconds.</string>
+    <string name="str_billing_not_ready">The Pro product is not ready yet or Google Play is still processing it.</string>
+    <string name="str_billing_not_play_install">Purchases are only available in the version installed from Google Play. Install or update the app from the Play Store to buy Pro.</string>
+
+    <!-- Pro access and status -->
+    <string name="menu_pro_mode">⭐ Pro Mode</string>
+    <string name="menu_pro_permanent">👑 Pro Permanent</string>
+    <string name="menu_pro_timer">⭐ Pro %1$s</string>
+    <string name="pro_access_title">⭐ %1$s Pro</string>
+    <string name="pro_access_subtitle">Unlock the advanced technical suite of %1$s</string>
+    <string name="pro_feature_antibrick_vault">Antibrick Vault with automatic pre-operation snapshots</string>
+    <string name="pro_feature_crypto_checker">Cryptographic integrity checker: MD5, SHA-1, SHA-256 and CRC32</string>
+    <string name="pro_feature_live_hex_editor">Writable HEX editor with undo/redo and apply-to-ROM</string>
+    <string name="pro_feature_advanced_diff">Advanced diff with 4 KB sector analysis and exportable report</string>
+    <string name="pro_feature_technical_report">Technical report with hashes, histogram and blank check</string>
+    <string name="pro_feature_zero_ads">No banner or interstitial ads</string>
+    <string name="pro_btn_watch_rewarded_video">🎬 Watch video — 15-minute free pass</string>
+    <string name="pro_loading_rewarded_video">🎬 Loading video…</string>
+    <string name="pro_pass_activated_toast">⭐ %1$s Pro activated for 15 minutes!</string>
+    <string name="pro_ads_consent_required">Rewarded videos require ad consent. Enable it in Privacy options or buy Pro permanently.</string>
+    <string name="pro_btn_buy_permanent">👑 Unlock %1$s Pro forever%2$s</string>
+    <string name="pro_billing_not_available">Google Play Billing is not available right now.</string>
+    <string name="pro_permanent_active_title">EEPROM Flasher Pro Permanent</string>
+    <string name="pro_permanent_active_desc">You own EEPROM Flasher Pro permanently. All advanced tools are unlocked and ads are disabled.</string>
+    <string name="pro_pass_active_title">EEPROM Flasher Pro Pass</string>
+    <string name="pro_pass_active_desc">The temporary Pro pass is active. Time remaining: %1$s.</string>
+    <string name="pro_restore_note">Permanent purchases restore automatically with the same Google account.</string>
+    <string name="pro_pass_expired">00:00</string>
+    <string name="pro_tools_status_permanent">👑 Permanent Pro active</string>
+    <string name="pro_tools_status_pass">⭐ Pro pass active — %1$s remaining</string>
+    <string name="pro_tools_vault">Antibrick Vault and snapshots</string>
+    <string name="pro_tools_integrity">Verify dump integrity</string>
+    <string name="pro_tools_report">Generate technical report</string>
+    <string name="pro_tools_hex_hint">The writable HEX editor is available by tapping any byte in the Hexadecimal Viewer. The advanced diff is available from Compare Binaries → menu.</string>
+
+    <!-- Antibrick Vault -->
+    <string name="vault_title">🛡️ Antibrick Vault</string>
+    <string name="vault_empty">No snapshots yet. A copy of rom.bin is created automatically before reading, writing or erasing while Pro is active.</string>
+    <string name="vault_summary">%1$d snapshot(s) · %2$s used</string>
+    <string name="vault_create_now">Create snapshot now</string>
+    <string name="vault_creating">Creating snapshot…</string>
+    <string name="vault_no_dump">There is no rom.bin dump to back up. Read a chip or import a file first.</string>
+    <string name="vault_create_failed">Could not create snapshot: %1$s</string>
+    <string name="vault_no_changes">The current dump is already archived; no new snapshot was created.</string>
+    <string name="vault_created">Snapshot created: %1$s</string>
+    <string name="vault_details">Date: %1$s\nSize: %2$s\nSHA-256: %3$s</string>
+    <string name="vault_restore">Restore</string>
+    <string name="vault_delete">Delete</string>
+    <string name="vault_restore_confirm_title">Restore snapshot</string>
+    <string name="vault_restore_confirm_msg">Replace rom.bin with %1$s?\n\nThe current dump will be archived first. This does not write to the chip; use Write Chip afterwards.</string>
+    <string name="vault_restored">Snapshot restored to rom.bin: %1$s</string>
+    <string name="vault_restore_failed">Could not restore the snapshot.</string>
+    <string name="vault_delete_confirm_title">Delete snapshot</string>
+    <string name="vault_delete_confirm_msg">Delete %1$s permanently?</string>
+    <string name="vault_deleted">Snapshot deleted.</string>
+    <string name="vault_delete_failed">Could not delete the snapshot.</string>
+    <string name="vault_snapshot_auto_log">[VAULT] Pre-operation snapshot saved: %1$s</string>
+    <string name="vault_snapshot_failed_log">[VAULT] Could not create the automatic snapshot: %1$s</string>
+    <string name="vault_restored_to_rom">[VAULT] Snapshot restored to rom.bin: %1$s</string>
+
+    <!-- Integrity checker -->
+    <string name="integrity_title">🔐 Integrity Checker</string>
+    <string name="integrity_error">Could not compute hashes: %1$s</string>
+    <string name="integrity_file">File: %1$s</string>
+    <string name="integrity_size">Size: %1$d bytes</string>
+    <string name="integrity_hashes">CRYPTOGRAPHIC HASHES</string>
+    <string name="integrity_clipboard_match">✔ Clipboard hash matches %1$s.</string>
+    <string name="integrity_clipboard_mismatch">⚠ Clipboard contains a %1$s hash that does NOT match.</string>
+    <string name="integrity_clipboard_none">Clipboard does not contain a known hash (SHA-256, SHA-1, MD5 or CRC32).</string>
+    <string name="integrity_copy">Copy</string>
+    <string name="integrity_copied">Integrity report copied.</string>
+
+    <!-- Report viewer -->
+    <string name="report_close">Close</string>
+    <string name="report_copy">Copy</string>
+    <string name="report_copied">Report copied to the clipboard.</string>
+    <string name="report_save">Save .txt</string>
+    <string name="report_title_technical">📄 Technical Report</string>
+    <string name="report_preparing">Generating technical report…</string>
+    <string name="report_saved">Report saved: %1$s</string>
+    <string name="report_save_error">Could not save the report: %1$s</string>
+
+    <!-- Technical report body -->
+    <string name="report_header">EEPROM FLASHER — TECHNICAL REPORT</string>
+    <string name="report_generated">Generated: %1$s</string>
+    <string name="report_file">File: %1$s</string>
+    <string name="report_size">Size: %1$d bytes (%2$s)</string>
+    <string name="report_chip">Chip: %1$s</string>
+    <string name="report_source">Source: %1$s</string>
+    <string name="report_hashes">CRYPTOGRAPHIC HASHES</string>
+    <string name="report_integrity">INTEGRITY ANALYSIS</string>
+    <string name="report_blank">Blank check (all 0xFF): %1$s</string>
+    <string name="report_yes">YES</string>
+    <string name="report_no">NO</string>
+    <string name="report_non_ff">Non-0xFF bytes: %1$d (%2$.2f%%)</string>
+    <string name="report_first_last">First non-0xFF offset: %1$s | Last: %2$s</string>
+    <string name="report_sectors">Non-blank %3$d KB sectors: %1$d of %2$d</string>
+    <string name="report_histogram">BYTE HISTOGRAM (most frequent values)</string>
+    <string name="report_histogram_line">0x%1$s: %2$d bytes (%3$.2f%%)</string>
+    <string name="report_footer">Generated by EEPROM Flasher. Verify the SHA-256 before flashing.</string>
+
+    <!-- Advanced diff -->
+    <string name="diff_menu_analysis">⭐ Sector analysis (Pro)</string>
+    <string name="diff_menu_report">⭐ Export report (Pro)</string>
+    <string name="diff_analysis_title">⭐ Diff Analysis</string>
+    <string name="diff_analysis_no_data">Load both files before running the analysis.</string>
+    <string name="diff_analysis_header">BINARY COMPARISON — ADVANCED ANALYSIS</string>
+    <string name="diff_analysis_identical">The files are identical; no differing sectors.</string>
+    <string name="diff_analysis_first_last">First difference: %1$s | Last difference: %2$s</string>
+    <string name="diff_analysis_stats">Differing bytes: %1$d of %2$d (%3$.4f%%)</string>
+    <string name="diff_analysis_sectors_header">CHANGED %1$d KB SECTORS: %2$d of %3$d</string>
+    <string name="diff_analysis_sector_line">Sector %1$d — %2$s..%3$s — %4$d bytes (%5$.2f%%)</string>
+    <string name="diff_analysis_truncated">… and %1$d more sectors (see the exported report).</string>
+    <string name="diff_report_save_title">Save comparison report</string>
+    <string name="diff_report_preparing">Building comparison report…</string>
+    <string name="diff_report_saved">Report saved: %1$s</string>
+    <string name="diff_report_save_error">Could not save the report: %1$s</string>
+    <string name="diff_report_header">EEPROM FLASHER — BINARY COMPARISON REPORT</string>
+    <string name="diff_report_generated">Generated: %1$s</string>
+    <string name="diff_report_file">File %1$s: %2$s (%3$d bytes)</string>
+    <string name="diff_report_sha">SHA-256: %1$s</string>
+    <string name="diff_report_identical">Result: files are identical (0 differences).</string>
+    <string name="diff_report_stats">Result: %1$d differing bytes (%2$.4f%% of %3$d bytes).</string>
+    <string name="diff_report_first_last">First difference: %1$s | Last difference: %2$s</string>
+    <string name="diff_report_sectors">Changed %3$d KB sectors: %1$d of %2$d</string>
+    <string name="diff_report_sector_line">Sector %1$d — %2$s..%3$s — %4$d bytes (%5$.2f%%)</string>
+    <string name="diff_report_truncated">… and %1$d more changed sectors.</string>
+    <string name="diff_report_offsets_header">FIRST DIFFERING OFFSETS (A → B)</string>
+    <string name="diff_report_offset_line">%1$s: %2$s → %3$s</string>
+    <string name="diff_report_truncated_offsets">… and %1$d more differing bytes.</string>
+    <string name="diff_report_footer">Generated by EEPROM Flasher. The SHA-256 fingerprints identify each compared image.</string>
+
+    <!-- Writable HEX editor -->
+    <string name="hex_edit_title">Edit byte @ 0x%1$08X</string>
+    <string name="hex_edit_current">Source: 0x%1$02X (%2$d) · Current: 0x%3$02X</string>
+    <string name="hex_edit_hint">New value (hex 00–FF)</string>
+    <string name="hex_edit_invalid">Enter a valid hexadecimal byte from 00 to FF.</string>
+    <string name="hex_edit_changed">Byte 0x%1$08X changed to 0x%2$02X.</string>
+    <string name="hex_menu_undo">Undo</string>
+    <string name="hex_menu_redo">Redo</string>
+    <string name="hex_menu_save">Save copy</string>
+    <string name="hex_menu_save_count">Save copy (%1$d changes)</string>
+    <string name="hex_menu_apply_rom">Apply to rom.bin</string>
+    <string name="hex_menu_integrity">⭐ Verify integrity</string>
+    <string name="hex_saved">Edited dump saved: %1$s</string>
+    <string name="hex_save_error">Could not save the dump: %1$s</string>
+    <string name="hex_apply_confirm_title">Apply changes to rom.bin</string>
+    <string name="hex_apply_confirm_msg">Replace rom.bin with the edited dump (%1$d modified bytes)?\n\nThe current rom.bin will be archived in the Antibrick Vault. It will not be written to the chip until you press Write Chip.</string>
+    <string name="hex_applied">Changes applied to rom.bin. Ready to write to the chip.</string>
+    <string name="hex_no_changes">There are no changes to apply.</string>
+    <string name="hex_source_edited">HEX editor (edited)</string>
+    <string name="hex_apply_error">Could not apply changes: %1$s</string>
+    <string name="hex_too_large">This dump is too large to edit (maximum 64 MB).</string>
+    <string name="hex_undo_done">Last change undone.</string>
+    <string name="hex_redo_done">Change restored.</string>
+    <string name="hex_nothing_to_undo">There is nothing to undo.</string>
+    <string name="hex_nothing_to_redo">There is nothing to redo.</string>
+
+    <!-- Pro status logs -->
+    <string name="pro_activated_log">[PRO] Pro access active. Ads disabled.</string>
+    <string name="pro_expired_log">[PRO] Temporary pass expired. Banner ads resume.</string>
+
     <string name="str_about_html"><![CDATA[
 <h2>EEPROM Flasher</h2>
 <p>Native Android tool for reading, writing, verifying, comparing and erasing EEPROM and Flash memories using TL866II+, TL866A, TL866CS, T48, T56 and T76 programmers via USB OTG without root.</p>

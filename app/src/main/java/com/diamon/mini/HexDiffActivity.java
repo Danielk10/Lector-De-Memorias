@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -16,9 +19,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.diamon.mini.billing.BillingManager;
+import com.diamon.mini.binary.DiffAnalyzer;
+import com.diamon.mini.pro.ProAccessDialog;
+import com.diamon.mini.pro.ProPassManager;
+import com.diamon.mini.ui.ReportDialog;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class HexDiffActivity extends AppCompatActivity {
 
@@ -30,6 +44,16 @@ public class HexDiffActivity extends AppCompatActivity {
     private byte[] dataB = null;
     private String nameA = "";
     private String nameB = "";
+
+    private BillingManager billingManager;
+    private ProPassManager proPassManager;
+    private String pendingReportText;
+
+    private final ActivityResultLauncher<String> reportSaveLauncher = registerForActivityResult(
+            new ActivityResultContracts.CreateDocument("text/plain"),
+            uri -> {
+                if (uri != null) writePendingReport(uri);
+            });
 
     private final ActivityResultLauncher<Intent> file1Launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -86,6 +110,19 @@ public class HexDiffActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        proPassManager = new ProPassManager(this);
+        billingManager = new BillingManager(this, new BillingManager.BillingListener() {
+            @Override
+            public void onProStatusChanged(boolean isProPurchased) {
+                runOnUiThread(() -> invalidateOptionsMenu());
+            }
+
+            @Override
+            public void onPurchaseSuccess(String productId) {
+                runOnUiThread(() -> invalidateOptionsMenu());
+            }
+        });
+
         tvDiffSummary = findViewById(R.id.tvDiffSummary);
         tvDiffStats = findViewById(R.id.tvDiffStats);
         recyclerDiff = findViewById(R.id.recyclerDiff);
@@ -102,7 +139,7 @@ public class HexDiffActivity extends AppCompatActivity {
         }
         if (romFile.exists()) {
             try {
-                dataA = java.nio.file.Files.readAllBytes(romFile.toPath());
+                dataA = readFileToBytes(romFile);
                 nameA = romFile.getName() + " — " + getString(R.string.str_current_memory);
                 if (romFile.getName().toLowerCase().endsWith(".hex")) {
                     dataA = parseIntelHexToBinary(dataA);
@@ -127,6 +164,162 @@ public class HexDiffActivity extends AppCompatActivity {
 
         if (dataA != null) {
             tryCompare();
+        }
+    }
+
+    private boolean isProActive() {
+        return proPassManager != null && proPassManager.isProActive(billingManager);
+    }
+
+    private void requireProThen(Runnable action) {
+        if (isProActive()) {
+            action.run();
+        } else {
+            ProAccessDialog.show(this, billingManager, proPassManager, () -> {
+                invalidateOptionsMenu();
+                action.run();
+            });
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (billingManager != null) billingManager.destroy();
+    }
+
+    // ────────── Menu Pro ─────────────────────────────────────────────────────
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.hex_diff_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_diff_analysis) {
+            requireProThen(this::showSectorAnalysis);
+            return true;
+        }
+        if (id == R.id.action_diff_report) {
+            requireProThen(this::exportComparisonReport);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showSectorAnalysis() {
+        if (dataA == null || dataB == null) {
+            Toast.makeText(this, R.string.diff_analysis_no_data, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        final byte[] a = dataA;
+        final byte[] b = dataB;
+        new Thread(() -> {
+            DiffAnalyzer.Result result = DiffAnalyzer.analyze(a, b);
+            String body = buildAnalysisText(result);
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                ReportDialog.show(this, getString(R.string.diff_analysis_title), body, null);
+            });
+        }, "DiffAnalysis").start();
+    }
+
+    private String buildAnalysisText(DiffAnalyzer.Result result) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getString(R.string.diff_analysis_header)).append("\n\n");
+        sb.append(getString(R.string.str_compare_summary,
+                nameA, dataA.length, nameB, dataB.length)).append("\n\n");
+
+        if (result.isIdentical()) {
+            sb.append(getString(R.string.diff_analysis_identical)).append('\n');
+            return sb.toString();
+        }
+
+        sb.append(getString(R.string.diff_analysis_stats,
+                result.getDiffCount(), result.getMaxLength(), result.getPercent()))
+                .append('\n');
+        sb.append(getString(R.string.diff_analysis_first_last,
+                String.format(Locale.US, "0x%08X", result.getFirstDiff()),
+                String.format(Locale.US, "0x%08X", result.getLastDiff())))
+                .append("\n\n");
+
+        sb.append(getString(R.string.diff_analysis_sectors_header,
+                DiffAnalyzer.SECTOR_SIZE / 1024,
+                result.getChangedSectorCount(),
+                result.getTotalSectors())).append('\n');
+
+        int shown = 0;
+        for (DiffAnalyzer.SectorDiff sector : result.getChangedSectors()) {
+            if (shown >= 60) {
+                sb.append(getString(R.string.diff_analysis_truncated,
+                        result.getChangedSectors().size() - shown)).append('\n');
+                break;
+            }
+            double pct = (sector.getDiffCount() * 100.0)
+                    / Math.max(1L, sector.getEnd() - sector.getStart());
+            sb.append(getString(R.string.diff_analysis_sector_line,
+                    sector.getIndex(),
+                    String.format(Locale.US, "0x%08X", sector.getStart()),
+                    String.format(Locale.US, "0x%08X", sector.getEnd() - 1),
+                    sector.getDiffCount(), pct)).append('\n');
+            shown++;
+        }
+        return sb.toString();
+    }
+
+    private void exportComparisonReport() {
+        if (dataA == null || dataB == null) {
+            Toast.makeText(this, R.string.diff_analysis_no_data, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Toast.makeText(this, R.string.diff_report_preparing, Toast.LENGTH_SHORT).show();
+        final byte[] a = dataA;
+        final byte[] b = dataB;
+
+        new Thread(() -> {
+            DiffAnalyzer.Result result = DiffAnalyzer.analyze(a, b);
+            String report = DiffAnalyzer.buildReport(
+                    getApplicationContext(), nameA, a, nameB, b, result);
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                final String suggested = buildReportFileName();
+                ReportDialog.show(this, getString(R.string.diff_analysis_title), report,
+                        () -> {
+                            pendingReportText = report;
+                            reportSaveLauncher.launch(suggested);
+                        });
+            });
+        }, "DiffReport").start();
+    }
+
+    private String buildReportFileName() {
+        String base = nameB != null && !nameB.isEmpty() ? nameB : "diff";
+        int dot = base.lastIndexOf('.');
+        if (dot > 0) base = base.substring(0, dot);
+        base = base.replaceAll("[^a-zA-Z0-9_.-]", "_");
+        String date = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        return "eeprom_diff_" + base + "_" + date + ".txt";
+    }
+
+    private void writePendingReport(Uri uri) {
+        if (pendingReportText == null) return;
+        try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+            if (out == null) throw new IllegalStateException(getString(R.string.str_err_open_file));
+            out.write(pendingReportText.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+            Toast.makeText(this,
+                    getString(R.string.diff_report_saved, uri.getLastPathSegment()),
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, getString(R.string.diff_report_save_error, e.getMessage()),
+                    Toast.LENGTH_LONG).show();
+        } finally {
+            pendingReportText = null;
         }
     }
 
@@ -194,6 +387,18 @@ public class HexDiffActivity extends AppCompatActivity {
         }
     }
 
+    private byte[] readFileToBytes(File file) throws Exception {
+        try (InputStream is = new java.io.FileInputStream(file)) {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] data = new byte[16384];
+            int nRead;
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            return buffer.toByteArray();
+        }
+    }
+
     private String getFileName(Uri uri) {
         String name = "archivo";
         try {
@@ -209,7 +414,7 @@ public class HexDiffActivity extends AppCompatActivity {
 
     private byte[] parseIntelHexToBinary(byte[] hexData) {
         try {
-            String content = new String(hexData, java.nio.charset.StandardCharsets.UTF_8);
+            String content = new String(hexData, StandardCharsets.UTF_8);
             String[] lines = content.split("\\r?\\n");
 
             long minAddr = Long.MAX_VALUE;
@@ -321,9 +526,9 @@ public class HexDiffActivity extends AppCompatActivity {
                     if (isDiff) rowHasDiff = true;
 
                     if (isDiff) {
-                        hexBuilder.append(String.format("%02X→%02X ", a & 0xFF, b & 0xFF));
+                        hexBuilder.append(String.format(Locale.US, "%02X→%02X ", a & 0xFF, b & 0xFF));
                     } else {
-                        hexBuilder.append(String.format("%02X     ", a & 0xFF));
+                        hexBuilder.append(String.format(Locale.US, "%02X     ", a & 0xFF));
                     }
 
                     if (a >= 32 && a <= 126) {
@@ -337,7 +542,7 @@ public class HexDiffActivity extends AppCompatActivity {
                 }
             }
 
-            holder.tvAddress.setText(String.format("%08X", rowStart));
+            holder.tvAddress.setText(String.format(Locale.US, "%08X", rowStart));
             holder.tvHex.setText(hexBuilder.toString());
             holder.tvAscii.setText(asciiBuilder.toString());
 
