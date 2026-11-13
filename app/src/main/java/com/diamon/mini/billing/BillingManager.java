@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Google Play Billing 8.3.0 wrapper for the permanent EEPROM Flasher Pro product.
@@ -65,8 +66,7 @@ public class BillingManager implements PurchasesUpdatedListener {
     private final Context context;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final BillingClient billingClient;
-    @Nullable
-    private volatile BillingListener listener;
+    private final List<BillingListener> listeners = new CopyOnWriteArrayList<>();
     @Nullable
     private ProductDetails proDetails;
     private final Map<String, ProductDetails> availableProducts = new HashMap<>();
@@ -81,7 +81,9 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     public BillingManager(@NonNull Context context, @Nullable BillingListener listener) {
         this.context = context.getApplicationContext();
-        this.listener = listener;
+        if (listener != null) {
+            this.listeners.add(listener);
+        }
         this.billingClient = BillingClient.newBuilder(this.context)
                 .setListener(this)
                 .enablePendingPurchases(
@@ -93,15 +95,30 @@ public class BillingManager implements PurchasesUpdatedListener {
         startConnection();
     }
 
+    /** Replaces the main billing listener. */
     public void setBillingListener(@Nullable BillingListener listener) {
-        this.listener = listener;
+        listeners.clear();
+        if (listener != null) listeners.add(listener);
+    }
+
+    /** Adds an extra listener, e.g. an open dialog watching for a restored purchase. */
+    public void addListener(@NonNull BillingListener listener) {
+        if (!listeners.contains(listener)) listeners.add(listener);
+    }
+
+    public void removeListener(@Nullable BillingListener listener) {
+        if (listener != null) listeners.remove(listener);
     }
 
     private void notifyProChanged(boolean isPro) {
         mainHandler.post(() -> {
-            BillingListener current = listener;
-            if (!destroyed && current != null) {
-                current.onProStatusChanged(isPro);
+            if (destroyed) return;
+            for (BillingListener current : listeners) {
+                try {
+                    current.onProStatusChanged(isPro);
+                } catch (Exception e) {
+                    Log.w(TAG, "Billing listener failed", e);
+                }
             }
         });
     }
@@ -176,9 +193,13 @@ public class BillingManager implements PurchasesUpdatedListener {
                 if (offer != null) {
                     String price = offer.getFormattedPrice();
                     mainHandler.post(() -> {
-                        BillingListener current = listener;
-                        if (!destroyed && current != null) {
-                            current.onPriceLoaded(price);
+                        if (destroyed) return;
+                        for (BillingListener current : listeners) {
+                            try {
+                                current.onPriceLoaded(price);
+                            } catch (Exception e) {
+                                Log.w(TAG, "Billing listener failed", e);
+                            }
                         }
                     });
                 }
@@ -312,8 +333,14 @@ public class BillingManager implements PurchasesUpdatedListener {
     private void notifyError(String message) {
         Log.w(TAG, message);
         mainHandler.post(() -> {
-            BillingListener current = listener;
-            if (!destroyed && current != null) current.onBillingError(message);
+            if (destroyed) return;
+            for (BillingListener current : listeners) {
+                try {
+                    current.onBillingError(message);
+                } catch (Exception e) {
+                    Log.w(TAG, "Billing listener failed", e);
+                }
+            }
         });
     }
 
@@ -349,11 +376,21 @@ public class BillingManager implements PurchasesUpdatedListener {
             acknowledgePurchase(purchase);
         } else {
             setProPurchased(true);
-            mainHandler.post(() -> {
-                BillingListener current = listener;
-                if (!destroyed && current != null) current.onPurchaseSuccess(PRODUCT_ID_PRO);
-            });
+            notifyPurchaseSuccess();
         }
+    }
+
+    private void notifyPurchaseSuccess() {
+        mainHandler.post(() -> {
+            if (destroyed) return;
+            for (BillingListener current : listeners) {
+                try {
+                    current.onPurchaseSuccess(PRODUCT_ID_PRO);
+                } catch (Exception e) {
+                    Log.w(TAG, "Billing listener failed", e);
+                }
+            }
+        });
     }
 
     private void acknowledgePurchase(@NonNull Purchase purchase) {
@@ -364,10 +401,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                 Log.d(TAG, "Purchase acknowledged.");
                 setProPurchased(true);
-                mainHandler.post(() -> {
-                    BillingListener current = listener;
-                    if (!destroyed && current != null) current.onPurchaseSuccess(PRODUCT_ID_PRO);
-                });
+                notifyPurchaseSuccess();
             } else {
                 notifyError("Failed to acknowledge purchase: " + billingResult.getDebugMessage());
             }
@@ -444,7 +478,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             billingClient.endConnection();
         }
         serviceConnected = false;
-        listener = null;
+        listeners.clear();
     }
 
     public void onDestroy() {

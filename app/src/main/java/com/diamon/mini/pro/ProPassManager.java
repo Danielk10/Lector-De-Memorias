@@ -69,10 +69,9 @@ public class ProPassManager {
         this.onPassRestoredListener = listener;
     }
 
-    /** Activates a fresh 15-minute pass, extending an active one. */
+    /** Activates a fresh 15-minute pass from the current moment. */
     public void activarPase() {
-        long base = Math.max(System.currentTimeMillis(), getExpireTime());
-        long expire = base + DURACION_PASE_MS;
+        long expire = System.currentTimeMillis() + DURACION_PASE_MS;
         guardarExpiracion(expire);
         guardarRespaldoPersistente(expire);
         Log.i(TAG, "Pro pass activated until " + expire);
@@ -112,8 +111,8 @@ public class ProPassManager {
     }
 
     /**
-     * Returns a compact countdown: mm:ss, or h:mm:ss if the pass was extended
-     * beyond one hour by watching several videos.
+     * Returns a compact countdown: mm:ss, or h:mm:ss if a future change
+     * ever extends the pass beyond one hour.
      */
     @NonNull
     public String getTiempoRestanteFormateado() {

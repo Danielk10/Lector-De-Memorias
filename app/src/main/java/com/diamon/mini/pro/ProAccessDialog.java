@@ -147,7 +147,22 @@ public class ProAccessDialog {
         root.addView(spacer);
 
         AlertDialog dialog = builder.setView(scrollView).create();
-        dialog.setOnDismissListener(d -> rewardedAdManager.destroy());
+        final BillingManager.BillingListener proWatcher = new BillingManager.BillingListener() {
+            @Override
+            public void onProStatusChanged(boolean isProPurchased) {
+                if (isProPurchased && dialog.isShowing()
+                        && !activity.isFinishing() && !activity.isDestroyed()) {
+                    // Pro was just restored or purchased: never keep offering videos.
+                    dialog.dismiss();
+                    if (onProUnlocked != null) onProUnlocked.onProUnlocked();
+                }
+            }
+        };
+        if (billingManager != null) billingManager.addListener(proWatcher);
+        dialog.setOnDismissListener(d -> {
+            if (billingManager != null) billingManager.removeListener(proWatcher);
+            rewardedAdManager.destroy();
+        });
 
         final boolean[] rewarded = {false};
 
@@ -164,6 +179,13 @@ public class ProAccessDialog {
                 dp(12, density), dp(12, density));
 
         btnRewarded.setOnClickListener(v -> {
+            if (proPassManager.hasActiveProPass()
+                    || (billingManager != null && billingManager.isProPurchased())) {
+                // A pass or purchase became active while this dialog was open.
+                dialog.dismiss();
+                if (onProUnlocked != null) onProUnlocked.onProUnlocked();
+                return;
+            }
             if (!rewardedAdManager.canRequestAds()) {
                 Toast.makeText(activity, activity.getString(R.string.pro_ads_consent_required),
                         Toast.LENGTH_LONG).show();

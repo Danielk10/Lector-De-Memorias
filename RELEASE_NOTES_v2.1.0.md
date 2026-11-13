@@ -16,7 +16,8 @@ Hay dos formas de acceder a Pro:
 ### ⭐ Qué hace el pase Pro
 • Desbloquea **todas las funciones Pro durante 15 minutos**.
 • Se activa al terminar el video recompensado, no al abrirlo.
-• Si se ve otro video con el pase activo, el tiempo se **acumula** (15 minutos más sobre el tiempo restante).
+• Si se ve otro video con el pase activo, el pase se **restablece a 15 minutos** desde ese momento; no se acumulan minutos.
+• Mientras Pro esté activo (pase o compra), la opción de ver videos desaparece.
 • El pase se guarda localmente con firma SHA-256 y sobrevive al reinicio de la app.
 • Es personal del dispositivo: **no se transfiere** a otro móvil ni se restaura desde una copia de seguridad.
 • Al terminar el contador, la app vuelve al modo gratuito y los anuncios reaparecen.
@@ -55,9 +56,9 @@ Las funciones gratuitas siguen intactas: detección USB, selección de programad
 
 ### 📦 Artefactos
 • **APK Release:** `app-release.apk`  
-  **SHA-256:** `b461a36a9b96fb07402cf819b0f6232ea4408842f1a37ab550d5c03322fe23ea`
+  **SHA-256:** `43f08f9d36d67f8299ee749ac631443aac99e4c5c6eae9863e5c657d2dd00f7b`
 • **AAB Release (Google Play Bundle):** `app-release.aab`  
-  **SHA-256:** `9d93c9f440e734489cfaf3fe2c9d0eadc7b8cffb6b44df5ad52479271a3ad2b3`
+  **SHA-256:** `85afbb19c7895fbf8adf8949422282983a488ad597433053622b4cd585d807c8`
 
 ---
 
@@ -73,7 +74,8 @@ There are two ways to access Pro:
 ### ⭐ What the Pro pass does
 • Unlocks **every Pro feature for 15 minutes**.
 • It activates when the rewarded video finishes, not when it opens.
-• Watching another video while the pass is active **stacks** the time (15 more minutes on top of the remaining time).
+• Watching another video while the pass is active **resets the pass to 15 minutes** from that moment; minutes do not stack.
+• While Pro is active (pass or purchase), the watch-video option disappears.
 • The pass is stored locally with a SHA-256 signature and survives app restarts.
 • It is bound to the device: it is **not transferred** to another phone and is not restored from backups.
 • When the countdown ends, the app returns to free mode and ads reappear.
@@ -112,9 +114,9 @@ All free features remain available: USB detection, programmer selection, chip ca
 
 ### 📦 Artifacts
 • **APK Release:** `app-release.apk`  
-  **SHA-256:** `b461a36a9b96fb07402cf819b0f6232ea4408842f1a37ab550d5c03322fe23ea`
+  **SHA-256:** `43f08f9d36d67f8299ee749ac631443aac99e4c5c6eae9863e5c657d2dd00f7b`
 • **AAB Release (Google Play Bundle):** `app-release.aab`  
-  **SHA-256:** `9d93c9f440e734489cfaf3fe2c9d0eadc7b8cffb6b44df5ad52479271a3ad2b3`
+  **SHA-256:** `85afbb19c7895fbf8adf8949422282983a488ad597433053622b4cd585d807c8`
 
 ---
 
