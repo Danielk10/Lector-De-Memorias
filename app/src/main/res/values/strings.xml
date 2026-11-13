@@ -204,6 +204,8 @@
     <string name="pro_feature_technical_report">Technical report with hashes, histogram and blank check</string>
     <string name="pro_feature_zero_ads">No banner or interstitial ads</string>
     <string name="pro_btn_watch_rewarded_video">🎬 Watch video — 15-minute free pass</string>
+    <string name="pro_btn_watch_another_video">🎬 Watch another video — restart the 15-minute pass</string>
+    <string name="pro_open_tools">🛠️ Open Pro tools</string>
     <string name="pro_loading_rewarded_video">🎬 Loading video…</string>
     <string name="pro_pass_activated_toast">⭐ %1$s Pro activated for 15 minutes!</string>
     <string name="pro_ads_consent_required">Rewarded videos require ad consent. Enable it in Privacy options or buy Pro permanently.</string>
@@ -211,7 +213,6 @@
     <string name="pro_billing_not_available">Google Play Billing is not available right now.</string>
     <string name="pro_permanent_active_title">EEPROM Flasher Pro Permanent</string>
     <string name="pro_permanent_active_desc">You own EEPROM Flasher Pro permanently. All advanced tools are unlocked and ads are disabled.</string>
-    <string name="pro_pass_active_title">EEPROM Flasher Pro Pass</string>
     <string name="pro_pass_active_desc">The temporary Pro pass is active. Time remaining: %1$s.</string>
     <string name="pro_restore_note">Permanent purchases restore automatically with the same Google account.</string>
     <string name="pro_pass_expired">00:00</string>

@@ -720,14 +720,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProDialog() {
-        if (isProActive()) {
+        if (billingManager != null && billingManager.isProPurchased()) {
             showProTools();
             return;
         }
         ProAccessDialog.show(this, billingManager, proPassManager, () -> {
             applyProState();
             log(getString(R.string.pro_activated_log));
-        });
+        }, this::showProTools);
     }
 
     private void showProTools() {
@@ -746,6 +746,9 @@ public class MainActivity extends AppCompatActivity {
             public void onOpenReport() {
                 showTechnicalReport();
             }
+        }, () -> {
+            applyProState();
+            log(getString(R.string.pro_activated_log));
         });
     }
 

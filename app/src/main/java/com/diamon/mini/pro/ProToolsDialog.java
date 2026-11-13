@@ -33,7 +33,8 @@ public class ProToolsDialog {
     public static void show(@NonNull Activity activity,
                             @Nullable BillingManager billingManager,
                             @NonNull ProPassManager proPassManager,
-                            @NonNull Actions actions) {
+                            @NonNull Actions actions,
+                            @Nullable Runnable onProStateChanged) {
         if (activity.isFinishing() || activity.isDestroyed()) return;
 
         float density = activity.getResources().getDisplayMetrics().density;
@@ -41,6 +42,14 @@ public class ProToolsDialog {
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(dp(20, density), dp(18, density), dp(20, density), dp(16, density));
         root.setBackgroundColor(0xFF181824);
+
+        ScrollView scrollView = new ScrollView(activity);
+        scrollView.addView(root);
+
+        AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setView(scrollView)
+                .setNegativeButton(R.string.str_cerrar, null)
+                .create();
 
         TextView status = new TextView(activity);
         boolean permanent = billingManager != null && billingManager.isProPurchased();
@@ -54,6 +63,18 @@ public class ProToolsDialog {
         status.setGravity(Gravity.CENTER);
         status.setPadding(0, 0, 0, dp(14, density));
         root.addView(status);
+
+        if (!permanent) {
+            root.addView(createButton(activity, density,
+                    activity.getString(R.string.pro_btn_watch_another_video),
+                    "", 0xFF00B0FF, () -> {
+                        dialog.dismiss();
+                        ProAccessDialog.show(activity, billingManager, proPassManager, () -> {
+                            if (onProStateChanged != null) onProStateChanged.run();
+                        });
+                    }));
+            root.addView(createSpacer(activity, density));
+        }
 
         if (!permanent && billingManager != null) {
             Button buy = new Button(activity);
@@ -111,19 +132,13 @@ public class ProToolsDialog {
         hint.setPadding(0, dp(16, density), 0, 0);
         root.addView(hint);
 
-        ScrollView scrollView = new ScrollView(activity);
-        scrollView.addView(root);
-
-        new AlertDialog.Builder(activity)
-                .setView(scrollView)
-                .setNegativeButton(R.string.str_cerrar, null)
-                .show();
+        dialog.show();
     }
 
     private static Button createButton(Activity activity, float density, String text,
                                        String icon, int color, Runnable action) {
         Button button = new Button(activity);
-        button.setText(icon + "  " + text);
+        button.setText(icon.isEmpty() ? text : icon + "  " + text);
         button.setTextSize(14);
         button.setTypeface(null, Typeface.BOLD);
         button.setTextColor(Color.WHITE);

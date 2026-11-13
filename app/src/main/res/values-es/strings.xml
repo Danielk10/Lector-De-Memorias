@@ -204,6 +204,8 @@
     <string name="pro_feature_technical_report">Informe técnico con hashes, histograma y comprobación de blanco</string>
     <string name="pro_feature_zero_ads">Sin anuncios de banner ni intersticiales</string>
     <string name="pro_btn_watch_rewarded_video">🎬 Ver video — Pase gratis de 15 minutos</string>
+    <string name="pro_btn_watch_another_video">🎬 Ver otro video — reiniciar el pase de 15 minutos</string>
+    <string name="pro_open_tools">🛠️ Abrir herramientas Pro</string>
     <string name="pro_loading_rewarded_video">🎬 Cargando video…</string>
     <string name="pro_pass_activated_toast">⭐ ¡%1$s Pro activado por 15 minutos!</string>
     <string name="pro_ads_consent_required">Los videos recompensados requieren consentimiento de anuncios. Actívalo en Opciones de privacidad o compra Pro permanente.</string>
@@ -211,7 +213,6 @@
     <string name="pro_billing_not_available">Google Play Billing no está disponible en este momento.</string>
     <string name="pro_permanent_active_title">EEPROM Flasher Pro Permanente</string>
     <string name="pro_permanent_active_desc">Tienes EEPROM Flasher Pro de forma permanente. Todas las herramientas avanzadas están desbloqueadas y los anuncios están desactivados.</string>
-    <string name="pro_pass_active_title">Pase EEPROM Flasher Pro</string>
     <string name="pro_pass_active_desc">El pase temporal Pro está activo. Tiempo restante: %1$s.</string>
     <string name="pro_restore_note">Las compras permanentes se restauran automáticamente con la misma cuenta de Google.</string>
     <string name="pro_pass_expired">00:00</string>
