@@ -21,14 +21,14 @@ android {
     }
 
     buildToolsVersion '37.0.0'
-    ndkVersion '30.0.14904198 rc1'
+    ndkVersion '30.0.14904198'
 
     defaultConfig {
         applicationId "com.diamon.mini"
         minSdk 24
         targetSdk 37
-        versionCode 7
-        versionName "2.1.0"
+        versionCode 8
+        versionName "2.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
