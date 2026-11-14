@@ -7,7 +7,15 @@ set -euo pipefail
 cd "$HOME" || exit 1
 
 export APP_PREFIX=/data/data/com.diamon.mini/files/usr
-export DESTDIR="$HOME/fake_root"
+
+# Arquitectura destino: 64 (por defecto) o 32.  Uso: ABI=32 ./build_libusb_custom_mini.sh
+export ABI="${ABI:-64}"
+case "$ABI" in
+    32) export DESTDIR="${DESTDIR:-$HOME/fake_root_32_bit}" ;;
+    64) export DESTDIR="${DESTDIR:-$HOME/fake_root_64_bit}" ;;
+    *)  echo "Error: ABI debe ser 32 o 64 (recibido: $ABI)" >&2; exit 1 ;;
+esac
+
 export FAKE_USR="$DESTDIR$APP_PREFIX"
 export CC=clang
 export CXX=clang++

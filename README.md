@@ -5,7 +5,7 @@
 ### Programador de Memorias EEPROM, Flash y Microcontroladores para Android
 
 [![Android](https://img.shields.io/badge/Android-23%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
-[![Architecture](https://img.shields.io/badge/Arch-arm64--v8a-FF6F00?logo=arm&logoColor=white)](https://developer.android.com/ndk/guides/abis)
+[![Architecture](https://img.shields.io/badge/Arch-arm64--v8a%20%7C%20armeabi--v7a-FF6F00?logo=arm&logoColor=white)](https://developer.android.com/ndk/guides/abis)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg?logo=gnu&logoColor=white)](LICENSE)
 [![NDK](https://img.shields.io/badge/NDK-30-4285F4?logo=android&logoColor=white)](https://developer.android.com/ndk)
 [![CMake](https://img.shields.io/badge/CMake-4.1.2-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
@@ -27,7 +27,7 @@
 
 **EEPROM Flasher** es una aplicación Android profesional de código abierto diseñada para la interacción directa con memorias EEPROM, Flash SPI, EPROM paralelas, microcontroladores y dispositivos lógicos desde teléfonos y tabletas Android mediante conexión USB OTG directa, sin requerir permisos de superusuario (root).
 
-El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/minipro) compilado para `arm64-v8a` junto con un puente [libusb](https://github.com/libusb/libusb) personalizado que intercepta descriptores de archivo del USB Host API de Android.
+El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/minipro) compilado para `arm64-v8a` y `armeabi-v7a` junto con un puente [libusb](https://github.com/libusb/libusb) personalizado que intercepta descriptores de archivo del USB Host API de Android.
 
 ---
 

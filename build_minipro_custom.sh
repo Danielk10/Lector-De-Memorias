@@ -8,7 +8,15 @@ cd "$HOME" || exit 1
 
 # Exportar las variables con el paquete correcto: com.diamon.mini
 export APP_PREFIX="/data/data/com.diamon.mini/files/usr"
-export DESTDIR="$HOME/fake_root"
+
+# Arquitectura destino: 64 (por defecto) o 32.  Uso: ABI=32 ./build_minipro_custom.sh
+export ABI="${ABI:-64}"
+case "$ABI" in
+    32) export DESTDIR="${DESTDIR:-$HOME/fake_root_32_bit}" ;;
+    64) export DESTDIR="${DESTDIR:-$HOME/fake_root_64_bit}" ;;
+    *)  echo "Error: ABI debe ser 32 o 64 (recibido: $ABI)" >&2; exit 1 ;;
+esac
+
 export FAKE_USR="$DESTDIR$APP_PREFIX"
 export TMX_PREFIX="/data/data/com.termux/files/usr"
 export CC="clang"
