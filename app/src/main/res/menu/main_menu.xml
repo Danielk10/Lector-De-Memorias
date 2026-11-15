@@ -4,8 +4,9 @@
 
     <item
         android:id="@+id/action_pro_mode"
+        android:icon="@drawable/ic_pro_star"
         android:title="@string/menu_pro_mode"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_hex_viewer"

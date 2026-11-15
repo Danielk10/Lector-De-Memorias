@@ -1,6 +1,7 @@
 package com.diamon.mini;
 
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.Gravity;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -724,10 +724,13 @@ public class MainActivity extends AppCompatActivity {
             showProTools();
             return;
         }
+        // El diálogo Pro ocupa casi toda la pantalla y tapa el banner: se
+        // oculta mientras está abierto y se restaura al cerrarlo.
+        hideBannerForOverlay();
         ProAccessDialog.show(this, billingManager, proPassManager, () -> {
             applyProState();
             log(getString(R.string.pro_activated_log));
-        }, this::showProTools);
+        }, this::showProTools, dialog -> restoreBannerAfterOverlay());
     }
 
     private void showProTools() {
@@ -1662,7 +1665,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             adViewBanner = new AdView(this);
             adViewBanner.setAdUnitId("ca-app-pub-5141499161332805/6470549278");
-            adViewBanner.setAdSize(AdSize.BANNER);
+            adViewBanner.setAdSize(getAdaptiveBannerAdSize());
 
             adViewBanner.setAdListener(new AdListener() {
                 @Override
@@ -1681,10 +1684,9 @@ public class MainActivity extends AppCompatActivity {
             });
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.WRAP_CONTENT
             );
-            lp.gravity = Gravity.CENTER;
             bannerContainer.addView(adViewBanner, lp);
 
             AdRequest bannerRequest = new AdRequest.Builder().build();
@@ -1692,6 +1694,50 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("MainActivity", "Error inicializando banner: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Tamaño adaptativo anclado al ancho real de la pantalla.
+     *
+     * <p>Antes se usaba {@link AdSize#BANNER} (320x50 fijo) y el contenedor
+     * quedaba centrado con franjas laterales. Con el tamaño adaptativo el
+     * bloque ocupa todo el ancho disponible, como en PIC k150.</p>
+     */
+    private AdSize getAdaptiveBannerAdSize() {
+        try {
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            int widthPixels = dm.widthPixels;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                widthPixels = getWindowManager().getCurrentWindowMetrics().getBounds().width();
+            }
+            int widthDp = (int) (widthPixels / dm.density);
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, widthDp);
+        } catch (RuntimeException e) {
+            Log.w("MainActivity", "Banner adaptativo no disponible: " + e.getMessage());
+            return AdSize.BANNER;
+        }
+    }
+
+    /**
+     * Oculta el banner mientras un diálogo a pantalla completa (flujo Pro o
+     * canje de pase) lo tapa por completo.
+     */
+    public void hideBannerForOverlay() {
+        if (bannerContainer != null) {
+            bannerContainer.setVisibility(View.GONE);
+        }
+    }
+
+    /** Restaura el banner cuando el overlay a pantalla completa se cierra. */
+    public void restoreBannerAfterOverlay() {
+        if (bannerContainer == null || isFinishing() || isDestroyed()) {
+            return;
+        }
+        if (!ConsentManager.canRequestAds() || isProActive() || adViewBanner == null) {
+            bannerContainer.setVisibility(View.GONE);
+            return;
+        }
+        bannerContainer.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.diamon.mini.pro;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -58,6 +59,20 @@ public class ProAccessDialog {
                             @NonNull ProPassManager proPassManager,
                             @Nullable OnProUnlockedListener onProUnlocked,
                             @Nullable Runnable onOpenProTools) {
+        show(activity, billingManager, proPassManager, onProUnlocked, onOpenProTools, null);
+    }
+
+    /**
+     * Same as {@link #show(Activity, BillingManager, ProPassManager, OnProUnlockedListener, Runnable)}
+     * plus an optional listener invoked when the dialog is dismissed (used by
+     * the host activity to restore the banner that the dialog was covering).
+     */
+    public static void show(@NonNull Activity activity,
+                            @Nullable BillingManager billingManager,
+                            @NonNull ProPassManager proPassManager,
+                            @Nullable OnProUnlockedListener onProUnlocked,
+                            @Nullable Runnable onOpenProTools,
+                            @Nullable DialogInterface.OnDismissListener onDismiss) {
         if (activity.isFinishing() || activity.isDestroyed()) return;
 
         boolean permanent = billingManager != null && billingManager.isProPurchased();
@@ -67,6 +82,7 @@ public class ProAccessDialog {
                     .setMessage(R.string.pro_permanent_active_desc)
                     .setPositiveButton(R.string.str_cerrar, null)
                     .show();
+            if (onDismiss != null) onDismiss.onDismiss(null);
             if (onProUnlocked != null) onProUnlocked.onProUnlocked();
             return;
         }
@@ -183,6 +199,7 @@ public class ProAccessDialog {
         dialog.setOnDismissListener(d -> {
             if (billingManager != null) billingManager.removeListener(proWatcher);
             rewardedAdManager.destroy();
+            if (onDismiss != null) onDismiss.onDismiss(d);
         });
 
         final boolean[] rewarded = {false};
