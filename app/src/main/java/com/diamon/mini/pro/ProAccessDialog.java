@@ -206,15 +206,13 @@ public class ProAccessDialog {
                 if (onProUnlocked != null) onProUnlocked.onProUnlocked();
                 return;
             }
-            if (!rewardedAdManager.canRequestAds()) {
+            if (ConsentManager.isResolved() && !ConsentManager.canRequestAds()) {
                 Toast.makeText(activity, activity.getString(R.string.pro_ads_consent_required),
                         Toast.LENGTH_LONG).show();
                 return;
             }
             btnRewarded.setEnabled(false);
-            if (!rewardedAdManager.isLoaded()) {
-                btnRewarded.setText(activity.getString(R.string.pro_loading_rewarded_video));
-            }
+            btnRewarded.setText(activity.getString(R.string.pro_loading_rewarded_video));
 
             rewardedAdManager.show(activity, new RewardedAdManager.RewardCallback() {
                 @Override
@@ -233,6 +231,11 @@ public class ProAccessDialog {
                     if (rewarded[0]) return;
                     btnRewarded.setEnabled(true);
                     btnRewarded.setText(activity.getString(R.string.pro_btn_watch_rewarded_video));
+                    if (ConsentManager.isResolved() && !ConsentManager.canRequestAds()) {
+                        Toast.makeText(activity,
+                                activity.getString(R.string.pro_ads_consent_required),
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         });

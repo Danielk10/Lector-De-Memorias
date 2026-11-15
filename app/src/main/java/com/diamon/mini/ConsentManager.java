@@ -100,12 +100,24 @@ public final class ConsentManager {
             privacyOptionsRequired =
                     consentInformation.getPrivacyOptionsRequirementStatus()
                             == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
-            resolved = true;
+
+            // Si UMP no pudo descargar la información (por ejemplo, sin red),
+            // canRequestAds() es false pero eso no significa que el país exija
+            // consentimiento. Dejamos el flujo sin resolver para reintentarlo en
+            // la próxima llamada en vez de bloquear los anuncios para siempre.
+            // Un estado REQUIRED sí es una respuesta real de UMP: el usuario
+            // está en una región regulada y todavía no dio su consentimiento.
+            int status = consentInformation.getConsentStatus();
+            boolean consentRequired = status == ConsentInformation.ConsentStatus.REQUIRED;
+            resolved = canRequestAds || consentRequired;
         }
 
         requestInFlight = false;
-        Log.d(TAG, "Consentimiento listo. canRequestAds=" + canRequestAds
-                + ", privacyOptionsRequired=" + privacyOptionsRequired);
+        Log.d(TAG, "Consentimiento listo. resolved=" + resolved
+                + ", canRequestAds=" + canRequestAds
+                + ", privacyOptionsRequired=" + privacyOptionsRequired
+                + ", status=" + (consentInformation != null
+                        ? consentInformation.getConsentStatus() : -1));
 
         List<ConsentCallback> callbacks = new ArrayList<>(pendingCallbacks);
         pendingCallbacks.clear();

@@ -12,6 +12,7 @@ def main():
     parser.add_argument('--track', default='production', help='The track to release on (e.g., production, beta, alpha, internal)')
     parser.add_argument('--release_notes', default='', help='Structured release notes for Spanish (es-419 and es-ES) using multiline bullet points (- Item)')
     parser.add_argument('--release_notes_en', default='', help='Structured release notes for English (en-US) using multiline bullet points (- Item)')
+    parser.add_argument('--dry-run', action='store_true', help='Upload and prepare the release, then delete the edit without publishing')
     
     args = parser.parse_args()
 
@@ -63,6 +64,12 @@ def main():
             track=args.track,
             body=track_release
         ).execute()
+
+        if args.dry_run:
+            print("Dry run enabled: deleting the edit without committing...")
+            service.edits().delete(editId=edit_id, packageName=args.package_name).execute()
+            print("Dry run finished. Nothing was published to Google Play.")
+            return
 
         print("Committing the edit...")
         service.edits().commit(editId=edit_id, packageName=args.package_name).execute()

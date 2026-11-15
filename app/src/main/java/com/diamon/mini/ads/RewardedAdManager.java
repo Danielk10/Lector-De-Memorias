@@ -48,6 +48,16 @@ public class RewardedAdManager {
     @Nullable
     private Activity pendingActivity;
 
+    /**
+     * Petición que llegó antes de que UMP terminara de resolver el
+     * consentimiento. Se ejecuta en cuanto la información esté disponible.
+     */
+    private boolean waitingForConsent = false;
+    @Nullable
+    private Activity pendingConsentActivity;
+    @Nullable
+    private RewardCallback pendingConsentCallback;
+
     public RewardedAdManager(@NonNull Context context) {
         this.context = context.getApplicationContext();
     }
@@ -67,11 +77,24 @@ public class RewardedAdManager {
     /** Preloads the rewarded video. Safe to call repeatedly. */
     public void load() {
         if (destroyed || loading || rewardedAd != null) return;
+        if (!ConsentManager.isResolved()) {
+            // UMP todavía está consultando la geografía del usuario. No es un
+            // rechazo: en países sin consentimiento obligatorio canRequestAds()
+            // pasará a true en cuanto termine. ProAccessDialog vuelve a llamar
+            // a load() desde su callback de consentimiento.
+            Log.d(TAG, "Rewarded ad load deferred until UMP finishes.");
+            return;
+        }
         if (!ConsentManager.canRequestAds()) {
-            Log.d(TAG, "Rewarded ad not requested: consent not available.");
+            Log.d(TAG, "Rewarded ad not requested: consent not granted.");
             notifyPendingDismissed();
             return;
         }
+        loadNow();
+    }
+
+    private void loadNow() {
+        if (destroyed || loading || rewardedAd != null) return;
 
         loading = true;
         MobileAds.initialize(context, status -> {
@@ -113,13 +136,51 @@ public class RewardedAdManager {
     /**
      * Shows the rewarded ad. If it is not loaded yet the request is queued and
      * {@link RewardCallback#onDismissed()} is invoked if loading fails.
+     *
+     * <p>Si UMP todavía está resolviendo la geografía, la petición se queda
+     * esperando: en los países donde el consentimiento no es obligatorio
+     * {@code canRequestAds()} pasará a {@code true} sin mostrar ningún
+     * formulario y el anuncio se reproducirá. Solo se descarta cuando UMP ya
+     * resolvió y el consentimiento realmente falta.</p>
      */
     public void show(@NonNull Activity activity, @NonNull RewardCallback callback) {
         if (destroyed) {
             callback.onDismissed();
             return;
         }
+
+        if (!ConsentManager.isResolved()) {
+            pendingConsentActivity = activity;
+            pendingConsentCallback = callback;
+            waitingForConsent = true;
+            ConsentManager.requestConsent(activity, canRequestAds -> {
+                if (destroyed || !waitingForConsent) return;
+                waitingForConsent = false;
+
+                Activity consentActivity = pendingConsentActivity;
+                RewardCallback consentCallback = pendingConsentCallback;
+                pendingConsentActivity = null;
+                pendingConsentCallback = null;
+
+                if (!canRequestAds || consentActivity == null || consentCallback == null
+                        || consentActivity.isFinishing() || consentActivity.isDestroyed()) {
+                    if (consentCallback != null) consentCallback.onDismissed();
+                    return;
+                }
+                showWhenAllowed(consentActivity, consentCallback);
+            });
+            return;
+        }
+
         if (!ConsentManager.canRequestAds()) {
+            callback.onDismissed();
+            return;
+        }
+        showWhenAllowed(activity, callback);
+    }
+
+    private void showWhenAllowed(@NonNull Activity activity, @NonNull RewardCallback callback) {
+        if (destroyed) {
             callback.onDismissed();
             return;
         }
@@ -131,7 +192,7 @@ public class RewardedAdManager {
         }
         pendingCallback = callback;
         pendingActivity = activity;
-        load();
+        loadNow();
     }
 
     private void present(@NonNull Activity activity, @NonNull RewardCallback callback) {
@@ -175,6 +236,9 @@ public class RewardedAdManager {
 
     public void destroy() {
         destroyed = true;
+        waitingForConsent = false;
+        pendingConsentActivity = null;
+        pendingConsentCallback = null;
         pendingCallback = null;
         pendingActivity = null;
         rewardedAd = null;
