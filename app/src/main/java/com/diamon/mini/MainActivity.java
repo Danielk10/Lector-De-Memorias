@@ -48,6 +48,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.diamon.mini.ads.InterstitialAdManager;
 import com.diamon.mini.core.MiniproExecutor;
 import com.diamon.mini.core.UsbController;
 import com.diamon.mini.billing.BillingManager;
@@ -702,6 +703,7 @@ public class MainActivity extends AppCompatActivity {
         boolean pro = isProActive();
         if (pro) {
             destroyBanner();
+            InterstitialAdManager.clear();
         } else if (billingManager != null && !billingManager.isProPurchased()
                 && ConsentManager.canRequestAds()) {
             loadBannerAd();
@@ -948,6 +950,12 @@ public class MainActivity extends AppCompatActivity {
             showProDialog();
             return true;
         } else if (id == R.id.action_hex_viewer) {
+            // Igual que C-PIC: se pide el intersticial al abrir el visor. El
+            // usuario tarda unos segundos en leer el HEX y el anuncio llega
+            // listo; el gestor lo conserva aunque esta Activity quede en pausa.
+            if (!isProActive()) {
+                InterstitialAdManager.preload(this);
+            }
             startActivity(new Intent(this, HexViewerActivity.class));
             return true;
         } else if (id == R.id.action_hex_diff) {

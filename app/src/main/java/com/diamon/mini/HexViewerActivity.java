@@ -8,7 +8,6 @@ import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,19 +29,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.diamon.mini.ads.InterstitialAdManager;
 import com.diamon.mini.billing.BillingManager;
 import com.diamon.mini.binary.PatchTransaction;
 import com.diamon.mini.pro.ProAccessDialog;
 import com.diamon.mini.pro.ProPassManager;
 import com.diamon.mini.ui.IntegrityDialog;
 import com.diamon.mini.vault.SafetyVaultManager;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -126,14 +119,11 @@ public class HexViewerActivity extends AppCompatActivity {
         }
     }
 
-    private static final String TAG = "HexViewerActivity";
-    private static final String INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-5141499161332805/6545581216";
     private static final int MAX_EDIT_SIZE = 64 * 1024 * 1024;
 
     private TextView tvHexSummary;
     private RecyclerView recyclerHex;
     private HexAdapter hexAdapter;
-    private InterstitialAd mInterstitialAd;
     private HexDataSource currentDataSource;
 
     private final PatchTransaction patchTransaction = new PatchTransaction();
@@ -182,7 +172,7 @@ public class HexViewerActivity extends AppCompatActivity {
             invalidateOptionsMenu();
         }));
 
-        initInterstitialAd();
+        initInterstitial();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -200,7 +190,7 @@ public class HexViewerActivity extends AppCompatActivity {
 
     private void onProStateChanged() {
         if (isProActive()) {
-            mInterstitialAd = null;
+            InterstitialAdManager.clear();
         }
         invalidateOptionsMenu();
     }
@@ -218,59 +208,30 @@ public class HexViewerActivity extends AppCompatActivity {
         }
     }
 
-    private void initInterstitialAd() {
-        if (isProActive()) return;
-        ConsentManager.requestConsent(this, canRequestAds -> {
-            if (isFinishing() || isDestroyed() || !canRequestAds || isProActive()) {
-                return;
-            }
-            MobileAds.initialize(this, initializationStatus -> runOnUiThread(this::loadInterstitialAd));
-        });
-    }
-
-    private void loadInterstitialAd() {
-        if (!ConsentManager.canRequestAds() || isProActive()) {
+    /**
+     * Pide el intersticial al abrir el visor. El anuncio se guarda en
+     * {@link InterstitialAdManager}, que sobrevive al cierre de esta Activity:
+     * si el usuario sale antes de que cargue, la petición continúa y el
+     * anuncio queda listo para la próxima apertura en lugar de perderse.
+     */
+    private void initInterstitial() {
+        if (isProActive()) {
             return;
         }
-        AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(
-                this,
-                INTERSTITIAL_AD_UNIT_ID,
-                adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        mInterstitialAd = interstitialAd;
-                        Log.d(TAG, "Interstitial loaded.");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        mInterstitialAd = null;
-                        Log.e(TAG, "Interstitial failed: " + loadAdError.getMessage());
-                    }
-                });
+        InterstitialAdManager.preload(this);
     }
 
     private void handleExit() {
-        if (isProActive() || mInterstitialAd == null || !ConsentManager.canRequestAds()) {
+        if (isProActive()) {
+            InterstitialAdManager.clear();
             finish();
             return;
         }
-        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                mInterstitialAd = null;
-                finish();
-            }
-
-            @Override
-            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                mInterstitialAd = null;
-                finish();
-            }
-        });
-        mInterstitialAd.show(this);
+        // Si el intersticial ya está listo se muestra y el visor se cierra al
+        // descartarlo; si no, se sale directamente sin bloquear al usuario.
+        if (!InterstitialAdManager.showIfAvailable(this, this::finish)) {
+            finish();
+        }
     }
 
     @Override
