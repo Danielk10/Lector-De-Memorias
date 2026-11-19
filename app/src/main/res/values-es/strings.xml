@@ -15,7 +15,7 @@
     <string name="str_terminal_salida">Terminal</string>
     <string name="str_limpiar">Limpiar</string>
     <string name="str_detener">Detener</string>
-    <string name="str_hint_comando">Ej: minipro -p W25Q128FV -w rom.bin</string>
+    <string name="str_hint_comando">Ej: minipro -p 24LC256 -r rom.bin</string>
     <string name="str_ejecutar_instru">EJECUTAR</string>
     <string name="str_log_">$ log\n</string>
     <string name="str_preparando_depe">Preparando dependencias…</string>
@@ -62,9 +62,13 @@
     <string name="str_str">................</string>
     <string name="str_seleccionar_dispositivo">Programador:</string>
     <string name="str_seleccionar_chip">Chip:</string>
-    <string name="str_hint_chip">Ej: W25Q128FV</string>
+    <string name="str_hint_chip">Ej: 24LC256 o W25Q128JV@SOIC8</string>
     <string name="str_buscar_chip">CATALOGO</string>
     <string name="str_autodetectar_chip">Auto-detectar</string>
+    <string name="str_autodetect_title">Autodetección de Chip</string>
+    <string name="str_autodetect_message">La autodetección por hardware solo funciona con memorias SPI Flash de 8 pines (serie 25xxx) que soportan lectura de ID JEDEC.\n\nPara memorias EEPROM (24xxx, 93xxx, etc.), microcontroladores o EPROMs, debes seleccionar el modelo exacto en el CATÁLOGO o escribirlo manualmente.</string>
+    <string name="str_autodetect_spi">Probar SPI (DIP-8)</string>
+    <string name="str_open_catalog">Abrir Catálogo</string>
     <string name="str_agregar_chip_manual">Agregar chip manual</string>
     <string name="str_chip_manual_title">Agregar Modelo de Chip Personalizado</string>
     <string name="str_chip_manual_hint">Ingresa el nombre del chip, ej: W25Q64JV</string>
@@ -90,6 +94,14 @@
     <!-- Strings Localizados Adicionales -->
     <string name="str_app_started">--- Aplicación Iniciada ---</string>
     <string name="str_system_ready">Sistema minipro y catálogo de chips listos.</string>
+    <string name="str_bootloader_detected">[AVISO] Programador en modo BOOTLOADER (04d8:00e0). No se pueden realizar operaciones.</string>
+    <string name="str_bootloader_title">Modo Bootloader Detectado</string>
+    <string name="str_bootloader_message">El programador TL866II+ está en modo bootloader/actualización de firmware (VID:PID 04d8:00e0).\n\nPara poder usarlo, debes restaurar o actualizar su firmware conectándolo a un PC con el software oficial Xgpro o con miniprohex.</string>
+    <string name="str_bootloader_blocked">Error: El programador está en modo bootloader. No se pueden ejecutar operaciones en el chip.</string>
+    <string name="str_hint_bootloader">[AYUDA] El programador se encuentra en modo bootloader. Conéctalo a un PC para actualizar o reparar su firmware.</string>
+    <string name="str_hint_no_programmer">[AYUDA] No se encontró o no respondió el programador USB. Verifica la conexión OTG y los permisos USB.</string>
+    <string name="str_hint_chip_not_found">[AYUDA] Chip no detectado o no compatible con autodetección. Si es una EEPROM (24xxx, 93xxx) o microcontrolador, selecciónalo desde el botón CATÁLOGO.</string>
+    <string name="str_hint_chip_id">[AYUDA] El ID del chip leído no coincide con el modelo configurado. Revisa la orientación del chip en el zócalo ZIF (pin 1 hacia la palanca inferior) o verifica el modelo seleccionado.</string>
     <string name="str_usb_permission_granted">¡Permiso otorgado! Token USB FD: %1$d</string>
     <string name="str_connected_usb_vid_pid">Conectado a USB VID:PID %1$s</string>
     <string name="str_device_recognized">[OK] Dispositivo reconocido: %1$s</string>
@@ -98,7 +110,7 @@
     <string name="str_read_from_chip">Leído del chip %1$s</string>
     <string name="str_chip_detected_configured">[AUTO] Chip detectado y configurado: %1$s</string>
     <string name="str_starting_autodetect">Iniciando autodetección de chip con MiniPro...</string>
-    <string name="str_err_specify_chip">Error: Especifica un modelo de chip, ej: W25Q128FV.</string>
+    <string name="str_err_specify_chip">Error: Especifica un modelo de chip, ej: 24LC256.</string>
     <string name="str_err_no_rom_loaded">Error: No hay archivo rom.bin cargado. Usa \'Cargar ROM\' o \'Leer Chip\' primero.</string>
     <string name="str_err_no_data_read">Error: No hay datos leídos del chip aún.</string>
     <string name="str_use_read_chip_first">Usa \'Leer Chip\' primero para leer el contenido.</string>

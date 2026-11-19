@@ -15,7 +15,7 @@
     <string name="str_terminal_salida">Terminal</string>
     <string name="str_limpiar">Clear</string>
     <string name="str_detener">Stop</string>
-    <string name="str_hint_comando">E.g.: minipro -p W25Q128FV -w rom.bin</string>
+    <string name="str_hint_comando">E.g.: minipro -p 24LC256 -r rom.bin</string>
     <string name="str_ejecutar_instru">EJECUTAR</string>
     <string name="str_log_">$ log\n</string>
     <string name="str_preparando_depe">Preparing dependencies…</string>
@@ -62,9 +62,13 @@
     <string name="str_str">................</string>
     <string name="str_seleccionar_dispositivo">Programmer:</string>
     <string name="str_seleccionar_chip">Chip:</string>
-    <string name="str_hint_chip">E.g.: W25Q128FV</string>
+    <string name="str_hint_chip">E.g.: 24LC256 or W25Q128JV@SOIC8</string>
     <string name="str_buscar_chip">CATALOG</string>
     <string name="str_autodetectar_chip">Autodetect</string>
+    <string name="str_autodetect_title">Chip Autodetection</string>
+    <string name="str_autodetect_message">Hardware autodetection only works with 8-pin SPI Flash memories (25xxx series) supporting JEDEC ID readout.\n\nFor EEPROMs (24xxx, 93xxx, etc.), microcontrollers, or EPROMs, you must select the exact model from the CATALOG or enter it manually.</string>
+    <string name="str_autodetect_spi">Test SPI (DIP-8)</string>
+    <string name="str_open_catalog">Open Catalog</string>
     <string name="str_agregar_chip_manual">Add Custom Chip</string>
     <string name="str_chip_manual_title">Add Custom Chip Model</string>
     <string name="str_chip_manual_hint">Enter chip model name, e.g. W25Q64JV</string>
@@ -90,6 +94,14 @@
     <!-- Additional Localized Strings -->
     <string name="str_app_started">--- Application Started ---</string>
     <string name="str_system_ready">MiniPro system and chip catalog ready.</string>
+    <string name="str_bootloader_detected">[WARNING] Programmer detected in BOOTLOADER mode (04d8:00e0). Operations are disabled.</string>
+    <string name="str_bootloader_title">Bootloader Mode Detected</string>
+    <string name="str_bootloader_message">The TL866II+ programmer is in bootloader/firmware update mode (VID:PID 04d8:00e0).\n\nTo use it, you must restore or update its firmware using a PC with the official Xgpro software or miniprohex.</string>
+    <string name="str_bootloader_blocked">Error: Programmer is in bootloader mode. Operations cannot be performed.</string>
+    <string name="str_hint_bootloader">[HINT] Programmer is in bootloader mode. Connect it to a PC to flash or repair its firmware.</string>
+    <string name="str_hint_no_programmer">[HINT] No USB programmer found or device not responding. Check OTG connection and USB permissions.</string>
+    <string name="str_hint_chip_not_found">[HINT] Chip not detected or incompatible with autodetection. For EEPROMs (24xxx, 93xxx) or MCUs, select the exact chip from the CATALOG.</string>
+    <string name="str_hint_chip_id">[HINT] Chip ID read does not match the configured model. Check chip orientation in ZIF socket (pin 1 toward the bottom lever) or check selected model.</string>
     <string name="str_usb_permission_granted">Permission granted! USB FD Token: %1$d</string>
     <string name="str_connected_usb_vid_pid">Connected to USB VID:PID %1$s</string>
     <string name="str_device_recognized">[OK] Device recognized: %1$s</string>
@@ -98,7 +110,7 @@
     <string name="str_read_from_chip">Read from chip %1$s</string>
     <string name="str_chip_detected_configured">[AUTO] Detected and configured chip: %1$s</string>
     <string name="str_starting_autodetect">Starting chip autodetection with MiniPro...</string>
-    <string name="str_err_specify_chip">Error: Specify a chip model, e.g. W25Q128FV.</string>
+    <string name="str_err_specify_chip">Error: Specify a chip model, e.g. 24LC256.</string>
     <string name="str_err_no_rom_loaded">Error: No rom.bin file loaded. Use \'Load ROM\' or \'Read Chip\' first.</string>
     <string name="str_err_no_data_read">Error: No chip data read yet.</string>
     <string name="str_use_read_chip_first">Use \'Read Chip\' first to read contents.</string>

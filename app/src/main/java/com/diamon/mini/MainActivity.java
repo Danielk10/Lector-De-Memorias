@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     private UsbController usbController;
     private MiniproExecutor miniproExecutor;
+    private volatile boolean programmerInBootloader = false;
 
     // UI
     private LinearLayout layoutLoading, layoutMainUI;
@@ -346,6 +347,23 @@ public class MainActivity extends AppCompatActivity {
                     // Pasar FD al entorno nativo de libusb
                     setUsbFd(fd);
 
+                    if (UsbController.isBootloader(vidPid)) {
+                        programmerInBootloader = true;
+                        MainActivity.this.log(getString(R.string.str_bootloader_detected));
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setCustomTitle(createCustomDialogTitle(getString(R.string.str_bootloader_title)))
+                                .setMessage(R.string.str_bootloader_message)
+                                .setPositiveButton(R.string.str_cerrar, null)
+                                .show();
+                        btnAutodetectChip.setEnabled(false);
+                        btnVerify.setEnabled(false);
+                        btnRead.setEnabled(false);
+                        btnWrite.setEnabled(false);
+                        btnEraseChip.setEnabled(false);
+                        return;
+                    }
+                    programmerInBootloader = false;
+
                     if (isRecognized && autoProgrammer != null) {
                         MainActivity.this.log(getString(R.string.str_device_recognized, autoProgrammer));
                         for (int i = 0; i < SUPPORTED_DEVICES.length; i++) {
@@ -381,6 +399,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDeviceDisconnected() {
                 runOnUiThread(() -> {
+                    programmerInBootloader = false;
                     tvStatus.setText(getString(R.string.str_estado_usb_desc));
                     clearUsbFd();
                     btnAutodetectChip.setEnabled(false);
@@ -423,6 +442,10 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (btnAbort != null) btnAbort.setVisibility(View.GONE);
                 });
+
+                if (exitCode != 0) {
+                    maybeLogMiniproHint();
+                }
 
                 if (exitCode == 0) {
                     for (int i = 0; i < args.length; i++) {
@@ -555,8 +578,16 @@ public class MainActivity extends AppCompatActivity {
         btnSearchChip.setOnClickListener(v -> showChipSelectorDialog());
 
         btnAutodetectChip.setOnClickListener(v -> {
-            log(getString(R.string.str_starting_autodetect));
-            executeMinipro("-a", "8");
+            new AlertDialog.Builder(this)
+                    .setCustomTitle(createCustomDialogTitle(getString(R.string.str_autodetect_title)))
+                    .setMessage(R.string.str_autodetect_message)
+                    .setPositiveButton(R.string.str_autodetect_spi, (dialog, which) -> {
+                        log(getString(R.string.str_starting_autodetect));
+                        executeMinipro("-a", "8");
+                    })
+                    .setNeutralButton(R.string.str_open_catalog, (dialog, which) -> showChipSelectorDialog())
+                    .setNegativeButton(R.string.str_cancelar, null)
+                    .show();
         });
 
         btnVerify.setOnClickListener(v -> {
@@ -1372,7 +1403,34 @@ public class MainActivity extends AppCompatActivity {
         return "TL866II";
     }
 
+    /**
+     * Traduce los errores más frecuentes de minipro a una sugerencia accionable.
+     * El mensaje original se conserva en el terminal; esto solo añade contexto.
+     */
+    private void maybeLogMiniproHint() {
+        StringBuilder sb = new StringBuilder();
+        synchronized (currentOutputLines) {
+            for (String line : currentOutputLines) {
+                sb.append(line);
+            }
+        }
+        String output = sb.toString().toLowerCase(java.util.Locale.US);
+        if (output.contains("in bootloader mode")) {
+            log(getString(R.string.str_hint_bootloader));
+        } else if (output.contains("no programmer found")) {
+            log(getString(R.string.str_hint_no_programmer));
+        } else if (output.contains("device") && output.contains("not found")) {
+            log(getString(R.string.str_hint_chip_not_found));
+        } else if (output.contains("invalid chip id") || output.contains("chip id mismatch")) {
+            log(getString(R.string.str_hint_chip_id));
+        }
+    }
+
     private void executeMinipro(String... args) {
+        if (programmerInBootloader) {
+            log(getString(R.string.str_bootloader_blocked));
+            return;
+        }
         Runnable snapshot = null;
         String operation = detectVaultOperation(args);
         if (operation != null && isProActive()) {

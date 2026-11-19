@@ -43,6 +43,16 @@ public class UsbController {
         put("2e8a:0005", "T56");
     }};
 
+    /**
+     * TL866II+ en modo bootloader (Microchip VID/PID). minipro 0.7.4 no lo abre:
+     * hay que reflashear el firmware con Xgpro en un PC antes de usarlo.
+     */
+    public static final String BOOTLOADER_VID_PID = "04d8:00e0";
+
+    public static boolean isBootloader(String vidPid) {
+        return vidPid != null && BOOTLOADER_VID_PID.equalsIgnoreCase(vidPid);
+    }
+
     // Dispositivos no soportados por el motor minipro
     public static final Map<String, String> UNSUPPORTED_USB_MAP = new HashMap<String, String>() {{
         put("1a86:5512", "CH341A");

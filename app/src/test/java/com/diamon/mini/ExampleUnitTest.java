@@ -25,7 +25,7 @@ public class ExampleUnitTest {
         List<String> chips = ChipDatabase.getAllPredefinedChips();
         assertNotNull("Catalog of predefined chips should not be null", chips);
         assertTrue("Catalog should contain chips", chips.size() > 50);
-        assertTrue("Catalog should contain W25Q128FV", chips.contains("W25Q128FV"));
+        assertTrue("Catalog should contain W25Q128FV@SOIC8", chips.contains("W25Q128FV@SOIC8"));
         assertTrue("Catalog should contain 24LC02B", chips.contains("24LC02B"));
         assertTrue("Catalog should contain ATmega328P", chips.contains("ATmega328P"));
         assertTrue("Catalog should contain PIC16F628A", chips.contains("PIC16F628A"));

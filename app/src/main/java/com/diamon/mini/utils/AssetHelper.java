@@ -177,11 +177,32 @@ public class AssetHelper {
         File shareDir = new File(context.getFilesDir(), "usr/share");
         boolean shareExists = shareDir.exists() && shareDir.isDirectory();
 
-        if (flagged && shareExists) {
+        File miniproDir = new File(shareDir, "minipro");
+        File infoic = new File(miniproDir, "infoic.xml");
+        File logicic = new File(miniproDir, "logicic.xml");
+
+        // infoic.xml pesa ~19 MB y logicic.xml ~187 KB. Si están truncados o
+        // faltan, minipro arranca pero no encuentra ningún chip. Validamos
+        // tamaños mínimos antes de dar por buena la extracción.
+        boolean criticalFilesOk = infoic.isFile() && infoic.length() > 1_000_000
+                && logicic.isFile() && logicic.length() > 10_000;
+
+        if (flagged && shareExists && criticalFilesOk) {
             String[] list = shareDir.list();
             if (list != null && list.length > 0) {
                 return true;
             }
+        }
+
+        // Si el archivo existe pero está truncado, hay que borrarlo para que
+        // extractAssets() lo vuelva a copiar (copyAssetFile no sobrescribe).
+        if (infoic.exists() && infoic.length() <= 1_000_000) {
+            Log.w(TAG, "infoic.xml incompleto (" + infoic.length() + " bytes). Se re-extraerá.");
+            infoic.delete();
+        }
+        if (logicic.exists() && logicic.length() <= 10_000) {
+            Log.w(TAG, "logicic.xml incompleto (" + logicic.length() + " bytes). Se re-extraerá.");
+            logicic.delete();
         }
 
         Log.w(TAG, "areAssetsExtracted: inconsistencia de caché. Forzando re-extracción.");
