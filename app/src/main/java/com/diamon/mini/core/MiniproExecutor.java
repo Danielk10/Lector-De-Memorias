@@ -23,7 +23,7 @@ public class MiniproExecutor {
     private static native void closeDupedFd(int fd);
 
     // Native process control to bypass ProcessBuilder FD closure
-    private static native int[] startNativeProcess(String executable, String[] args, int usbFd, String ldLibraryPath, String miniproData);
+    private static native int[] startNativeProcess(String executable, String[] args, int usbFd, String ldLibraryPath, String miniproData, String workingDir);
     private static native int waitForNativeProcess(int pid);
     private static native void terminateNativeProcess(int pid);
 
@@ -148,7 +148,7 @@ public class MiniproExecutor {
                     callback.onProcessStarted();
 
                     // Start process natively to prevent ProcessBuilder from closing the file descriptor
-                    int[] processInfo = startNativeProcess(miniproBin.getAbsolutePath(), commandArgs, fdToPass, ldPath, miniproDataPath);
+                    int[] processInfo = startNativeProcess(miniproBin.getAbsolutePath(), commandArgs, fdToPass, ldPath, miniproDataPath, filesDir.getAbsolutePath());
                     if (processInfo == null || processInfo[0] <= 0) {
                         callback.log(context.getString(R.string.str_error_starting_process));
                         callback.onProcessFinished(-1, args);

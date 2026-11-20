@@ -504,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
         setupLogCopySupport();
 
         log(getString(R.string.str_app_started));
+        log("EEPROM Flasher v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
 
         // Runtime & Asset Initialization
         int currentVersion = getVersionCode();

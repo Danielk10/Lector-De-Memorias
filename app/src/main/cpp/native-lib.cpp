@@ -80,11 +80,13 @@ Java_com_diamon_mini_core_MiniproExecutor_startNativeProcess(
         jobjectArray jArgs,
         jint usbFd,
         jstring jLdLibraryPath,
-        jstring jMiniproData) {
+        jstring jMiniproData,
+        jstring jWorkingDir) {
 
     const char *execPath = env->GetStringUTFChars(jExecutable, nullptr);
     const char *ldLibPath = env->GetStringUTFChars(jLdLibraryPath, nullptr);
     const char *miniproData = env->GetStringUTFChars(jMiniproData, nullptr);
+    const char *workingDir = env->GetStringUTFChars(jWorkingDir, nullptr);
 
     // Preparar argumentos (argv)
     int argc = env->GetArrayLength(jArgs);
@@ -106,6 +108,7 @@ Java_com_diamon_mini_core_MiniproExecutor_startNativeProcess(
         env->ReleaseStringUTFChars(jExecutable, execPath);
         env->ReleaseStringUTFChars(jLdLibraryPath, ldLibPath);
         env->ReleaseStringUTFChars(jMiniproData, miniproData);
+        env->ReleaseStringUTFChars(jWorkingDir, workingDir);
         for (int i = 0; i < argc; i++) {
             jstring argStr = (jstring) env->GetObjectArrayElement(jArgs, i);
             env->ReleaseStringUTFChars(argStr, stringsToRelease[i]);
@@ -141,6 +144,14 @@ Java_com_diamon_mini_core_MiniproExecutor_startNativeProcess(
             }
         }
 
+        // minipro escribe rom.bin de forma relativa. El cwd por defecto de la
+        // app en Android es "/" (solo lectura), así que lo movemos a filesDir.
+        if (workingDir != nullptr && workingDir[0] != '\0') {
+            if (chdir(workingDir) != 0) {
+                LOGE("startNativeProcess: chdir(%s) falló, errno=%d", workingDir, errno);
+            }
+        }
+
         // Ejecutar el binario
         execv(execPath, argv.data());
         exit(127);
@@ -154,6 +165,7 @@ Java_com_diamon_mini_core_MiniproExecutor_startNativeProcess(
     env->ReleaseStringUTFChars(jExecutable, execPath);
     env->ReleaseStringUTFChars(jLdLibraryPath, ldLibPath);
     env->ReleaseStringUTFChars(jMiniproData, miniproData);
+    env->ReleaseStringUTFChars(jWorkingDir, workingDir);
     for (int i = 0; i < argc; i++) {
         jstring argStr = (jstring) env->GetObjectArrayElement(jArgs, i);
         env->ReleaseStringUTFChars(argStr, stringsToRelease[i]);
