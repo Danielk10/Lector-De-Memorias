@@ -1747,6 +1747,18 @@ public class MainActivity extends AppCompatActivity {
                     super.onAdFailedToLoad(adError);
                     Log.e("MainActivity", "Banner AdMob fallo al cargar: Código=" + adError.getCode()
                             + ", Mensaje=" + adError.getMessage());
+                    // Resetear para permitir reintentos desde loadBannerAd()
+                    if (adViewBanner != null) {
+                        adViewBanner.destroy();
+                        adViewBanner = null;
+                    }
+                    if (bannerContainer != null) {
+                        bannerContainer.removeAllViews();
+                    }
+                    // Reintentar después de 30 segundos si la actividad sigue activa
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (!isFinishing() && !isDestroyed()) loadBannerAd();
+                    }, 30_000L);
                 }
             });
 

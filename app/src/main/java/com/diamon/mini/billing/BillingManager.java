@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.InstallSourceInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -230,31 +228,16 @@ public class BillingManager implements PurchasesUpdatedListener {
         return playInstallAvailableCache;
     }
 
-    @SuppressWarnings("deprecation")
     private boolean detectPlayInstallAvailable() {
         try {
             PackageManager pm = context.getPackageManager();
             if (pm == null) return false;
-
-            String installer = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                InstallSourceInfo info = pm.getInstallSourceInfo(context.getPackageName());
-                if (info != null) {
-                    installer = info.getInstallingPackageName();
-                    if (installer == null) installer = info.getInitiatingPackageName();
-                }
-            } else {
-                installer = pm.getInstallerPackageName(context.getPackageName());
-            }
-
-            if (!PLAY_STORE_PACKAGE.equals(installer)) {
-                Log.w(TAG, "Billing blocked: installer is " + installer);
-                return false;
-            }
+            // Solo verificar que Play Store esté instalado y habilitado,
+            // independientemente de quién instaló la app (sideload, ADB, Studio).
             ApplicationInfo playStore = pm.getApplicationInfo(PLAY_STORE_PACKAGE, 0);
             return playStore != null && playStore.enabled;
         } catch (Exception e) {
-            Log.w(TAG, "Billing blocked: unable to verify installer", e);
+            Log.w(TAG, "Billing: unable to verify Play Store", e);
             return false;
         }
     }
