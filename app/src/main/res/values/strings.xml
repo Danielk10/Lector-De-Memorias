@@ -388,4 +388,8 @@ Tinaquillo, Cojedes, Venezuela<br/>
 <b>Project Repository:</b><br/>
 <a href="https://github.com/Danielk10/Lector-De-Memorias">GitHub: Danielk10/Lector-De-Memorias</a>
 ]]></string>
+
+    <!-- Google AdMob Native -->
+    <string name="ad_badge">Ad</string>
+    <string name="ad_icon_desc">Icono de anuncio</string>
 </resources>

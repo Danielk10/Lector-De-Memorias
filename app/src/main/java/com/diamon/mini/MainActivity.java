@@ -29,6 +29,10 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
+import com.google.android.gms.ads.nativead.NativeAdView;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -112,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSearchChip, btnAutodetectChip;
     private FrameLayout bannerContainer;
     private AdView adViewBanner;
+    private View nativeAdCard;
+    private NativeAdView nativeAdView;
+    private NativeAd currentNativeAd;
     private EditText etCustomCommand, etChipModel;
 
     // Terminal Log Buffering with Carriage Return (\r) Overwrite Handling
@@ -304,6 +311,8 @@ public class MainActivity extends AppCompatActivity {
         etCustomCommand = findViewById(R.id.etCustomCommand);
         etChipModel = findViewById(R.id.etChipModel);
         bannerContainer = findViewById(R.id.bannerContainer);
+        nativeAdCard = findViewById(R.id.nativeAdCard);
+        nativeAdView = findViewById(R.id.nativeAdView);
 
         initPro();
 
@@ -760,10 +769,12 @@ public class MainActivity extends AppCompatActivity {
         boolean pro = isProActive();
         if (pro) {
             destroyBanner();
+            destroyNativeAd();
             InterstitialAdManager.clear();
         } else if (billingManager != null && !billingManager.isProPurchased()
                 && ConsentManager.canRequestAds()) {
             loadBannerAd();
+            loadNativeAd();
         }
 
         invalidateOptionsMenu();
@@ -1721,9 +1732,13 @@ public class MainActivity extends AppCompatActivity {
     /** Inicializa o retira los anuncios según la decisión de privacidad. */
     private void applyConsentState(boolean canRequestAds) {
         if (canRequestAds && !isProActive()) {
-            MobileAds.initialize(this, initializationStatus -> runOnUiThread(this::loadBannerAd));
+            MobileAds.initialize(this, initializationStatus -> runOnUiThread(() -> {
+                loadBannerAd();
+                loadNativeAd();
+            }));
         } else {
             destroyBanner();
+            destroyNativeAd();
         }
     }
 
@@ -1800,6 +1815,111 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void destroyNativeAd() {
+        if (currentNativeAd != null) {
+            currentNativeAd.destroy();
+            currentNativeAd = null;
+        }
+        if (nativeAdCard != null) {
+            nativeAdCard.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadNativeAd() {
+        if (nativeAdView == null || nativeAdCard == null) return;
+        if (!ConsentManager.canRequestAds() || isProActive()) {
+            destroyNativeAd();
+            return;
+        }
+
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-5141499161332805/8967205705")
+                .forNativeAd(nativeAd -> {
+                    if (isDestroyed() || isFinishing()) {
+                        nativeAd.destroy();
+                        return;
+                    }
+                    if (isProActive()) {
+                        nativeAd.destroy();
+                        destroyNativeAd();
+                        return;
+                    }
+                    if (currentNativeAd != null) {
+                        currentNativeAd.destroy();
+                    }
+                    currentNativeAd = nativeAd;
+                    populateNativeAdView(nativeAd, nativeAdView);
+                    nativeAdCard.setVisibility(View.VISIBLE);
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
+                        Log.e("MainActivity", "AdMob Nativo fallo al cargar: Código=" + adError.getCode()
+                                + ", Mensaje=" + adError.getMessage());
+                        nativeAdCard.setVisibility(View.GONE);
+                    }
+                })
+                .withNativeAdOptions(new NativeAdOptions.Builder().build())
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
+    }
+
+    private void populateNativeAdView(NativeAd nativeAd, NativeAdView adView) {
+        TextView headlineView = adView.findViewById(R.id.ad_headline);
+        TextView bodyView = adView.findViewById(R.id.ad_body);
+        Button ctaView = adView.findViewById(R.id.ad_call_to_action);
+        ImageView iconView = adView.findViewById(R.id.ad_app_icon);
+        TextView advertiserView = adView.findViewById(R.id.ad_advertiser);
+
+        adView.setHeadlineView(headlineView);
+        adView.setBodyView(bodyView);
+        adView.setCallToActionView(ctaView);
+        adView.setIconView(iconView);
+        adView.setAdvertiserView(advertiserView);
+
+        if (headlineView != null) {
+            headlineView.setText(nativeAd.getHeadline());
+        }
+
+        if (bodyView != null) {
+            if (nativeAd.getBody() == null) {
+                bodyView.setVisibility(View.GONE);
+            } else {
+                bodyView.setVisibility(View.VISIBLE);
+                bodyView.setText(nativeAd.getBody());
+            }
+        }
+
+        if (ctaView != null) {
+            if (nativeAd.getCallToAction() == null) {
+                ctaView.setVisibility(View.INVISIBLE);
+            } else {
+                ctaView.setVisibility(View.VISIBLE);
+                ctaView.setText(nativeAd.getCallToAction());
+            }
+        }
+
+        if (iconView != null) {
+            if (nativeAd.getIcon() == null || nativeAd.getIcon().getDrawable() == null) {
+                iconView.setVisibility(View.GONE);
+            } else {
+                iconView.setImageDrawable(nativeAd.getIcon().getDrawable());
+                iconView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        if (advertiserView != null) {
+            if (nativeAd.getAdvertiser() == null) {
+                advertiserView.setVisibility(View.GONE);
+            } else {
+                advertiserView.setText(nativeAd.getAdvertiser());
+                advertiserView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        adView.setNativeAd(nativeAd);
+    }
+
     /**
      * Tamaño adaptativo anclado al ancho real de la pantalla.
      *
@@ -1845,23 +1965,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Aplica los insets de ventana (status bar, navigation bar y recorte de camara display cutout)
-     * asegurando que el AppBarLayout cubra hasta el borde fisico superior con color uniforme.
+     * Aplica los insets de ventana manteniendo la barra superior pegada al borde
+     * físico de la pantalla (igual que PIC k150).
+     *
+     * Importante: NO se usa displayCutout para el borde superior. En este
+     * dispositivo el recorte de cámara mide 72 px y aunque las barras del
+     * sistema estén ocultas (modo inmersivo) ese inset seguía aplicándose,
+     * dejando una franja azul vacía encima del título. El recorte solo se
+     * respeta en los laterales (modo horizontal).
      */
     private void aplicarWindowInsets(View vistaPrincipal) {
-        View appBarLayout = findViewById(R.id.appBarLayout);
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(vistaPrincipal, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets;
+            androidx.core.graphics.Insets barras;
+            androidx.core.graphics.Insets recorte;
             try {
-                insets = windowInsets.getInsets(
-                        WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+                barras = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+                recorte = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
             } catch (Throwable t) {
-                insets = androidx.core.graphics.Insets.NONE;
+                barras = androidx.core.graphics.Insets.NONE;
+                recorte = androidx.core.graphics.Insets.NONE;
             }
-            v.setPadding(insets.left, 0, insets.right, insets.bottom);
-            if (appBarLayout != null) {
-                appBarLayout.setPadding(0, insets.top, 0, 0);
-            }
+            v.setPadding(
+                    Math.max(barras.left, recorte.left),
+                    barras.top,
+                    Math.max(barras.right, recorte.right),
+                    barras.bottom);
             return windowInsets;
         });
     }
@@ -1935,6 +2063,7 @@ public class MainActivity extends AppCompatActivity {
         if (bannerContainer != null) {
             bannerContainer.removeAllViews();
         }
+        destroyNativeAd();
         super.onDestroy();
         usbController.unregisterReceiver();
         executor.shutdownNow();

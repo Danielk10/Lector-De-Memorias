@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Estrella blanca como acceso a Pro (sin texto) -->
     <item
         android:id="@+id/action_pro_mode"
         android:icon="@drawable/ic_pro_star"
