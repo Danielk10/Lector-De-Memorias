@@ -51,16 +51,19 @@
         <activity
             android:name=".PolicyActivity"
             android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:label="@string/str_polticas_de_pri" />
 
         <activity
             android:name=".HexViewerActivity"
             android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:label="@string/str_visor_hexadecim" />
 
         <activity
             android:name=".HexDiffActivity"
             android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:label="@string/str_comparar_hex" />
 
         <!-- Evita el crash fatal NPE de DataTransport cuando se invoca AlarmManagerSchedulerBroadcastReceiver sin datos URI -->
