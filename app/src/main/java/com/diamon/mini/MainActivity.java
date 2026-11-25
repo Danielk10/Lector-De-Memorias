@@ -121,6 +121,15 @@ public class MainActivity extends AppCompatActivity {
     private NativeAd currentNativeAd;
     private EditText etCustomCommand, etChipModel;
 
+    // Control de reintentos de anuncios. Un "No fill" no se reintenta: repetir
+    // la petición sin inventario solo empeora la entrega (mismo criterio que
+    // Flash SPI Tool v1.9.25).
+    private static final int MAX_BANNER_RETRIES = 1;
+    private static final long BANNER_RETRY_DELAY_MS = 5_000L;
+    private final Handler adsHandler = new Handler(Looper.getMainLooper());
+    private int bannerRetryCount = 0;
+    private boolean nativeAdLoading = false;
+
     // Terminal Log Buffering with Carriage Return (\r) Overwrite Handling
     private final List<StringBuilder> consoleLines = new ArrayList<>();
     private int currentLineIndex = -1;
@@ -1752,6 +1761,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void destroyBanner() {
+        adsHandler.removeCallbacksAndMessages(null);
+        bannerRetryCount = 0;
         if (adViewBanner != null) {
             adViewBanner.destroy();
             adViewBanner = null;
@@ -1778,8 +1789,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onAdLoaded() {
                     super.onAdLoaded();
+                    bannerRetryCount = 0;
                     Log.d("MainActivity", "Banner AdMob cargado exitosamente.");
-                    bannerContainer.setVisibility(View.VISIBLE);
+                    if (bannerContainer != null) {
+                        bannerContainer.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
@@ -1787,18 +1801,31 @@ public class MainActivity extends AppCompatActivity {
                     super.onAdFailedToLoad(adError);
                     Log.e("MainActivity", "Banner AdMob fallo al cargar: Código=" + adError.getCode()
                             + ", Mensaje=" + adError.getMessage());
-                    // Resetear para permitir reintentos desde loadBannerAd()
+                    // Resetear para permitir una nueva carga desde loadBannerAd()
                     if (adViewBanner != null) {
                         adViewBanner.destroy();
                         adViewBanner = null;
                     }
                     if (bannerContainer != null) {
                         bannerContainer.removeAllViews();
+                        bannerContainer.setVisibility(View.GONE);
                     }
-                    // Reintentar después de 30 segundos si la actividad sigue activa
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (!isFinishing() && !isDestroyed()) loadBannerAd();
-                    }, 30_000L);
+                    // Un "No fill" no se reintenta: no hay inventario y volver a
+                    // pedirlo cada 30 s solo degrada la entrega. Para fallos
+                    // transitorios (red, error interno) se permite un único
+                    // reintento a los 5 s.
+                    if (adError.getCode() == AdRequest.ERROR_CODE_NO_FILL
+                            || bannerRetryCount >= MAX_BANNER_RETRIES) {
+                        return;
+                    }
+                    bannerRetryCount++;
+                    adsHandler.postDelayed(() -> {
+                        if (isFinishing() || isDestroyed() || isProActive()
+                                || !ConsentManager.canRequestAds()) {
+                            return;
+                        }
+                        loadBannerAd();
+                    }, BANNER_RETRY_DELAY_MS);
                 }
             });
 
@@ -1816,6 +1843,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void destroyNativeAd() {
+        nativeAdLoading = false;
         if (currentNativeAd != null) {
             currentNativeAd.destroy();
             currentNativeAd = null;
@@ -1831,9 +1859,15 @@ public class MainActivity extends AppCompatActivity {
             destroyNativeAd();
             return;
         }
+        // Evita peticiones duplicadas: applyProState() se ejecuta en cada
+        // reanudación y antes se pedía un nativo nuevo aunque ya hubiera uno
+        // cargado o una petición en curso.
+        if (nativeAdLoading || currentNativeAd != null) return;
+        nativeAdLoading = true;
 
         AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-5141499161332805/8967205705")
                 .forNativeAd(nativeAd -> {
+                    nativeAdLoading = false;
                     if (isDestroyed() || isFinishing()) {
                         nativeAd.destroy();
                         return;
@@ -1853,6 +1887,7 @@ public class MainActivity extends AppCompatActivity {
                 .withAdListener(new AdListener() {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError adError) {
+                        nativeAdLoading = false;
                         Log.e("MainActivity", "AdMob Nativo fallo al cargar: Código=" + adError.getCode()
                                 + ", Mensaje=" + adError.getMessage());
                         nativeAdCard.setVisibility(View.GONE);
@@ -2054,6 +2089,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         proHandler.removeCallbacksAndMessages(null);
+        adsHandler.removeCallbacksAndMessages(null);
         if (billingManager != null) {
             billingManager.destroy();
         }
