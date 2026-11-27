@@ -82,6 +82,11 @@ public class ProPassManager {
         activarPase();
     }
 
+    /** Alias compatible with the other tools in the suite. */
+    public void activarPasePro() {
+        activarPase();
+    }
+
     public boolean hasActiveProPass() {
         return System.currentTimeMillis() < getExpireTime();
     }

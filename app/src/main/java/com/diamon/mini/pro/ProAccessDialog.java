@@ -47,13 +47,21 @@ public class ProAccessDialog {
                             @Nullable BillingManager billingManager,
                             @NonNull ProPassManager proPassManager,
                             @Nullable OnProUnlockedListener onProUnlocked) {
-        show(activity, billingManager, proPassManager, onProUnlocked, null);
+        show(activity, billingManager, proPassManager, onProUnlocked, (DialogInterface.OnDismissListener) null);
+    }
+
+    public static void show(@NonNull Activity activity,
+                            @Nullable BillingManager billingManager,
+                            @NonNull ProPassManager proPassManager,
+                            @Nullable OnProUnlockedListener onProUnlocked,
+                            @Nullable DialogInterface.OnDismissListener onDismiss) {
+        show(activity, billingManager, proPassManager, onProUnlocked, null, onDismiss);
     }
 
     /**
-     * Same as {@link #show(Activity, BillingManager, ProPassManager, OnProUnlockedListener)}
-     * plus an optional action to open the Pro tools hub while the pass is active.
+     * @deprecated Las herramientas ahora se acceden desde el menú principal.
      */
+    @Deprecated
     public static void show(@NonNull Activity activity,
                             @Nullable BillingManager billingManager,
                             @NonNull ProPassManager proPassManager,
@@ -126,18 +134,6 @@ public class ProAccessDialog {
         subtitle.setGravity(Gravity.CENTER);
         subtitle.setPadding(0, dp(6, density), 0, dp(16, density));
         root.addView(subtitle);
-
-        if (passActive) {
-            TextView passStatus = new TextView(activity);
-            passStatus.setText(activity.getString(R.string.pro_pass_active_desc,
-                    proPassManager.getTiempoRestanteFormateado()));
-            passStatus.setTextSize(13);
-            passStatus.setTypeface(null, Typeface.BOLD);
-            passStatus.setTextColor(COLOR_CHECK);
-            passStatus.setGravity(Gravity.CENTER);
-            passStatus.setPadding(0, 0, 0, dp(12, density));
-            root.addView(passStatus);
-        }
 
         LinearLayout card = new LinearLayout(activity);
         card.setOrientation(LinearLayout.VERTICAL);
@@ -301,29 +297,6 @@ public class ProAccessDialog {
             }
         });
         root.addView(btnBuy);
-
-        if (passActive && onOpenProTools != null) {
-            View toolsSpacer = new View(activity);
-            toolsSpacer.setMinimumHeight(dp(10, density));
-            root.addView(toolsSpacer);
-
-            Button btnTools = new Button(activity);
-            btnTools.setText(activity.getString(R.string.pro_open_tools));
-            btnTools.setTextSize(14);
-            btnTools.setTypeface(null, Typeface.BOLD);
-            btnTools.setTextColor(Color.WHITE);
-            GradientDrawable toolsBg = new GradientDrawable();
-            toolsBg.setColor(0xFF00897B);
-            toolsBg.setCornerRadius(dp(8, density));
-            btnTools.setBackground(toolsBg);
-            btnTools.setPadding(dp(12, density), dp(12, density),
-                    dp(12, density), dp(12, density));
-            btnTools.setOnClickListener(v -> {
-                dialog.dismiss();
-                onOpenProTools.run();
-            });
-            root.addView(btnTools);
-        }
 
         TextView restoreNote = new TextView(activity);
         restoreNote.setText(activity.getString(R.string.pro_restore_note));

@@ -195,13 +195,19 @@ public class MainActivity extends AppCompatActivity {
     private final Handler proHandler = new Handler(Looper.getMainLooper());
     private String pendingReportText;
     private boolean wasProActive = false;
+    private Menu optionsMenu;
 
     private final Runnable proTicker = new Runnable() {
         @Override
         public void run() {
             if (isFinishing() || isDestroyed()) return;
-            invalidateOptionsMenu();
             if (proPassManager != null && proPassManager.hasActiveProPass()) {
+                if (optionsMenu != null) {
+                    MenuItem proItem = optionsMenu.findItem(R.id.action_pro_mode);
+                    if (proItem != null) {
+                        actualizarProItemView(proItem);
+                    }
+                }
                 proHandler.postDelayed(this, 1000L);
             } else {
                 applyProState();
@@ -799,8 +805,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProDialog() {
+        showProDialog(null);
+    }
+
+    private void showProDialog(Runnable onUnlocked) {
         if (billingManager != null && billingManager.isProPurchased()) {
-            showProTools();
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.pro_permanent_active_title)
+                    .setMessage(R.string.pro_permanent_active_desc)
+                    .setPositiveButton(R.string.str_cerrar, null)
+                    .show();
+            if (onUnlocked != null) onUnlocked.run();
             return;
         }
         // El diálogo Pro ocupa casi toda la pantalla y tapa el banner: se
@@ -809,29 +824,16 @@ public class MainActivity extends AppCompatActivity {
         ProAccessDialog.show(this, billingManager, proPassManager, () -> {
             applyProState();
             log(getString(R.string.pro_activated_log));
-        }, this::showProTools, dialog -> restoreBannerAfterOverlay());
+            if (onUnlocked != null) onUnlocked.run();
+        }, dialog -> restoreBannerAfterOverlay());
     }
 
-    private void showProTools() {
-        ProToolsDialog.show(this, billingManager, proPassManager, new ProToolsDialog.Actions() {
-            @Override
-            public void onOpenVault() {
-                showVaultDialog();
-            }
-
-            @Override
-            public void onOpenIntegrity() {
-                showCurrentIntegrity();
-            }
-
-            @Override
-            public void onOpenReport() {
-                showTechnicalReport();
-            }
-        }, () -> {
-            applyProState();
-            log(getString(R.string.pro_activated_log));
-        });
+    private void handleProFeature(Runnable onGranted) {
+        if (isProActive()) {
+            onGranted.run();
+        } else {
+            showProDialog(onGranted);
+        }
     }
 
     private File getCurrentDumpFile() {
@@ -995,12 +997,47 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.optionsMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem proItem = menu.findItem(R.id.action_pro_mode);
+        if (proItem != null) {
+            View actionView = proItem.getActionView();
+            if (actionView != null) {
+                actionView.setOnClickListener(v -> onOptionsItemSelected(proItem));
+            }
+        }
         return true;
+    }
+
+    private void actualizarProItemView(MenuItem proItem) {
+        if (proItem == null) return;
+        View actionView = proItem.getActionView();
+        TextView tvTimer = actionView != null ? actionView.findViewById(R.id.tv_pro_timer) : null;
+
+        if (billingManager != null && billingManager.isProPurchased()) {
+            proItem.setTitle(R.string.menu_pro_permanent);
+            if (tvTimer != null) {
+                tvTimer.setVisibility(View.VISIBLE);
+                tvTimer.setText(getString(R.string.menu_pro_permanent));
+            }
+        } else if (proPassManager != null && proPassManager.hasActiveProPass()) {
+            String timerStr = proPassManager.getTiempoRestanteFormateado();
+            proItem.setTitle(getString(R.string.menu_pro_timer, timerStr));
+            if (tvTimer != null) {
+                tvTimer.setVisibility(View.VISIBLE);
+                tvTimer.setText("Pro " + timerStr);
+            }
+        } else {
+            proItem.setTitle(R.string.menu_pro_mode);
+            if (tvTimer != null) {
+                tvTimer.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        this.optionsMenu = menu;
         MenuItem privacyItem = menu.findItem(R.id.action_privacy_options);
         if (privacyItem != null) {
             privacyItem.setVisible(ConsentManager.isPrivacyOptionsRequired());
@@ -1008,14 +1045,7 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem proItem = menu.findItem(R.id.action_pro_mode);
         if (proItem != null) {
-            if (billingManager != null && billingManager.isProPurchased()) {
-                proItem.setTitle(R.string.menu_pro_permanent);
-            } else if (proPassManager != null && proPassManager.hasActiveProPass()) {
-                proItem.setTitle(getString(R.string.menu_pro_timer,
-                        proPassManager.getTiempoRestanteFormateado()));
-            } else {
-                proItem.setTitle(R.string.menu_pro_mode);
-            }
+            actualizarProItemView(proItem);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -1025,6 +1055,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_pro_mode) {
             showProDialog();
+            return true;
+        } else if (id == R.id.action_vault) {
+            handleProFeature(this::showVaultDialog);
+            return true;
+        } else if (id == R.id.action_integrity) {
+            handleProFeature(this::showCurrentIntegrity);
+            return true;
+        } else if (id == R.id.action_technical_report) {
+            handleProFeature(this::showTechnicalReport);
             return true;
         } else if (id == R.id.action_hex_viewer) {
             // Igual que C-PIC: se pide el intersticial al abrir el visor. El
@@ -2080,6 +2119,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        proHandler.removeCallbacks(proTicker);
         if (adViewBanner != null) {
             adViewBanner.pause();
         }
@@ -2088,6 +2128,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        optionsMenu = null;
         proHandler.removeCallbacksAndMessages(null);
         adsHandler.removeCallbacksAndMessages(null);
         if (billingManager != null) {

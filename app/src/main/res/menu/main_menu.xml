@@ -2,12 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Estrella blanca como acceso a Pro (sin texto) -->
+    <!-- Estrella blanca como acceso a Pro con contador de tiempo real al lado -->
     <item
         android:id="@+id/action_pro_mode"
         android:icon="@drawable/ic_pro_star"
         android:title="@string/menu_pro_mode"
+        app:actionLayout="@layout/action_item_pro"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_vault"
+        android:title="@string/vault_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_integrity"
+        android:title="@string/integrity_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_technical_report"
+        android:title="@string/report_title_technical"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_hex_viewer"
