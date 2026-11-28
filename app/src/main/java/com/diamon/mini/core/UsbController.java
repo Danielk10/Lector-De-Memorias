@@ -31,13 +31,15 @@ public class UsbController {
         void onDeviceDisconnected();
     }
 
-    // Mapa de VID:PID -> nombre de programador para auto-detección
+    // Mapa de VID:PID -> nombre de programador para auto-detección.
+    // TL866II+, T48 y T56 comparten el VID:PID a466:0a53; el modelo real se
+    // obtiene después con "minipro -k" (ProgrammerModel.fromMiniproProbe).
     public static final Map<String, String> USB_AUTO_MAP = new HashMap<String, String>() {{
         put("04d8:e11c", "TL866A");
         put("04d8:00de", "TL866A");
         put("04d8:00df", "TL866CS");
         put("04d8:00e0", "TL866II+");
-        put("a466:0a53", "TL866II+");
+        put("a466:0a53", "TL866II+/T48/T56");
         put("a466:1a86", "T76");
         put("2e8a:000a", "T48");
         put("2e8a:0005", "T56");

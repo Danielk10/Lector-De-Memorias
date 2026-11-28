@@ -58,10 +58,18 @@ Gracias a la inyección de `RPATH` durante la compilación, no se requiere confi
 
 # 3. Lectura de SPI Flash (1MB)
 ./emulador_minipro --flash mock_spi.bin minipro -p "W25Q80BV" -r read_spi.bin
+
+# 4. Emular un XGecu T48 y comprobar la detección de modelo
+./emulador_minipro --programmer t48 minipro -k
+#    Salida esperada: t48: T48
+
+# 5. Autodetección SPI sobre un T48 emulado
+./emulador_minipro --programmer t48 --flash mock_spi.bin minipro -a 8
 ```
 
 Opciones admitidas:
 * `--flash ARCHIVO.bin`: Inicializa la memoria del chip simulado desde un archivo.
 * `--save ARCHIVO.bin`: Guarda los datos finales del chip simulado tras correr las operaciones.
 * `--fill empty|count|random`: Rellena la memoria inicial con `0xFF`, contadores secuenciales o valores aleatorios.
+* `--programmer tl866ii|t48|t56|t76`: Selecciona el modelo emulado. TL866II+, T48 y T56 comparten VID:PID `a466:0a53`; minipro los distingue por el byte de tipo de dispositivo del firmware.
 

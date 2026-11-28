@@ -105,6 +105,9 @@
     <string name="str_usb_permission_granted">Permission granted! USB FD Token: %1$d</string>
     <string name="str_connected_usb_vid_pid">Connected to USB VID:PID %1$s</string>
     <string name="str_device_recognized">[OK] Device recognized: %1$s</string>
+    <string name="str_programmer_probe_start">Identifying connected programmer...</string>
+    <string name="str_programmer_detected">[OK] Programmer detected: %1$s</string>
+    <string name="str_programmer_probe_failed">[NOTICE] Could not identify the programmer model automatically. Select it manually in the top selector.</string>
     <string name="str_warn_unrecognized_usb">[NOTICE] Device not identified in auto USB map.\nYou can select the programmer model from the top selector.</string>
     <string name="str_usb_disconnected">USB device disconnected.</string>
     <string name="str_read_from_chip">Read from chip %1$s</string>

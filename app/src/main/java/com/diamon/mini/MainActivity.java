@@ -59,6 +59,7 @@ import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.diamon.mini.ads.InterstitialAdManager;
 import com.diamon.mini.core.MiniproExecutor;
+import com.diamon.mini.core.ProgrammerModel;
 import com.diamon.mini.core.UsbController;
 import com.diamon.mini.billing.BillingManager;
 import com.diamon.mini.pro.ProAccessDialog;
@@ -437,6 +438,12 @@ public class MainActivity extends AppCompatActivity {
                     btnRead.setEnabled(true);
                     btnWrite.setEnabled(true);
                     btnEraseChip.setEnabled(true);
+
+                    // a466:0a53 es compartido por TL866II+, T48 y T56: preguntar
+                    // a minipro el modelo real tras conceder el permiso USB.
+                    if (!UsbController.UNSUPPORTED_USB_MAP.containsKey(vidPid)) {
+                        probeProgrammerModel();
+                    }
                 });
             }
 
@@ -495,6 +502,8 @@ public class MainActivity extends AppCompatActivity {
                 if (exitCode != 0) {
                     maybeLogMiniproHint();
                 }
+
+                handleProgrammerProbeResult(exitCode, args);
 
                 if (exitCode == 0) {
                     for (int i = 0; i < args.length; i++) {
@@ -1474,6 +1483,54 @@ public class MainActivity extends AppCompatActivity {
             isLogUpdatePending = true;
             logHandler.postDelayed(logUpdater, 80);
         }
+    }
+
+    /**
+     * Pregunta a minipro (-k) qué programador está conectado realmente.
+     * Necesario porque TL866II+, T48 y T56 comparten el VID:PID a466:0a53.
+     */
+    private void probeProgrammerModel() {
+        if (programmerInBootloader || usbController == null || usbController.getCurrentFd() < 0) {
+            return;
+        }
+        log(getString(R.string.str_programmer_probe_start));
+        executeMinipro("-k");
+    }
+
+    private void handleProgrammerProbeResult(int exitCode, String[] args) {
+        boolean isProbe = false;
+        for (String arg : args) {
+            if ("-k".equals(arg) || "--presence_check".equals(arg)) {
+                isProbe = true;
+                break;
+            }
+        }
+        if (!isProbe) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        synchronized (currentOutputLines) {
+            for (String line : currentOutputLines) {
+                sb.append(line);
+            }
+        }
+
+        String model = exitCode == 0 ? ProgrammerModel.fromMiniproProbe(sb.toString()) : null;
+        runOnUiThread(() -> {
+            if (model == null) {
+                log(getString(R.string.str_programmer_probe_failed));
+                return;
+            }
+            for (int i = 0; i < SUPPORTED_DEVICES.length; i++) {
+                if (SUPPORTED_DEVICES[i].equalsIgnoreCase(model)) {
+                    spinnerDevices.setSelection(i);
+                    saveSelectedDevice(SUPPORTED_DEVICES[i]);
+                    break;
+                }
+            }
+            log(getString(R.string.str_programmer_detected, model));
+        });
     }
 
     private String getMiniproProgrammerFlag() {

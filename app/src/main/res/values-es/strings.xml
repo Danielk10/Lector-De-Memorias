@@ -105,6 +105,9 @@
     <string name="str_usb_permission_granted">¡Permiso otorgado! Token USB FD: %1$d</string>
     <string name="str_connected_usb_vid_pid">Conectado a USB VID:PID %1$s</string>
     <string name="str_device_recognized">[OK] Dispositivo reconocido: %1$s</string>
+    <string name="str_programmer_probe_start">Identificando el programador conectado...</string>
+    <string name="str_programmer_detected">[OK] Programador detectado: %1$s</string>
+    <string name="str_programmer_probe_failed">[AVISO] No se pudo identificar el modelo del programador automáticamente. Selecciónalo manualmente en el selector superior.</string>
     <string name="str_warn_unrecognized_usb">[AVISO] Dispositivo no identificado en la base de datos USB automática.\nPuedes seleccionar el modelo en el selector superior.</string>
     <string name="str_usb_disconnected">Dispositivo USB desconectado.</string>
     <string name="str_read_from_chip">Leído del chip %1$s</string>

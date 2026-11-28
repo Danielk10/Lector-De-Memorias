@@ -42,7 +42,18 @@ Puedes ejecutar el emulador de forma manual con las siguientes opciones:
 * `--flash ARCHIVO`: Carga el contenido inicial del chip simulado desde un binario de hasta 1MB.
 * `--save ARCHIVO`: Guarda el estado final de la memoria del chip en un archivo al finalizar el proceso de `minipro`.
 * `--fill PATRON`: Inicializa la memoria con un patrón específico: `empty` (todo en `0xFF`), `count` (contador secuencial `0..255`), o `random` (valores aleatorios).
+* `--programmer MODELO`: Emula `tl866ii` (defecto), `t48`, `t56` o `t76`. TL866II+, T48 y T56 comparten VID:PID `a466:0a53`; el modelo se distingue por el byte de tipo de dispositivo del firmware.
 * `minipro [ARGS]`: Ejecuta el subproceso de `minipro` en el mismo `socketpair` de forma auto-contenida.
+
+### Detección de modelo
+
+```bash
+./emulador_minipro --programmer t48 minipro -k
+# t48: T48
+
+./emulador_minipro --programmer t48 --flash mock_spi.bin minipro -a 8
+# Autodetecta W25Q80BV (ID 0xEF4014) sobre el T48 emulado
+```
 
 ### Ejemplo de Lectura y Escritura:
 

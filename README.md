@@ -70,6 +70,11 @@ El proyecto integra el motor nativo [minipro](https://gitlab.com/DavidGriffith/m
 | 🟢 **XGecu T56** | `A466:0A53` / `2E8A:0005` | 32,513 dispositivos | ✅ Soportado |
 | 🟢 **XGecu T76** | `A466:1A86` | 34,607 dispositivos | ✅ Soportado |
 | 🟢 **Logic IC Tester** | Modo de prueba lógica | 283 circuitos integrados (+6 custom) | ✅ Soportado |
+
+> **Detección de modelo:** TL866II+, T48 y T56 comparten el VID:PID `A466:0A53`.
+> Tras conceder el permiso USB, la app ejecuta `minipro -k` para leer el tipo
+> real de firmware y seleccionar automáticamente TL866II+, T48, T56 o T76.
+
 ---
 
 ## 📐 Diagramas de Conexión y Pinouts Incluidos
